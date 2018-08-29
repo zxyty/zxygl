@@ -148,7 +148,8 @@ export default class Renderer {
         object.screen.z = focuszoom / (camera.focus + object.screen.z);
 
         if (object.screen.z < 0)
-            continue;					
+            // continue;	
+            return;				
 
         object.screen.x *= object.screen.z;
         object.screen.y *= object.screen.z;
@@ -157,6 +158,6 @@ export default class Renderer {
       }
     });
 
-    this.renderList.some(this.sort);
+    this.renderList.sort(this.sort);
   }
 }
