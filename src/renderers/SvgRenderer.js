@@ -67,7 +67,7 @@ export default class SVGRenderer extends Renderer {
     this.viewport.appendChild(this.defs);
     this.defs.appendChild(this.svgImagePool[0]);
 
-    this.renderList.map(element => {
+    this.renderList.map((element, j) => {
       if (this.svgPathPool[j] == null) {
         this.svgPathPool[j] = document.createElementNS(
           "http://www.w3.org/2000/svg",
@@ -76,17 +76,11 @@ export default class SVGRenderer extends Renderer {
         this.svgPathPool[j].setAttribute("shape-rendering", "crispEdges"); //optimizeSpeed
       }
 
-      // this.svgPathPool[j].setAttribute('style', 'fill:url(#texture)');
+      // element.setAttribute('style', 'fill:url(#texture)');
 
       this.svgPathPool[j].setAttribute(
         "style",
-        "fill: rgb(" +
-          element.color[0] +
-          ", " +
-          element.color[1] +
-          ", " +
-          element.color[2] +
-          ")"
+        "fill: " + element.material.colorString
       ); //fill-opacity:' + 0.5); // + ';stroke:' + element.color + ';stroke-width:10;stroke-opacity:0.5;'); //stroke-miterlimit:40;stroke-dasharray:5');
 
       if (element instanceof Face3) {

@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-    <title>three.js - particles - floor</title>
+    <title>particles - floor</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+    <!-- <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" /> -->
     <style type="text/css">
         body {
             background-color: #000000;
@@ -35,6 +35,9 @@
         var container;
         var stats;
 
+        var count;
+
+        var particles;
         var particle;
 
         var camera;
@@ -68,17 +71,21 @@
 
             particles = new Array();
 
+            var i = 0;
+
             var material = new ZXYGL.ColorMaterial(0xffffff, 1);
 
             for (var ix = 0; ix < AMOUNTX; ix++) {
                 for (var iy = 0; iy < AMOUNTY; iy++) {
-                    particle = new ZXYGL.Particle(material);
+                    particle = particles[i++] = new ZXYGL.Particle( material );
+                    particle.size = 1;
                     particle.position.x = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2);
                     particle.position.z = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2);
                     particle.updateMatrix();
                     scene.add(particle);
                 }
             }
+            count = 0;
 
             container.appendChild(renderer.viewport);
 
@@ -133,9 +140,21 @@
             camera.y += (-mouseY - camera.y) * .05;
             camera.updateMatrix();
 
+            var i = 0;
+
+            for (var ix = 0; ix < AMOUNTX; ix++) {
+                for (var iy = 0; iy < AMOUNTY; iy++) {
+                    particle = particles[i++];
+                    particle.size = (Math.sin((ix + count) * .3) + 1) * 2 + (Math.sin((iy + count) * .5) + 1) * 2;
+                    particle.position.y = (Math.sin((ix + count) * .3) * 50) + (Math.sin((iy + count) * .5) * 50);
+                }
+            }
+
             renderer.render(scene, camera);
 
             // stats.update();
+
+            count += 0.1;
         }
 
     </script>
