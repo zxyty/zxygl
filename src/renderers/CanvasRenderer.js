@@ -3,6 +3,7 @@ import Particle from "../objects/Particle";
 import Face3 from "../core/Face3";
 import Face4 from "../core/Face4";
 import ColorMaterial from "../materials/ColorMaterial";
+import FaceColorMaterial from "../materials/FaceColorMaterial";
 
 export default class CanvasRenderer extends Renderer {
   constructor() {
@@ -32,7 +33,9 @@ export default class CanvasRenderer extends Renderer {
 
     this.renderList.map(element => {
       if (element.material instanceof ColorMaterial) {
-        this.context.fillStyle = element.material.colorString;
+        this.context.fillStyle = element.material.color.styleString;
+      } else if (element.material instanceof FaceColorMaterial) {
+        this.context.fillStyle = element.color.styleString;
       }
 
       if (element instanceof Face3) {

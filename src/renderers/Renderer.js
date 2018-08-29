@@ -75,10 +75,7 @@ export default class Renderer {
                     (face.b.screen.x - face.a.screen.x) >
                   0)
             ) {
-              face.screen.z = Math.max(
-                face.a.screen.z,
-                Math.max(face.b.screen.z, face.c.screen.z)
-              );
+              face.screen.z = (face.a.scene.z + face.b.scene.z + face.c.scene.z) * 0.3;
 
               if (this.face3Pool[face3count] == null)
                 this.face3Pool[face3count] = new Face3(
@@ -91,7 +88,8 @@ export default class Renderer {
               this.face3Pool[face3count].b.screen.copy(face.b.screen);
               this.face3Pool[face3count].c.screen.copy(face.c.screen);
               this.face3Pool[face3count].screen.z = face.screen.z;
-              this.face3Pool[face3count].material = face.material;
+              this.face3Pool[face3count].color = face.color;
+              this.face3Pool[face3count].material = object.material;
 
               this.renderList.push(this.face3Pool[face3count]);
 
@@ -114,10 +112,7 @@ export default class Renderer {
                       (face.d.screen.x - face.c.screen.x) >
                     0))
             ) {
-              face.screen.z = Math.max(
-                face.a.screen.z,
-                Math.max(face.b.screen.z, face.c.screen.z)
-              );
+              face.screen.z = (face.a.scene.z + face.b.scene.z + face.c.scene.z + face.d.scene.z) * 0.25;
 
               if (this.face4Pool[face4count] == null)
                 this.face4Pool[face4count] = new Face4(
@@ -132,7 +127,8 @@ export default class Renderer {
               this.face4Pool[face4count].c.screen.copy(face.c.screen);
               this.face4Pool[face4count].d.screen.copy(face.d.screen);
               this.face4Pool[face4count].screen.z = face.screen.z;
-              this.face4Pool[face4count].material = face.material;
+              this.face4Pool[face4count].color = face.color;
+              this.face4Pool[face4count].material = object.material;
 
               this.renderList.push(this.face4Pool[face4count]);
 

@@ -1,4 +1,5 @@
 import Vector3 from "./Vector3";
+import Color from "./Color";
 
 export default class Face3 extends Vector3 {
   constructor(a, b, c, uv, normal, color) {
@@ -13,9 +14,8 @@ export default class Face3 extends Vector3 {
     this.uv = uv ? uv : [[0,0],[0,0],[0,0]];
     this.normal = normal ? normal : new Vector3();
 
-    this.color = color ? color : [0,0,0];
-    this.colorString = 'rgb(' + this.color[0] + ', ' + this.color[1] + ', ' + this.color[2] + ')';
-
+    this.color = color ? color : new Color();
+    
   }
 
   toString() {

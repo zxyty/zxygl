@@ -7,6 +7,7 @@ import Matrix4 from "./core/Matrix4";
 import Vector2 from "./core/Vector2";
 import Vector3 from "./core/Vector3";
 import Vertex from "./core/Vertex";
+import Color from "./core/Color";
 
 // scenes
 import Scene from "./scenes/Scene";
@@ -55,5 +56,6 @@ window.ZXYGL = {
   Object3D: Object3D,
   Mesh: Mesh,
   Particle: Particle,
-  Plane: Plane
+  Plane: Plane,
+  Color: Color
 };
