@@ -20,8 +20,17 @@ export default class Object3D {
         this.position.z
       )
     );
+    // this.matrix.multiplySelf(
+    //   Matrix4.rotationMatrix(this.rotation.x, this.rotation.y, this.rotation.z)
+    // );
     this.matrix.multiplySelf(
-      Matrix4.rotationMatrix(this.rotation.x, this.rotation.y, this.rotation.z)
+      Matrix4.rotationXMatrix(this.rotation.x)
+    );
+    this.matrix.multiplySelf(
+      Matrix4.rotationYMatrix(this.rotation.y)
+    );
+    this.matrix.multiplySelf(
+      Matrix4.rotationZMatrix(this.rotation.z)
     );
     this.matrix.multiplySelf(
       Matrix4.scaleMatrix(this.scale.x, this.scale.y, this.scale.z)

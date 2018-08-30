@@ -54,32 +54,6 @@ export default class Matrix4 {
     return rot;
   }
 
-  static rotationMatrix(ry, rx, rz) {
-    let sx, sy, sz;
-    let cx, cy, cz;
-
-    sx = Math.sin(rx);
-    sy = Math.sin(ry);
-    sz = Math.sin(rz);
-    cx = Math.cos(rx);
-    cy = Math.cos(ry);
-    cz = Math.cos(rz);
-
-    let rot = new Matrix4();
-
-    rot.n11 = cx * cz - sx * sy * sz;
-    rot.n12 = -cy * sz;
-    rot.n13 = sx * cz + cx * sy * sz;
-    rot.n21 = cx * sz + sx * sy * cz;
-    rot.n22 = cy * cz;
-    rot.n23 = sx * sz - cx * sy * cz;
-    rot.n31 = -sx * cy;
-    rot.n32 = sy;
-    rot.n33 = cx * cy;
-
-    return rot;
-  }
-
   identity() {
     this.n11 = 1;
     this.n12 = 0;
@@ -115,11 +89,11 @@ export default class Matrix4 {
     this.n11 = this.x.x;
     this.n12 = this.x.y;
     this.n13 = this.x.z;
-    this.n14 = this.x.dot(eye);
+    this.n14 = -this.x.dot(eye);
     this.n21 = this.y.x;
     this.n22 = this.y.y;
     this.n23 = this.y.z;
-    this.n24 = this.y.dot(eye);
+    this.n24 = -this.y.dot(eye);
     this.n31 = this.z.x;
     this.n32 = this.z.y;
     this.n33 = this.z.z;

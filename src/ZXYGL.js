@@ -28,6 +28,8 @@ import Object3D from "./objects/Object3D";
 import Mesh from "./objects/Mesh";
 import Particle from "./objects/Particle";
 import Plane from "./objects/primitives/Plane";
+import Cube from "./objects/primitives/Cube";
+
 
 window.ZXYGL = {
   // core
@@ -39,6 +41,7 @@ window.ZXYGL = {
   Vector2: Vector2,
   Vector3: Vector3,
   Vertex: Vertex,
+  Color: Color,
 
   // scenes
   Scene: Scene,
@@ -57,5 +60,5 @@ window.ZXYGL = {
   Mesh: Mesh,
   Particle: Particle,
   Plane: Plane,
-  Color: Color
+  Cube: Cube
 };

@@ -12,6 +12,8 @@ export default class Camera extends Vector3 {
     this.roll = 0;
 
     this.matrix = new Matrix4();
+
+    this.updateMatrix();
   }
 
   updateMatrix() {
