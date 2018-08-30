@@ -3,6 +3,7 @@ import Mesh from "../objects/Mesh";
 import Particle from "../objects/Particle";
 import Face3 from "../core/Face3";
 import Face4 from "../core/Face4";
+import Vertex from "../core/Vertex";
 
 export default class Renderer {
   constructor() {
@@ -49,10 +50,10 @@ export default class Renderer {
         // vertices
 
         object.geometry.vertices.map((vertex, j) => {
-          vertex.scene.copy(vertex);
-          this.matrix.transform(vertex.scene);
+          vertex.screen.copy(vertex);
+          this.matrix.transform(vertex.screen);
 
-          vertex.scene.z = focuszoom / (camera.focus + vertex.screen.z);
+          vertex.screen.z = focuszoom / (camera.focus + vertex.screen.z);
 
           vertex.visible = vertex.screen.z > 0;
 
@@ -112,7 +113,7 @@ export default class Renderer {
                       (face.d.screen.x - face.c.screen.x) >
                     0))
             ) {
-              face.screen.z = (face.a.scene.z + face.b.scene.z + face.c.scene.z + face.d.scene.z) * 0.25;
+              face.screen.z = (face.a.screen.z + face.b.screen.z + face.c.screen.z + face.d.screen.z) * 0.25;
 
               if (this.face4Pool[face4count] == null)
                 this.face4Pool[face4count] = new Face4(

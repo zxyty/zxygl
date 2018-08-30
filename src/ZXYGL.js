@@ -22,6 +22,7 @@ import Camera from "./cameras/Camera";
 
 // materials
 import ColorMaterial from "./materials/ColorMaterial";
+import FaceColorMaterial from "./materials/FaceColorMaterial";
 
 // objects
 import Object3D from "./objects/Object3D";
@@ -54,6 +55,7 @@ window.ZXYGL = {
 
   // materials
   ColorMaterial: ColorMaterial,
+  FaceColorMaterial: FaceColorMaterial,
 
   // objects
   Object3D: Object3D,
