@@ -6,11 +6,8 @@ export default class SVGRenderer extends Renderer {
   constructor() {
     super();
 
-    this.defs = null;
-
-    this.svgImagePool = null;
-    this.svgPatternPool = null;
     this.svgPathPool = null;
+    this.svgCirclePool = null;
 
     this.viewport = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -19,33 +16,7 @@ export default class SVGRenderer extends Renderer {
     this.viewport.style.position = "absolute";
 
     this.svgPathPool = new Array();
-    this.svgImagePool = new Array();
-
-    this.defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-
-    var texture = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "pattern"
-    );
-    texture.setAttribute("id", "texture");
-    texture.setAttribute("patternUnits", "userSpaceOnUse");
-    texture.setAttribute("width", 552);
-    texture.setAttribute("height", 552);
-
-    var bitmap = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "image"
-    );
-    bitmap.setAttribute("width", 552);
-    bitmap.setAttribute("height", 552);
-    bitmap.setAttributeNS(
-      "http://www.w3.org/1999/xlink",
-      "href",
-      "assets/uvmap.jpg"
-    );
-    texture.appendChild(bitmap);
-
-    this.svgImagePool.push(texture);
+    this.svgCirclePool = new Array();
   }
 
   setSize(width, height) {
@@ -64,27 +35,14 @@ export default class SVGRenderer extends Renderer {
       this.viewport.removeChild(this.viewport.childNodes[0]);
     }
 
-    this.viewport.appendChild(this.defs);
-    this.defs.appendChild(this.svgImagePool[0]);
+    let pathCount = 0,
+      circleCount = 0,
+      svgNode;
 
     this.renderList.map((element, j) => {
-      if (this.svgPathPool[j] == null) {
-        this.svgPathPool[j] = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path"
-        );
-        this.svgPathPool[j].setAttribute("shape-rendering", "crispEdges"); //optimizeSpeed
-      }
-
-      // element.setAttribute('style', 'fill:url(#texture)');
-
-      this.svgPathPool[j].setAttribute(
-        "style",
-        "fill: " + element.material.colorString
-      ); //fill-opacity:' + 0.5); // + ';stroke:' + element.color + ';stroke-width:10;stroke-opacity:0.5;'); //stroke-miterlimit:40;stroke-dasharray:5');
-
       if (element instanceof Face3) {
-        this.svgPathPool[j].setAttribute(
+        svgNode = this.getPathNode(pathCount++);
+        svgNode.setAttribute(
           "d",
           "M " +
             element.a.screen.x +
@@ -101,7 +59,8 @@ export default class SVGRenderer extends Renderer {
             "z"
         );
       } else if (element instanceof Face4) {
-        this.svgPathPool[j].setAttribute(
+        svgNode = this.getPathNode(pathCount++);
+        svgNode.setAttribute(
           "d",
           "M " +
             element.a.screen.x +
@@ -121,9 +80,61 @@ export default class SVGRenderer extends Renderer {
             element.d.screen.y +
             "z"
         );
+      } else if (element instanceof Particle) {
+        svgNode = this.getCircleNode(circleCount++);
+        svgNode.setAttribute("cx", element.screen.x);
+        svgNode.setAttribute("cy", element.screen.y);
+        svgNode.setAttribute("r", element.size * element.screen.z);
       }
 
-      this.viewport.appendChild(this.svgPathPool[j]);
+      if (element.material instanceof ColorMaterial) {
+        svgNode.setAttribute(
+          "style",
+          "fill: rgb(" +
+            element.material.color.r +
+            "," +
+            element.material.color.g +
+            "," +
+            element.material.color.b +
+            ")"
+        );
+      } else if (element.material instanceof FaceColorMaterial) {
+        svgNode.setAttribute(
+          "style",
+          "fill: rgb(" +
+            element.color.r +
+            "," +
+            element.color.g +
+            "," +
+            element.color.b +
+            ")"
+        );
+      }
+      this.viewport.appendChild(svgNode);
     });
+  }
+
+  getPathNode(id) {
+    if (this.svgPathPool[id] == null) {
+      this.svgPathPool[id] = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      return this.svgPathPool[id];
+    }
+
+    return this.svgPathPool[id];
+  }
+
+  getCircleNode(id) {
+    if (this.svgCirclePool[id] == null) {
+      this.svgCirclePool[id] = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+      this.svgCirclePool[id].setAttribute("fill", "red");
+      return this.svgCirclePool[id];
+    }
+    return this.svgCirclePool[id];
   }
 }
