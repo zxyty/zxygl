@@ -1,9 +1,16 @@
 import Object3D from "./Object3D";
+import { tMaterial } from "../type";
+import Geometry from "../core/Geometry";
+
 export default class Mesh extends Object3D {
-  constructor(geometry, material) {
-    super();
+  doubleSided: Boolean
+
+  constructor(geometry: Geometry, material: tMaterial) {
+    super(material);
 
     this.geometry = geometry;
-    this.material = material;
+	
+	  this.doubleSided = false;
   }
+  
 }
