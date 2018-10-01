@@ -31,6 +31,7 @@ import FaceColorStrokeMaterial from "./materials/FaceColorStrokeMaterial";
 import Object3D from "./objects/Object3D";
 import Mesh from "./objects/Mesh";
 import Particle from "./objects/Particle";
+import Line from "./objects/Line";
 
 // objects primitives
 import Plane from "./objects/primitives/Plane";
@@ -70,6 +71,7 @@ window.ZXYGL = {
   Object3D: Object3D,
   Mesh: Mesh,
   Particle: Particle,
+  Line: Line,
 
   // objects primitives
   Plane: Plane,
