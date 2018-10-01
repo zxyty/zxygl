@@ -4,7 +4,7 @@ import Vector3 from "./Vector3";
 import Face3 from "./Face3";
 
 export default class Geometry {
-  vertices: Vector3[]
+  vertices: Vertex[]
   faces: Face4[] | Face3[]
 
   constructor() {
@@ -12,7 +12,7 @@ export default class Geometry {
     this.faces = new Array();
   }
   v(x, y, z) {
-    this.vertices.push(new Vertex(x, y, z));
+    this.vertices.push(new Vertex(new Vector3(x, y, z)));
   }
   f4(a, b, c, d) {
     this.faces.push(new Face4(a, b, c, d));

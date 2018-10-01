@@ -124,7 +124,7 @@ export default class Matrix4 {
     this.n34 = -this.z.dot(eye);
   }
 
-  transform(v) {
+  transform(v) {  // 乘以一个4维向量  得到一个向量
     let vx = v.x,
       vy = v.y,
       vz = v.z,

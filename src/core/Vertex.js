@@ -1,6 +1,8 @@
 import Vector3 from './Vector3';
 
 export default class Vertex {
+    visible: Boolean
+    
     constructor(position: Vector3, normal: Vector3) {
         this.position = position || new Vector3();
         this.normal = normal || new Vector3();

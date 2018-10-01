@@ -1,7 +1,13 @@
 import Vector3 from "./Vector3";
 import Color from "./Color";
+import Vertex from "./Vertex";
 
 export default class Face4 {
+  a: Vertex
+  b: Vertex
+  c: Vertex
+  d: Vertex
+
   constructor(a, b, c, d, uv, normal, color) {
     // super(
     //   (a.x + b.x + c.x + d.x) / 4,

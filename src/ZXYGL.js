@@ -18,6 +18,11 @@ import Renderer from "./renderers/Renderer";
 import CanvasRenderer from "./renderers/CanvasRenderer";
 import SvgRenderer from "./renderers/SvgRenderer";
 
+// renderer able
+import RenderableFace3 from "./renderers/renderables/RenderableFace3";
+import RenderableFace4 from "./renderers/renderables/RenderableFace4";
+import RenderableParticle from "./renderers/renderables/RenderableParticle";
+
 // cameras
 import Camera from "./cameras/Camera";
 
@@ -54,10 +59,17 @@ window.ZXYGL = {
 
   // scenes
   Scene: Scene,
+
+  // renderer
   Renderer: Renderer,
   CanvasRenderer: CanvasRenderer,
   SvgRenderer: SvgRenderer,
-  
+
+  // renderer able
+  RenderableFace3: RenderableFace3,
+  RenderableFace4: RenderableFace4,
+  RenderableParticle: RenderableParticle,
+
   // cameras
   Camera: Camera,
 
