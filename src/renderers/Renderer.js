@@ -35,7 +35,6 @@ export default class Renderer {
   }
 
   render(scene, camera) {
-    let vertex, face, object;
     let face3count = 0,
       face4count = 0;
 

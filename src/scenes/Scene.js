@@ -6,6 +6,7 @@ export default class Scene {
   add(object) {
     this.objects.push(object);
   }
+  
   remove(object) {
     for (let i = 0; i < this.objects.length; i++) {
       const element = this.objects[i];
@@ -14,6 +15,7 @@ export default class Scene {
       }
     }
   }
+
   toString() {
     return "Scene ( " + this.objects + " )";
   }
