@@ -22,13 +22,15 @@ import SvgRenderer from "./renderers/SvgRenderer";
 import Camera from "./cameras/Camera";
 
 // materials
-import ColorMaterial from "./materials/ColorMaterial";
+import ColorFillMaterial from "./materials/ColorFillMaterial";
 import FaceColorMaterial from "./materials/FaceColorMaterial";
 
 // objects
 import Object3D from "./objects/Object3D";
 import Mesh from "./objects/Mesh";
 import Particle from "./objects/Particle";
+
+// objects primitives
 import Plane from "./objects/primitives/Plane";
 import Cube from "./objects/primitives/Cube";
 import Cylinder from "./objects/primitives/Cylinder";
@@ -36,6 +38,7 @@ import Cylinder from "./objects/primitives/Cylinder";
 
 window.ZXYGL = {
   // core
+  Color: Color,
   Face3: Face3,
   Face4: Face4,
   Geometry: Geometry,
@@ -45,7 +48,6 @@ window.ZXYGL = {
   Vector3: Vector3,
   Vector4: Vector4,
   Vertex: Vertex,
-  Color: Color,
 
   // scenes
   Scene: Scene,
@@ -57,13 +59,16 @@ window.ZXYGL = {
   Camera: Camera,
 
   // materials
-  ColorMaterial: ColorMaterial,
+  ColorFillMaterial: ColorFillMaterial,
   FaceColorMaterial: FaceColorMaterial,
+
 
   // objects
   Object3D: Object3D,
   Mesh: Mesh,
   Particle: Particle,
+
+  // objects primitives
   Plane: Plane,
   Cube: Cube,
   Cylinder: Cylinder
