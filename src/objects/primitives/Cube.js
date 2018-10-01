@@ -10,35 +10,37 @@ export default class Cube extends Geometry {
     let heightHalf = height / 2;
     let depthHalf = depth / 2;
 
-    this.v(widthHalf, heightHalf, -depthHalf);
+    // v 代表点 也就是向量
+    this.v(widthHalf, heightHalf, -depthHalf);      
     this.v(widthHalf, -heightHalf, -depthHalf);
     this.v(-widthHalf, -heightHalf, -depthHalf);
     this.v(-widthHalf, heightHalf, -depthHalf);
 
-    this.v(widthHalf, heightHalf, depthHalf);
+    this.v(widthHalf, heightHalf, depthHalf); 
     this.v(widthHalf, -heightHalf, depthHalf);
     this.v(-widthHalf, -heightHalf, depthHalf);
     this.v(-widthHalf, heightHalf, depthHalf);
 
-    this.f4(0, 1, 2, 3);
-    this.f4(4, 7, 6, 5);
-    this.f4(0, 4, 5, 1);
-    this.f4(1, 5, 6, 2);
-    this.f4(2, 6, 7, 3);
-    this.f4(4, 0, 3, 7);
+    // f 代表面
+    this.f4(0, 1, 2, 3);                    // 后
+    this.f4(4, 7, 6, 5);                    // 前
+    this.f4(0, 4, 5, 1);                    // 右
+    this.f4(1, 5, 6, 2);                    // 下
+    this.f4(2, 6, 7, 3);                    // 左
+    this.f4(4, 0, 3, 7);                    // 上
 
   }
 
-  v(x, y, z) {
-    this.vertices.push(new Vertex(x, y, z));
-  }
+  // v(x, y, z) {
+  //   this.vertices.push(new Vertex(x, y, z));
+  // }
 
-  f4(a, b, c, d) {
-      this.faces.push(new Face4(
-          this.vertices[a],
-          this.vertices[b],
-          this.vertices[c],
-          this.vertices[d]
-      ))
-  }
+  // f4(a, b, c, d) {
+  //     this.faces.push(new Face4(
+  //         this.vertices[a],
+  //         this.vertices[b],
+  //         this.vertices[c],
+  //         this.vertices[d]
+  //     ))
+  // }
 }

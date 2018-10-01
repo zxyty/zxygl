@@ -16,18 +16,18 @@ export default class Plane extends Geometry {
     this.f4(0, 1, 2, 3);
   }
 
-  v(x, y, z) {
-    this.vertices.push(new Vertex(x, y, z));
-  }
+  // v(x, y, z) {
+  //   this.vertices.push(new Vertex(x, y, z));
+  // }
 
-  f4(a, b, c, d) {
-    this.faces.push(
-      new Face4(
-        this.vertices[a],
-        this.vertices[b],
-        this.vertices[c],
-        this.vertices[d]
-      )
-    );
-  }
+  // f4(a, b, c, d) {
+  //   this.faces.push(
+  //     new Face4(
+  //       this.vertices[a],
+  //       this.vertices[b],
+  //       this.vertices[c],
+  //       this.vertices[d]
+  //     )
+  //   );
+  // }
 }

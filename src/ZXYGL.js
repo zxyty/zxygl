@@ -30,6 +30,7 @@ import Mesh from "./objects/Mesh";
 import Particle from "./objects/Particle";
 import Plane from "./objects/primitives/Plane";
 import Cube from "./objects/primitives/Cube";
+import Cylinder from "./objects/primitives/Cylinder";
 
 
 window.ZXYGL = {
@@ -62,5 +63,6 @@ window.ZXYGL = {
   Mesh: Mesh,
   Particle: Particle,
   Plane: Plane,
-  Cube: Cube
+  Cube: Cube,
+  Cylinder: Cylinder
 };

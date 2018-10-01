@@ -1,0 +1,3767 @@
+diff --git a/README.md b/README.md
+index 3159b1b3a..7433cf0ca 100644
+--- a/README.md
++++ b/README.md
+@@ -3,6 +3,8 @@ three.js
+ 
+ #### Javascript 3D Engine ####
+ 
++[![Flattr this](http://api.flattr.com/button/button-compact-static-100x17.png)](http://flattr.com/thing/287/three-js)
++
+ Currently the engine only supports particles and triangles/quads with flat colors. The aim is to keep the code as simple and modular as possible.
+ 
+ At the moment the engine can render using &lt;canvas&gt; and &lt;svg&gt;. WebGL rendering would come at a later stage but feel free to fork the project and have a go.
+@@ -35,38 +37,83 @@ This code creates a camera, then creates a scene object, adds a bunch of random
+ 		init();
+ 		setInterval(loop, 1000 / 60);
+ 
+-		function init()
+-		{
+-			camera = new Camera(0, 0, 1000);
++		function init() {
++		
++			camera = new THREE.Camera(0, 0, 1000);
+ 
+-			scene = new Scene();
++			scene = new THREE.Scene();
+ 	
+-			renderer = new CanvasRenderer();
++			renderer = new THREE.CanvasRenderer();
+ 			renderer.setSize(window.innerWidth, window.innerHeight);
+ 
+-			for (var i = 0; i < 1000; i++)
+-			{
+-				var particle = new Particle( new ColorMaterial(Math.random() * 0x808008 + 0x808080, 1) );
++			for (var i = 0; i < 1000; i++) {
++			
++				var particle = new THREE.Particle( new THREE.ColorFillMaterial(Math.random() * 0x808008 + 0x808080, 1) );
+ 				particle.size = Math.random() * 10 + 5;
+ 				particle.position.x = Math.random() * 2000 - 1000;
+ 				particle.position.y = Math.random() * 2000 - 1000;
+ 				particle.position.z = Math.random() * 2000 - 1000;
+ 				particle.updateMatrix();
+ 				scene.add( particle );
++				
+ 			}
+ 
+ 			document.body.appendChild(renderer.viewport);
++			
+ 		}
+ 
+-		function loop()
+-		{
++		function loop() {
++		
+ 			renderer.render(scene, camera);
++			
+ 		}
+ 
+ 	</script>
++
++If you are interested on messing with the actual library, instead of importing the three.js compressed file, you can include the original files in this order:
++
++	<script type="text/javascript" src="js/three/Three.js"></script>
++	<script type="text/javascript" src="js/three/core/Color.js"></script>
++	<script type="text/javascript" src="js/three/core/Vector2.js"></script>
++	<script type="text/javascript" src="js/three/core/Vector3.js"></script>
++	<script type="text/javascript" src="js/three/core/Vector4.js"></script>		
++	<script type="text/javascript" src="js/three/core/Matrix4.js"></script>
++	<script type="text/javascript" src="js/three/core/Vertex.js"></script>
++	<script type="text/javascript" src="js/three/core/Face3.js"></script>
++	<script type="text/javascript" src="js/three/core/Face4.js"></script>
++	<script type="text/javascript" src="js/three/core/Geometry.js"></script>
++	<script type="text/javascript" src="js/three/cameras/Camera.js"></script>
++	<script type="text/javascript" src="js/three/objects/Object3D.js"></script>
++	<script type="text/javascript" src="js/three/objects/Mesh.js"></script>
++	<script type="text/javascript" src="js/three/objects/Particle.js"></script>
++	<script type="text/javascript" src="js/three/materials/ColorFillMaterial.js"></script>
++	<script type="text/javascript" src="js/three/materials/ColorStrokeMaterial.js"></script>
++	<script type="text/javascript" src="js/three/materials/FaceColorFillMaterial.js"></script>
++	<script type="text/javascript" src="js/three/materials/FaceColorStrokeMaterial.js"></script>
++	<script type="text/javascript" src="js/three/scenes/Scene.js"></script>
++	<script type="text/javascript" src="js/three/renderers/Renderer.js"></script>
++	<script type="text/javascript" src="js/three/renderers/CanvasRenderer.js"></script>
++	<script type="text/javascript" src="js/three/renderers/SVGRenderer.js"></script>
++	<script type="text/javascript" src="js/three/renderers/renderables/RenderableFace3.js"></script>
++	<script type="text/javascript" src="js/three/renderers/renderables/RenderableFace4.js"></script>
++	<script type="text/javascript" src="js/three/renderers/renderables/RenderableParticle.js"></script>
++
+ 	
+ ### Change Log ###
+ 
++2010 05 16 - **r5** (19.026 kb)
++
++* Removed Class.js dependency
++* Added THREE namespace
++* Camera.x -> Camera.position.x
++* Camera.target.x -> Camera.target.position.x
++* ColorMaterial -> ColorFillMaterial
++* FaceColorMaterial -> FaceColorFillMaterial
++* Materials are now multipass (use array)
++* Added ColorStrokeMaterial and FaceColorStrokeMaterial
++* geometry.faces.a are now indexes instead of links 
++
++
+ 2010 04 26 - **r4** (16.274 kb)
+ 
+ * SVGRenderer Particle rendering
+diff --git a/build/three.js b/build/three.js
+index d8504182b..a1860570f 100644
+--- a/build/three.js
++++ b/build/three.js
+@@ -1,2 +1,2 @@
+-// three.js r4 - http://github.com/mrdoob/three.js
+-(function(){var a=false,b=/xyz/.test(function(){xyz})?/\b_super\b/:/.*/;this.Class=function(){};Class.extend=function(g){var f=this.prototype;a=true;var e=new this();a=false;for(var d in g){e[d]=typeof g[d]=="function"&&typeof f[d]=="function"&&b.test(g[d])?(function(h,i){return function(){var l=this._super;this._super=f[h];var k=i.apply(this,arguments);this._super=l;return k}})(d,g[d]):g[d]}function c(){if(!a&&this.init){this.init.apply(this,arguments)}}c.prototype=e;c.constructor=c;c.extend=arguments.callee;return c}})();var Color=Class.extend({r:null,g:null,b:null,a:null,hex:null,styleString:null,init:function(a){this.setHex(a?a:4278190080)},setHex:function(a){this.hex=a;this.updateRGBA();this.updateStyleString()},setRGBA:function(f,e,c,d){this.r=f;this.g=e;this.b=c;this.a=d;this.updateHex();this.updateStyleString()},updateHex:function(){this.hex=this.a<<24|this.r<<16|this.g<<8|this.b},updateRGBA:function(){this.r=this.hex>>16&255;this.g=this.hex>>8&255;this.b=this.hex&255;this.a=this.hex>>24&255},updateStyleString:function(){this.styleString="rgba("+this.r+","+this.g+","+this.b+","+(this.a/255)+")"},toString:function(){return"Color ( r: "+this.r+", g: "+this.g+", b: "+this.b+", a: "+this.a+", hex: "+this.hex+", style: "+this.styleString+" )"}});var Vector3=Class.extend({x:null,y:null,z:null,dx:null,dy:null,dz:null,tx:null,ty:null,tz:null,init:function(a,c,b){this.x=a?a:0;this.y=c?c:0;this.z=b?b:0},copy:function(a){this.x=a.x;this.y=a.y;this.z=a.z},addSelf:function(a){this.x+=a.x;this.y+=a.y;this.z+=a.z},add:function(b,a){this.x=b.x+a.x;this.y=b.y+a.y;this.z=b.z+a.z},subSelf:function(a){this.x-=a.x;this.y-=a.y;this.z-=a.z},sub:function(b,a){this.x=b.x-a.x;this.y=b.y-a.y;this.z=b.z-a.z},cross:function(a){this.tx=this.x;this.ty=this.y;this.tz=this.z;this.x=this.ty*a.z-this.tz*a.y;this.y=this.tz*a.x-this.tx*a.z;this.z=this.tx*a.y-this.ty*a.x},multiply:function(a){this.x*=a;this.y*=a;this.z*=a},distanceTo:function(a){this.dx=this.x-a.x;this.dy=this.y-a.y;this.dz=this.z-a.z;return Math.sqrt(this.dx*this.dx+this.dy*this.dy+this.dz*this.dz)},distanceToSquared:function(a){this.dx=this.x-a.x;this.dy=this.y-a.y;this.dz=this.z-a.z;return this.dx*this.dx+this.dy*this.dy+this.dz*this.dz},length:function(){return Math.sqrt(this.x*this.x+this.y*this.y+this.z*this.z)},lengthSq:function(){return this.x*this.x+this.y*this.y+this.z*this.z},negate:function(){this.x=-this.x;this.y=-this.y;this.z=-this.z},normalize:function(){if(this.length()>0){this.ool=1/this.length()}else{this.ool=0}this.x*=this.ool;this.y*=this.ool;this.z*=this.ool;return this},dot:function(a){return this.x*a.x+this.y*a.y+this.z*a.z},clone:function(){return new Vector3(this.x,this.y,this.z)},toString:function(){return"Vector3 ("+this.x+", "+this.y+", "+this.z+")"}});Vector3.add=function(d,c){return new Vector3(d.x+c.x,d.y+c.y,d.z+c.z)};Vector3.sub=function(d,c){return new Vector3(d.x-c.x,d.y-c.y,d.z-c.z)};Vector3.multiply=function(b,c){return new Vector3(b.x*c,b.y*c,b.z*c)};Vector3.cross=function(d,c){return new Vector3(d.y*c.z-d.z*c.y,d.z*c.x-d.x*c.z,d.x*c.y-d.y*c.x)};Vector3.dot=function(d,c){return d.x*c.x+d.y*c.y+d.z*c.z};var Matrix4=Class.extend({n11:null,n12:null,n13:null,n14:null,n21:null,n22:null,n23:null,n24:null,n31:null,n32:null,n33:null,n34:null,x:null,y:null,z:null,init:function(){this.identity()},identity:function(){this.n11=1;this.n12=0;this.n13=0;this.n14=0;this.n21=0;this.n22=1;this.n23=0;this.n24=0;this.n31=0;this.n32=0;this.n33=1;this.n34=0;this.x=new Vector3(0,0,0);this.y=new Vector3(0,0,0);this.z=new Vector3(0,0,0)},lookAt:function(c,b,a){this.z.sub(b,c);this.z.normalize();this.x.copy(this.z);this.x.cross(a);this.x.normalize();this.y.copy(this.x);this.y.cross(this.z);this.y.normalize();this.y.negate();this.n11=this.x.x;this.n12=this.x.y;this.n13=this.x.z;this.n14=-this.x.dot(c);this.n21=this.y.x;this.n22=this.y.y;this.n23=this.y.z;this.n24=-this.y.dot(c);this.n31=this.z.x;this.n32=this.z.y;this.n33=this.z.z;this.n34=-this.z.dot(c)},transform:function(a){var d=a.x,c=a.y,b=a.z;a.x=this.n11*d+this.n12*c+this.n13*b+this.n14;a.y=this.n21*d+this.n22*c+this.n23*b+this.n24;a.z=this.n31*d+this.n32*c+this.n33*b+this.n34},multiply:function(d,c){this.n11=d.n11*c.n11+d.n12*c.n21+d.n13*c.n31;this.n12=d.n11*c.n12+d.n12*c.n22+d.n13*c.n32;this.n13=d.n11*c.n13+d.n12*c.n23+d.n13*c.n33;this.n14=d.n11*c.n14+d.n12*c.n24+d.n13*c.n34+d.n14;this.n21=d.n21*c.n11+d.n22*c.n21+d.n23*c.n31;this.n22=d.n21*c.n12+d.n22*c.n22+d.n23*c.n32;this.n23=d.n21*c.n13+d.n22*c.n23+d.n23*c.n33;this.n24=d.n21*c.n14+d.n22*c.n24+d.n23*c.n34+d.n24;this.n31=d.n31*c.n11+d.n32*c.n21+d.n33*c.n31;this.n32=d.n31*c.n12+d.n32*c.n22+d.n33*c.n32;this.n33=d.n31*c.n13+d.n32*c.n23+d.n33*c.n33;this.n34=d.n31*c.n14+d.n32*c.n24+d.n33*c.n34+d.n34},multiplySelf:function(c){var k=this.n11,i=this.n12,h=this.n13,g=this.n14;var f=this.n21,e=this.n22,d=this.n23,b=this.n24;var a=this.n31,o=this.n32,n=this.n33,l=this.n34;this.n11=k*c.n11+i*c.n21+h*c.n31;this.n12=k*c.n12+i*c.n22+h*c.n32;this.n13=k*c.n13+i*c.n23+h*c.n33;this.n14=k*c.n14+i*c.n24+h*c.n34+g;this.n21=f*c.n11+e*c.n21+d*c.n31;this.n22=f*c.n12+e*c.n22+d*c.n32;this.n23=f*c.n13+e*c.n23+d*c.n33;this.n24=f*c.n14+e*c.n24+d*c.n34+b;this.n31=a*c.n11+o*c.n21+n*c.n31;this.n32=a*c.n12+o*c.n22+n*c.n32;this.n33=a*c.n13+o*c.n23+n*c.n33;this.n34=a*c.n14+o*c.n24+n*c.n34+l},clone:function(){var a=new Matrix4();a.n11=this.n11;a.n12=this.n12;a.n13=this.n13;a.n14=this.n14;a.n21=this.n21;a.n22=this.n22;a.n23=this.n23;a.n24=this.n24;a.n31=this.n31;a.n32=this.n32;a.n33=this.n33;a.n34=this.n34;return a},toString:function(){return"| "+this.n11+" "+this.n12+" "+this.n13+" "+this.n14+" |\n| "+this.n21+" "+this.n22+" "+this.n23+" "+this.n24+" |\n| "+this.n31+" "+this.n32+" "+this.n33+" "+this.n34+" |"}});Matrix4.translationMatrix=function(b,d,c){var a=new Matrix4();a.n14=b;a.n24=d;a.n34=c;return a};Matrix4.scaleMatrix=function(b,d,c){var a=new Matrix4();a.n11=b;a.n22=d;a.n33=c;return a};Matrix4.rotationXMatrix=function(b){var a=new Matrix4();a.n22=a.n33=Math.cos(b);a.n32=Math.sin(b);a.n23=-a.n32;return a};Matrix4.rotationYMatrix=function(b){var a=new Matrix4();a.n11=a.n33=Math.cos(b);a.n13=Math.sin(b);a.n31=-a.n13;return a};Matrix4.rotationZMatrix=function(b){var a=new Matrix4();a.n11=a.n22=Math.cos(b);a.n21=Math.sin(b);a.n12=-a.n21;return a};var Vertex=Vector3.extend({u:null,v:null,screen:null,normal:null,visible:null,init:function(a,c,b){this._super(a,c,b);this.screen=new Vector3()},toString:function(){return"Vertex ( "+this.x+", "+this.y+", "+this.z+" )"}});var Face3=Vector3.extend({a:null,b:null,c:null,screen:null,uv:null,normal:null,color:null,init:function(e,d,i,g,h,f){this._super((e.x+d.x+i.x)/3,(e.y+d.y+i.y)/3,(e.z+d.z+i.z)/3);this.a=e;this.b=d;this.c=i;this.screen=new Vector3();this.uv=g?g:[[0,0],[0,0],[0,0]];this.normal=h?h:new Vector3();this.color=f?f:new Color()},toString:function(){return"Face3 ( "+this.a+", "+this.b+", "+this.c+" )"}});var Face4=Vector3.extend({a:null,b:null,c:null,d:null,normal:null,screen:null,color:null,init:function(f,e,l,k,h,i,g){this._super((f.x+e.x+l.x+k.x)/4,(f.y+e.y+l.y+k.y)/4,(f.z+e.z+l.z+k.z)/4);this.a=f;this.b=e;this.c=l;this.d=k;this.screen=new Vector3();this.color=g?g:new Color()},toString:function(){return"Face4 ( "+this.a+", "+this.b+", "+this.c+", "+this.d+" )"}});var Geometry=Class.extend({vertices:null,faces:null,init:function(){this.vertices=new Array();this.faces=new Array()}});var Camera=Vector3.extend({up:null,target:null,zoom:null,focus:null,roll:null,matrix:null,init:function(a,c,b){this._super(a,c,b);this.up=new Vector3(0,1,0);this.target=new Vector3(0,0,0);this.zoom=3;this.focus=500;this.roll=0;this.matrix=new Matrix4();this.updateMatrix()},updateMatrix:function(){this.matrix.lookAt(this,this.target,this.up)},toString:function(){return"Camera ( "+this.x+", "+this.y+", "+this.z+" )"}});var Object3D=Class.extend({position:null,rotation:null,scale:null,matrix:null,screen:null,init:function(){this.position=new Vector3(0,0,0);this.rotation=new Vector3(0,0,0);this.scale=new Vector3(1,1,1);this.matrix=new Matrix4();this.screen=new Vector3(0,0,0)},updateMatrix:function(){this.matrix.identity();this.matrix.multiplySelf(Matrix4.translationMatrix(this.position.x,this.position.y,this.position.z));this.matrix.multiplySelf(Matrix4.rotationXMatrix(this.rotation.x));this.matrix.multiplySelf(Matrix4.rotationYMatrix(this.rotation.y));this.matrix.multiplySelf(Matrix4.rotationZMatrix(this.rotation.z));this.matrix.multiplySelf(Matrix4.scaleMatrix(this.scale.x,this.scale.y,this.scale.z))}});var Mesh=Object3D.extend({geometry:null,material:null,doubleSide:null,init:function(b,a){this._super();this.geometry=b;this.material=a}});var Particle=Object3D.extend({size:1,material:null,init:function(a){this._super();this.material=a}});var Plane=Geometry.extend({init:function(b,a){this._super();var d=b/2;var c=a/2;this.v(-d,c,0);this.v(d,c,0);this.v(d,-c,0);this.v(-d,-c,0);this.f4(0,1,2,3)},v:function(a,c,b){this.vertices.push(new Vertex(a,c,b))},f4:function(f,e,h,g){this.faces.push(new Face4(this.vertices[f],this.vertices[e],this.vertices[h],this.vertices[g]))}});var Cube=Geometry.extend({init:function(c,a,e){this._super();var f=c/2;var d=a/2;var b=e/2;this.v(f,d,-b);this.v(f,-d,-b);this.v(-f,-d,-b);this.v(-f,d,-b);this.v(f,d,b);this.v(f,-d,b);this.v(-f,-d,b);this.v(-f,d,b);this.f4(0,1,2,3);this.f4(4,7,6,5);this.f4(0,4,5,1);this.f4(1,5,6,2);this.f4(2,6,7,3);this.f4(4,0,3,7)},v:function(a,c,b){this.vertices.push(new Vertex(a,c,b))},f4:function(f,e,h,g){this.faces.push(new Face4(this.vertices[f],this.vertices[e],this.vertices[h],this.vertices[g]))}});var ColorMaterial=Class.extend({color:null,init:function(b,a){this.color=new Color((a?(a*255)<<24:4278190080)|b)}});var FaceColorMaterial=Class.extend({});var Scene=Class.extend({objects:null,init:function(){this.objects=new Array()},add:function(a){this.objects.push(a)},remove:function(a){for(var b=0;b<this.objects.length;b++){if(a==this.objects[b]){alert("yay")}}},toString:function(){return"Scene ( "+this.objects+" )"}});var Renderer=Class.extend({matrix:null,viewport:null,renderList:null,face3Pool:null,face4Pool:null,width:null,height:null,widthHalf:null,heightHalf:null,init:function(){this.matrix=new Matrix4();this.face3Pool=new Array();this.face4Pool=new Array()},setSize:function(b,a){this.width=b;this.height=a;this.widthHalf=this.width/2;this.heightHalf=this.height/2},sort:function(d,c){return d.screen.z-c.screen.z},render:function(e,g){var f,h,b;var l=0,a=0;var k=g.focus*g.zoom;this.renderList=new Array();for(var d=0;d<e.objects.length;d++){b=e.objects[d];if(b instanceof Mesh){this.matrix.multiply(g.matrix,b.matrix);for(var c=0;c<b.geometry.vertices.length;c++){f=b.geometry.vertices[c];f.screen.copy(f);this.matrix.transform(f.screen);f.screen.z=k/(g.focus+f.screen.z);f.visible=f.screen.z>0;f.screen.x*=f.screen.z;f.screen.y*=f.screen.z}for(c=0;c<b.geometry.faces.length;c++){h=b.geometry.faces[c];if(h instanceof Face3){if(h.a.visible&&h.b.visible&&h.c.visible&&(b.doubleSided||(h.c.screen.x-h.a.screen.x)*(h.b.screen.y-h.a.screen.y)-(h.c.screen.y-h.a.screen.y)*(h.b.screen.x-h.a.screen.x)>0)){h.screen.z=(h.a.screen.z+h.b.screen.z+h.c.screen.z)*0.3;if(this.face3Pool[l]==null){this.face3Pool[l]=new Face3(new Vertex(),new Vertex(),new Vertex())}this.face3Pool[l].a.screen.copy(h.a.screen);this.face3Pool[l].b.screen.copy(h.b.screen);this.face3Pool[l].c.screen.copy(h.c.screen);this.face3Pool[l].screen.z=h.screen.z;this.face3Pool[l].color=h.color;this.face3Pool[l].material=b.material;this.renderList.push(this.face3Pool[l]);l++}}else{if(h instanceof Face4){if(h.a.visible&&h.b.visible&&h.c.visible&&(b.doubleSided||((h.d.screen.x-h.a.screen.x)*(h.b.screen.y-h.a.screen.y)-(h.d.screen.y-h.a.screen.y)*(h.b.screen.x-h.a.screen.x)>0||(h.b.screen.x-h.c.screen.x)*(h.d.screen.y-h.c.screen.y)-(h.b.screen.y-h.c.screen.y)*(h.d.screen.x-h.c.screen.x)>0))){h.screen.z=(h.a.screen.z+h.b.screen.z+h.c.screen.z+h.d.screen.z)*0.25;if(this.face4Pool[a]==null){this.face4Pool[a]=new Face4(new Vertex(),new Vertex(),new Vertex(),new Vertex())}this.face4Pool[a].a.screen.copy(h.a.screen);this.face4Pool[a].b.screen.copy(h.b.screen);this.face4Pool[a].c.screen.copy(h.c.screen);this.face4Pool[a].d.screen.copy(h.d.screen);this.face4Pool[a].screen.z=h.screen.z;this.face4Pool[a].color=h.color;this.face4Pool[a].material=b.material;this.renderList.push(this.face4Pool[a]);a++}}}}}else{if(b instanceof Particle){b.screen.copy(b.position);g.matrix.transform(b.screen);b.screen.z=k/(g.focus+b.screen.z);if(b.screen.z<0){continue}b.screen.x*=b.screen.z;b.screen.y*=b.screen.z;this.renderList.push(b)}}}this.renderList.sort(this.sort)}});var CanvasRenderer=Renderer.extend({context:null,init:function(){this._super();this.viewport=document.createElement("canvas");this.viewport.style.position="absolute";this.context=this.viewport.getContext("2d")},setSize:function(b,a){this._super(b,a);this.viewport.width=this.width;this.viewport.height=this.height;this.context.setTransform(1,0,0,1,this.widthHalf,this.heightHalf)},render:function(d,b){this._super(d,b);var a,c=Math.PI*2;this.context.clearRect(-this.widthHalf,-this.heightHalf,this.width,this.height);for(j=0;j<this.renderList.length;j++){a=this.renderList[j];if(a.material instanceof ColorMaterial){this.context.fillStyle=a.material.color.styleString}else{if(a.material instanceof FaceColorMaterial){this.context.fillStyle=a.color.styleString}}if(a instanceof Face3){this.context.beginPath();this.context.moveTo(a.a.screen.x,a.a.screen.y);this.context.lineTo(a.b.screen.x,a.b.screen.y);this.context.lineTo(a.c.screen.x,a.c.screen.y);this.context.fill();this.context.closePath()}else{if(a instanceof Face4){this.context.beginPath();this.context.moveTo(a.a.screen.x,a.a.screen.y);this.context.lineTo(a.b.screen.x,a.b.screen.y);this.context.lineTo(a.c.screen.x,a.c.screen.y);this.context.lineTo(a.d.screen.x,a.d.screen.y);this.context.fill();this.context.closePath()}else{if(a instanceof Particle){this.context.beginPath();this.context.arc(a.screen.x,a.screen.y,a.size*a.screen.z,0,c,true);this.context.fill();this.context.closePath()}}}}}});var SVGRenderer=Renderer.extend({svgPathPool:null,svgCirclePool:null,init:function(){this._super();this.viewport=document.createElementNS("http://www.w3.org/2000/svg","svg");this.viewport.style.position="absolute";this.svgPathPool=new Array();this.svgCirclePool=new Array()},setSize:function(b,a){this.viewport.setAttribute("viewBox",(-b/2)+" "+(-a/2)+" "+b+" "+a);this.viewport.setAttribute("width",b);this.viewport.setAttribute("height",a)},render:function(e,c){this._super(e,c);while(this.viewport.childNodes.length>0){this.viewport.removeChild(this.viewport.childNodes[0])}var b=0,a=0,d;for(j=0;j<this.renderList.length;j++){element=this.renderList[j];if(element instanceof Face3){d=this.getPathNode(b++);d.setAttribute("d","M "+element.a.screen.x+" "+element.a.screen.y+" L "+element.b.screen.x+" "+element.b.screen.y+" L "+element.c.screen.x+","+element.c.screen.y+"z")}else{if(element instanceof Face4){d=this.getPathNode(b++);d.setAttribute("d","M "+element.a.screen.x+" "+element.a.screen.y+" L "+element.b.screen.x+" "+element.b.screen.y+" L "+element.c.screen.x+","+element.c.screen.y+" L "+element.d.screen.x+","+element.d.screen.y+"z")}else{if(element instanceof Particle){d=this.getCircleNode(a++);d.setAttribute("cx",element.screen.x);d.setAttribute("cy",element.screen.y);d.setAttribute("r",element.size*element.screen.z)}}}if(element.material instanceof ColorMaterial){d.setAttribute("style","fill: rgb("+element.material.color.r+","+element.material.color.g+","+element.material.color.b+")")}else{if(element.material instanceof FaceColorMaterial){d.setAttribute("style","fill: rgb("+element.color.r+","+element.color.g+","+element.color.b+")")}}this.viewport.appendChild(d)}},getPathNode:function(a){if(this.svgPathPool[a]==null){this.svgPathPool[a]=document.createElementNS("http://www.w3.org/2000/svg","path");return this.svgPathPool[a]}return this.svgPathPool[a]},getCircleNode:function(a){if(this.svgCirclePool[a]==null){this.svgCirclePool[a]=document.createElementNS("http://www.w3.org/2000/svg","circle");this.svgCirclePool[a].setAttribute("fill","red");return this.svgCirclePool[a]}return this.svgCirclePool[a]}});
+\ No newline at end of file
++// three.js r5 - http://github.com/mrdoob/three.js
++var THREE=THREE||{};THREE.Color=function(c){var f,e,a,b,d;this.styleString;this.setHex=function(g){d=g;this.updateRGBA();this.updateStyleString()};this.setRGBA=function(k,j,h,i){f=k;e=j;a=h;b=i;this.updateHex();this.updateStyleString()};this.updateHex=function(){d=b<<24|f<<16|e<<8|a};this.updateRGBA=function(){f=d>>16&255;e=d>>8&255;a=d&255;b=d>>24&255};this.updateStyleString=function(){this.styleString="rgba("+f+","+e+","+a+","+(b/255)+")"};this.toString=function(){return"THREE.Color ( r: "+f+", g: "+e+", b: "+a+", a: "+b+", hex: "+d+", style: "+this.styleString+" )"};this.setHex(c)};THREE.Vector2=function(a,b){this.x=a||0;this.y=b||0;this.set=function(c,d){this.x=c;this.y=d};this.copy=function(c){this.x=c.x;this.y=c.y};this.addSelf=function(c){this.x+=c.x;this.y+=c.y};this.add=function(d,c){this.x=d.x+c.x;this.y=d.y+c.y};this.subSelf=function(c){this.x-=c.x;this.y-=c.y};this.sub=function(d,c){this.x=d.x-c.x;this.y=d.y-c.y};this.multiplyScalar=function(c){this.x*=c;this.y*=c};this.unit=function(){this.multiply(1/this.length())};this.expand=function(d,c){this.unit(this.sub(c,d));c.addSelf(this)};this.length=function(){return Math.sqrt(this.x*this.x+this.y*this.y)};this.lengthSq=function(){return this.x*this.x+this.y*this.y};this.negate=function(){this.x=-this.x;this.y=-this.y};this.clone=function(){return new THREE.Vector2(this.x,this.y)};this.toString=function(){return"THREE.Vector2 ("+this.x+", "+this.y+")"}};THREE.Vector3=function(a,c,b){this.x=a||0;this.y=c||0;this.z=b||0;this.set=function(d,f,e){this.x=d;this.y=f;this.z=e};this.copy=function(d){this.x=d.x;this.y=d.y;this.z=d.z};this.add=function(e,d){this.x=e.x+d.x;this.y=e.y+d.y;this.z=e.z+d.z};this.addSelf=function(d){this.x+=d.x;this.y+=d.y;this.z+=d.z};this.addScalar=function(d){this.x+=d;this.y+=d;this.z+=d};this.sub=function(e,d){this.x=e.x-d.x;this.y=e.y-d.y;this.z=e.z-d.z};this.subSelf=function(d){this.x-=d.x;this.y-=d.y;this.z-=d.z};this.crossSelf=function(f){var e=this.x,d=this.y,g=this.z;this.x=d*f.z-g*f.y;this.y=g*f.x-e*f.z;this.z=e*f.y-d*f.x};this.multiplySelf=function(d){this.x*=d.x;this.y*=d.y;this.z*=d.z};this.multiplyScalar=function(d){this.x*=d;this.y*=d;this.z*=d};this.dot=function(d){return this.x*d.x+this.y*d.y+this.z*d.z};this.distanceTo=function(g){var f=this.x-g.x,e=this.y-g.y,d=this.z-g.z;return Math.sqrt(f*f+e*e+d*d)};this.distanceToSquared=function(g){var f=this.x-g.x,e=this.y-g.y,d=this.z-g.z;return f*f+e*e+d*d};this.length=function(){return Math.sqrt(this.x*this.x+this.y*this.y+this.z*this.z)};this.lengthSq=function(){return this.x*this.x+this.y*this.y+this.z*this.z};this.negate=function(){this.x=-this.x;this.y=-this.y;this.z=-this.z};this.normalize=function(){if(this.length()>0){this.multiplyScalar(1/this.length())}else{this.multiplyScalar(0)}};this.isZero=function(){var d=0.0001;return(Math.abs(this.x)<d)&&(Math.abs(this.y)<d)&&(Math.abs(this.z)<d)};this.clone=function(){return new THREE.Vector3(this.x,this.y,this.z)};this.toString=function(){return"THREE.Vector3 ("+this.x+", "+this.y+", "+this.z+")"}};THREE.Vector4=function(a,d,c,b){this.x=a||0;this.y=d||0;this.z=c||0;this.w=b||1;this.set=function(e,h,g,f){this.x=e;this.y=h;this.z=g;this.w=f};this.copy=function(e){this.x=e.x;this.y=e.y;this.z=e.z;this.w=e.w};this.add=function(f,e){this.x=f.x+e.x;this.y=f.y+e.y;this.z=f.z+e.z;this.w=f.w+e.w};this.addSelf=function(e){this.x+=e.x;this.y+=e.y;this.z+=e.z;this.w+=e.w};this.sub=function(f,e){this.x=f.x-e.x;this.y=f.y-e.y;this.z=f.z-e.z;this.w=f.w-e.w};this.subSelf=function(e){this.x-=e.x;this.y-=e.y;this.z-=e.z;this.w-=e.w};this.clone=function(){return new THREE.Vector4(this.x,this.y,this.z,this.w)};this.toVector3=function(){return new THREE.Vector3(this.x/this.w,this.y/this.w,this.z/this.w)};this.toString=function(){return"THREE.Vector4 ("+this.x+", "+this.y+", "+this.z+", "+this.w+")"}};THREE.Matrix4=function(){var a,c,b;a=new THREE.Vector3();c=new THREE.Vector3();b=new THREE.Vector3();this.n11=1;this.n12=0;this.n13=0;this.n14=0;this.n21=0;this.n22=1;this.n23=0;this.n24=0;this.n31=0;this.n32=0;this.n33=1;this.n34=0;this.n41=0;this.n42=0;this.n43=0;this.n44=1;this.identity=function(){this.n11=1;this.n12=0;this.n13=0;this.n14=0;this.n21=0;this.n22=1;this.n23=0;this.n24=0;this.n31=0;this.n32=0;this.n33=1;this.n34=0;this.n41=0;this.n42=0;this.n43=0;this.n44=1};this.lookAt=function(f,e,d){b.sub(e,f);b.normalize();a.copy(b);a.crossSelf(d);a.normalize();c.copy(a);c.crossSelf(b);c.normalize();c.negate();this.n11=a.x;this.n12=a.y;this.n13=a.z;this.n14=-a.dot(f);this.n21=c.x;this.n22=c.y;this.n23=c.z;this.n24=-c.dot(f);this.n31=b.x;this.n32=b.y;this.n33=b.z;this.n34=-b.dot(f)};this.transform=function(d){var g=d.x,f=d.y,e=d.z,h=(d.w?d.w:1);d.x=this.n11*g+this.n12*f+this.n13*e+this.n14*h;d.y=this.n21*g+this.n22*f+this.n23*e+this.n24*h;d.z=this.n31*g+this.n32*f+this.n33*e+this.n34*h;h=this.n41*g+this.n42*f+this.n43*e+this.n44*h;if(d.w){d.w=h}else{d.x=d.x/h;d.y=d.y/h;d.z=d.z/h}};this.crossVector=function(d){var e=new THREE.Vector4();e.x=this.n11*d.x+this.n12*d.y+this.n13*d.z+this.n14*d.w;e.y=this.n21*d.x+this.n22*d.y+this.n23*d.z+this.n24*d.w;e.z=this.n31*d.x+this.n32*d.y+this.n33*d.z+this.n34*d.w;e.w=(d.w)?this.n41*d.x+this.n42*d.y+this.n43*d.z+this.n44*d.w:1;return e};this.multiply=function(e,d){this.n11=e.n11*d.n11+e.n12*d.n21+e.n13*d.n31+e.n14*d.n41;this.n12=e.n11*d.n12+e.n12*d.n22+e.n13*d.n32+e.n14*d.n42;this.n13=e.n11*d.n13+e.n12*d.n23+e.n13*d.n33+e.n14*d.n43;this.n14=e.n11*d.n14+e.n12*d.n24+e.n13*d.n34+e.n14*d.n44;this.n21=e.n21*d.n11+e.n22*d.n21+e.n23*d.n31+e.n24*d.n41;this.n22=e.n21*d.n12+e.n22*d.n22+e.n23*d.n32+e.n24*d.n42;this.n23=e.n21*d.n13+e.n22*d.n23+e.n23*d.n33+e.n24*d.n34;this.n24=e.n21*d.n14+e.n22*d.n24+e.n23*d.n34+e.n24*d.n44;this.n31=e.n31*d.n11+e.n32*d.n21+e.n33*d.n31+e.n34*d.n41;this.n32=e.n31*d.n12+e.n32*d.n22+e.n33*d.n32+e.n34*d.n42;this.n33=e.n31*d.n13+e.n32*d.n23+e.n33*d.n33+e.n34*d.n43;this.n34=e.n31*d.n14+e.n32*d.n24+e.n33*d.n34+e.n34*d.n44;this.n41=e.n41*d.n11+e.n42*d.n21+e.n43*d.n31+e.n44*d.n41;this.n42=e.n41*d.n12+e.n42*d.n22+e.n43*d.n32+e.n44*d.n42;this.n43=e.n41*d.n13+e.n42*d.n23+e.n43*d.n33+e.n44*d.n43;this.n44=e.n41*d.n14+e.n42*d.n24+e.n43*d.n34+e.n44*d.n44};this.multiplySelf=function(f){var r=this.n11,q=this.n12,o=this.n13,l=this.n14,i=this.n21,h=this.n22,g=this.n23,e=this.n24,d=this.n31,u=this.n32,t=this.n33,s=this.n34,p=this.n41,n=this.n42,k=this.n43,j=this.n44;this.n11=r*f.n11+q*f.n21+o*f.n31+l*f.n41;this.n12=r*f.n12+q*f.n22+o*f.n32+l*f.n42;this.n13=r*f.n13+q*f.n23+o*f.n33+l*f.n43;this.n14=r*f.n14+q*f.n24+o*f.n34+l*f.n44;this.n21=i*f.n11+h*f.n21+g*f.n31+e*f.n41;this.n22=i*f.n12+h*f.n22+g*f.n32+e*f.n42;this.n23=i*f.n13+h*f.n23+g*f.n33+e*f.n43;this.n24=i*f.n14+h*f.n24+g*f.n34+e*f.n44;this.n31=d*f.n11+u*f.n21+t*f.n31+s*f.n41;this.n32=d*f.n12+u*f.n22+t*f.n32+s*f.n42;this.n33=d*f.n13+u*f.n23+t*f.n33+s*f.n43;this.n34=d*f.n14+u*f.n24+t*f.n34+s*f.n44;this.n41=p*f.n11+n*f.n21+k*f.n31+j*f.n41;this.n42=p*f.n12+n*f.n22+k*f.n32+j*f.n42;this.n43=p*f.n13+n*f.n23+k*f.n33+j*f.n43;this.n44=p*f.n14+n*f.n24+k*f.n34+j*f.n44};this.clone=function(){var d=new THREE.Matrix4();d.n11=this.n11;d.n12=this.n12;d.n13=this.n13;d.n14=this.n14;d.n21=this.n21;d.n22=this.n22;d.n23=this.n23;d.n24=this.n24;d.n31=this.n31;d.n32=this.n32;d.n33=this.n33;d.n34=this.n34;d.n41=this.n41;d.n42=this.n42;d.n43=this.n43;d.n44=this.n44;return d};this.toString=function(){return"| "+this.n11+" "+this.n12+" "+this.n13+" "+this.n14+" |\n| "+this.n21+" "+this.n22+" "+this.n23+" "+this.n24+" |\n| "+this.n31+" "+this.n32+" "+this.n33+" "+this.n34+" |\n| "+this.n41+" "+this.n42+" "+this.n43+" "+this.n44+" |"}};THREE.Matrix4.translationMatrix=function(b,d,c){var a=new THREE.Matrix4();a.n14=b;a.n24=d;a.n34=c;return a};THREE.Matrix4.scaleMatrix=function(b,d,c){var a=new THREE.Matrix4();a.n11=b;a.n22=d;a.n33=c;return a};THREE.Matrix4.rotationXMatrix=function(b){var a=new THREE.Matrix4();a.n22=a.n33=Math.cos(b);a.n32=Math.sin(b);a.n23=-a.n32;return a};THREE.Matrix4.rotationYMatrix=function(b){var a=new THREE.Matrix4();a.n11=a.n33=Math.cos(b);a.n13=Math.sin(b);a.n31=-a.n13;return a};THREE.Matrix4.rotationZMatrix=function(b){var a=new THREE.Matrix4();a.n11=a.n22=Math.cos(b);a.n21=Math.sin(b);a.n12=-a.n21;return a};THREE.Matrix4.makeFrustum=function(f,r,e,o,i,h){var g=new THREE.Matrix4(),q=2*i/(r-f),n=2*i/(o-e),p=(r+f)/(r-f),l=(o+e)/(o-e),k=-(h+i)/(h-i),j=-2*h*i/(h-i);g.n11=q;g.n13=p;g.n22=n;g.n23=l;g.n33=k;g.n34=j;g.n43=-1;g.n44=0;return g};THREE.Matrix4.makePerspective=function(d,c,g,b){var a=g*Math.tan(d*0.00872664625972),f=-a,h=f*c,e=a*c;return THREE.Matrix4.makeFrustum(h,e,f,a,g,b)};THREE.Vertex=function(a,b){this.position=a||new THREE.Vector3();this.normal=b||new THREE.Vector3();this.screen=new THREE.Vector3();this.visible=true;this.toString=function(){return"THREE.Vertex ( position: "+this.position+", normal: "+this.normal+" )"}};THREE.Face3=function(e,d,i,g,h,f){this.a=e;this.b=d;this.c=i;this.normal=h||new THREE.Vector3();this.screen=new THREE.Vector3();this.uv=g||[[0,0],[0,0],[0,0]];this.color=f||new THREE.Color();this.toString=function(){return"THREE.Face3 ( "+this.a+", "+this.b+", "+this.c+" )"}};THREE.Face4=function(f,e,k,j,h,i,g){this.a=f;this.b=e;this.c=k;this.d=j;this.normal=i||new THREE.Vector3();this.screen=new THREE.Vector3();this.uv=h||[[0,0],[0,0],[0,0],[0,0]];this.color=g||new THREE.Color();this.toString=function(){return"THREE.Face4 ( "+this.a+", "+this.b+", "+this.c+" "+this.d+" )"}};THREE.Geometry=function(){this.vertices=[];this.faces=[];this.computeNormals=function(){var b,h,e,d,c,a,g,i;for(b=0;b<this.vertices.length;b++){this.vertices[b].normal.set(0,0,0)}for(h=0;h<this.faces.length;h++){e=this.vertices[this.faces[h].a],d=this.vertices[this.faces[h].b],c=this.vertices[this.faces[h].c],a=new THREE.Vector3(),g=new THREE.Vector3(),i=new THREE.Vector3();a.sub(c.position,d.position);g.sub(e.position,d.position);a.cross(g);if(!a.isZero()){a.normalize()}this.faces[h].normal=a;e.normal.addSelf(i);d.normal.addSelf(i);c.normal.addSelf(i);if(this.faces[h] instanceof THREE.Face4){this.vertices[this.faces[h].d].normal.addSelf(i)}}}};THREE.Camera=function(a,c,b){this.position=new THREE.Vector3(a,c,b);this.target={position:new THREE.Vector3(0,0,0)};this.matrix=new THREE.Matrix4();this.projectionMatrix=THREE.Matrix4.makePerspective(45,1,0.001,1000);this.up=new THREE.Vector3(0,1,0);this.roll=0;this.zoom=3;this.focus=500;this.updateMatrix=function(){this.matrix.lookAt(this.position,this.target.position,this.up)};this.toString=function(){return"THREE.Camera ( "+this.position+", "+this.target.position+" )"};this.updateMatrix()};THREE.Object3D=function(a){this.position=new THREE.Vector3(0,0,0);this.rotation=new THREE.Vector3(0,0,0);this.scale=new THREE.Vector3(1,1,1);this.matrix=new THREE.Matrix4();this.screen=new THREE.Vector3(0,0,0);this.material=a instanceof Array?a:[a];this.updateMatrix=function(){this.matrix.identity();this.matrix.multiplySelf(THREE.Matrix4.translationMatrix(this.position.x,this.position.y,this.position.z));this.matrix.multiplySelf(THREE.Matrix4.rotationXMatrix(this.rotation.x));this.matrix.multiplySelf(THREE.Matrix4.rotationYMatrix(this.rotation.y));this.matrix.multiplySelf(THREE.Matrix4.rotationZMatrix(this.rotation.z));this.matrix.multiplySelf(THREE.Matrix4.scaleMatrix(this.scale.x,this.scale.y,this.scale.z))}};THREE.Line=function(b,a){THREE.Object3D.call(this,a);this.geometry=b};THREE.Line.prototype=new THREE.Object3D();THREE.Line.prototype.constructor=THREE.Line;THREE.Mesh=function(b,a){THREE.Object3D.call(this,a);this.geometry=b;this.doubleSided=false};THREE.Mesh.prototype=new THREE.Object3D();THREE.Mesh.prototype.constructor=THREE.Mesh;THREE.Particle=function(a){THREE.Object3D.call(this,a);this.size=1};THREE.Particle.prototype=new THREE.Object3D();THREE.Particle.prototype.constructor=THREE.Particle;THREE.ColorFillMaterial=function(b,a){this.color=new THREE.Color((a?(a*255)<<24:4278190080)|b);this.toString=function(){return"THREE.ColorFillMaterial ( color: "+this.color+" )"}};THREE.ColorStrokeMaterial=function(c,b,a){this.lineWidth=a||1;this.color=new THREE.Color((b?(b*255)<<24:4278190080)|c);this.toString=function(){return"THREE.ColorStrokeMaterial ( lineWidth: "+this.lineWidth+", color: "+this.color+" )"}};THREE.FaceColorFillMaterial=function(){this.toString=function(){return"THREE.FaceColorFillMaterial ( )"}};THREE.FaceColorStrokeMaterial=function(a){this.lineWidth=a||1;this.toString=function(){return"THREE.FaceColorStrokeMaterial ( lineWidth: "+this.lineWidth+" )"}};THREE.Scene=function(){this.objects=[];this.add=function(a){this.objects.push(a)};this.toString=function(){return"THREE.Scene ( "+this.objects+" )"}};THREE.Renderer=function(){var e=[],c=[],a=[],b=new THREE.Matrix4();this.renderList;function d(g,f){return g.screenZ-f.screenZ}this.project=function(x,v){var s,q,w,n,y,l,k,h,g,p=0,u=0,r=0,t=v.focus,o=v.focus*v.zoom,m=0,f=0;this.renderList=[];for(s=0;s<x.objects.length;s++){y=x.objects[s];if(y instanceof THREE.Mesh){b.multiply(v.matrix,y.matrix);m=y.geometry.vertices.length;for(q=0;q<m;q++){w=y.geometry.vertices[q];w.screen.copy(w.position);b.transform(w.screen);w.screen.z=o/(t+w.screen.z);w.visible=w.screen.z>0;w.screen.x*=w.screen.z;w.screen.y*=w.screen.z}f=y.geometry.faces.length;for(q=0;q<f;q++){n=y.geometry.faces[q];if(n instanceof THREE.Face3){l=y.geometry.vertices[n.a];k=y.geometry.vertices[n.b];h=y.geometry.vertices[n.c];if(l.visible&&k.visible&&h.visible&&(y.doubleSided||(h.screen.x-l.screen.x)*(k.screen.y-l.screen.y)-(h.screen.y-l.screen.y)*(k.screen.x-l.screen.x)>0)){n.screen.z=(l.screen.z+k.screen.z+h.screen.z)*0.3;if(e[p]==null){e[p]=new THREE.RenderableFace3()}e[p].v1.x=l.screen.x;e[p].v1.y=l.screen.y;e[p].v2.x=k.screen.x;e[p].v2.y=k.screen.y;e[p].v3.x=h.screen.x;e[p].v3.y=h.screen.y;e[p].screenZ=n.screen.z;e[p].color=n.color;e[p].material=y.material;this.renderList.push(e[p]);p++}}else{if(n instanceof THREE.Face4){l=y.geometry.vertices[n.a];k=y.geometry.vertices[n.b];h=y.geometry.vertices[n.c];g=y.geometry.vertices[n.d];if(l.visible&&k.visible&&h.visible&&g.visible&&(y.doubleSided||((g.screen.x-l.screen.x)*(k.screen.y-l.screen.y)-(g.screen.y-l.screen.y)*(k.screen.x-l.screen.x)>0||(k.screen.x-h.screen.x)*(g.screen.y-h.screen.y)-(k.screen.y-h.screen.y)*(g.screen.x-h.screen.x)>0))){n.screen.z=(l.screen.z+k.screen.z+h.screen.z+g.screen.z)*0.25;if(c[u]==null){c[u]=new THREE.RenderableFace4()}c[u].v1.x=l.screen.x;c[u].v1.y=l.screen.y;c[u].v2.x=k.screen.x;c[u].v2.y=k.screen.y;c[u].v3.x=h.screen.x;c[u].v3.y=h.screen.y;c[u].v4.x=g.screen.x;c[u].v4.y=g.screen.y;c[u].screenZ=n.screen.z;c[u].color=n.color;c[u].material=y.material;this.renderList.push(c[u]);u++}}}}}else{if(y instanceof THREE.Particle){y.screen.copy(y.position);v.matrix.transform(y.screen);y.screen.z=o/(t+y.screen.z);if(y.screen.z<0){continue}y.screen.x*=y.screen.z;y.screen.y*=y.screen.z;if(a[r]==null){a[r]=new THREE.RenderableParticle()}a[r].x=y.screen.x;a[r].y=y.screen.y;a[r].screenZ=y.screen.z;a[r].size=y.size;a[r].material=y.material;a[r].color=y.color;this.renderList.push(a[r]);r++}}}this.renderList.sort(d)}};THREE.CanvasRenderer=function(){THREE.Renderer.call(this);var a=document.createElement("canvas"),b=a.getContext("2d");this.setSize=function(d,c){a.width=d;a.height=c;b.setTransform(1,0,0,1,d/2,c/2)};this.domElement=a;this.render=function(f,h){var d,c,e,m=Math.PI*2,g,k,l;b.clearRect(-a.width/2,-a.height/2,a.width,a.height);this.project(f,h);g=this.renderList.length;for(d=0;d<g;d++){e=this.renderList[d];l=e.material.length;for(c=0;c<l;c++){k=e.material[c];b.beginPath();if(e instanceof THREE.RenderableFace3){b.moveTo(e.v1.x,e.v1.y);b.lineTo(e.v2.x,e.v2.y);b.lineTo(e.v3.x,e.v3.y);b.lineTo(e.v1.x,e.v1.y)}else{if(e instanceof THREE.RenderableFace4){b.moveTo(e.v1.x,e.v1.y);b.lineTo(e.v2.x,e.v2.y);b.lineTo(e.v3.x,e.v3.y);b.lineTo(e.v4.x,e.v4.y);b.lineTo(e.v1.x,e.v1.y)}else{if(e instanceof THREE.RenderableParticle){b.arc(e.x,e.y,e.size*e.screenZ,0,m,true)}}}if(k instanceof THREE.ColorFillMaterial){b.fillStyle=k.color.styleString;b.fill()}else{if(k instanceof THREE.FaceColorFillMaterial){b.fillStyle=e.color.styleString;b.fill()}else{if(k instanceof THREE.ColorStrokeMaterial){b.lineWidth=k.lineWidth;b.lineJoin="round";b.lineCap="round";b.strokeStyle=k.color.styleString;b.stroke()}else{if(k instanceof THREE.FaceColorStrokeMaterial){b.lineWidth=k.lineWidth;b.lineJoin="round";b.lineCap="round";b.strokeStyle=e.color.styleString;b.stroke()}}}}b.closePath()}}}};THREE.CanvasRenderer.prototype=new THREE.Renderer();THREE.CanvasRenderer.prototype.constructor=THREE.CanvasRenderer;THREE.SVGRenderer=function(){THREE.Renderer.call(this);var a=document.createElementNS("http://www.w3.org/2000/svg","svg"),e=[],b=[];this.setSize=function(g,f){a.setAttribute("viewBox",(-g/2)+" "+(-f/2)+" "+g+" "+f);a.setAttribute("width",g);a.setAttribute("height",f)};this.domElement=a;this.render=function(m,p){var k,h,l,o,q,r,f=0,n=0,g;this.project(m,p);while(a.childNodes.length>0){a.removeChild(a.childNodes[0])}o=this.renderList.length;for(k=0;k<o;k++){l=this.renderList[k];r=l.material.length;for(h=0;h<r;h++){q=l.material[h];if(l instanceof THREE.RenderableFace3){g=c(f++);g.setAttribute("d","M "+l.v1.x+" "+l.v1.y+" L "+l.v2.x+" "+l.v2.y+" L "+l.v3.x+","+l.v3.y+"z")}else{if(l instanceof THREE.RenderableFace4){g=c(f++);g.setAttribute("d","M "+l.v1.x+" "+l.v1.y+" L "+l.v2.x+" "+l.v2.y+" L "+l.v3.x+","+l.v3.y+" L "+l.v4.x+","+l.v4.y+"z")}else{if(l instanceof THREE.RenderableParticle){g=d(n++);g.setAttribute("cx",l.x);g.setAttribute("cy",l.y);g.setAttribute("r",l.size*l.screenZ)}}}if(q instanceof THREE.ColorFillMaterial){g.setAttribute("style","fill: "+q.color.styleString+"; stroke-width:10")}else{if(q instanceof THREE.FaceColorFillMaterial){g.setAttribute("style","fill: "+l.color.styleString+"; stroke-width:10")}else{if(q instanceof THREE.ColorStrokeMaterial){g.setAttribute("style","fill: none; stroke: "+q.color.styleString+"; stroke-width: "+q.lineWidth+"; stroke-linecap: round; stroke-linejoin: round")}else{if(q instanceof THREE.FaceColorStrokeMaterial){g.setAttribute("style","fill: none; stroke: "+l.color.styleString+"; stroke-width: "+q.lineWidth+"; stroke-linecap: round; stroke-linejoin: round")}}}}a.appendChild(g)}}};function c(f){if(e[f]==null){e[f]=document.createElementNS("http://www.w3.org/2000/svg","path");return e[f]}return e[f]}function d(f){if(b[f]==null){b[f]=document.createElementNS("http://www.w3.org/2000/svg","circle");return b[f]}return b[f]}};THREE.SVGRenderer.prototype=new THREE.Renderer();THREE.SVGRenderer.prototype.constructor=THREE.CanvasRenderer;THREE.RenderableFace3=function(){this.v1=new THREE.Vector2();this.v2=new THREE.Vector2();this.v3=new THREE.Vector2();this.screenZ;this.color;this.material};THREE.RenderableFace4=function(){this.v1=new THREE.Vector2();this.v2=new THREE.Vector2();this.v3=new THREE.Vector2();this.v4=new THREE.Vector2();this.screenZ;this.color;this.material};THREE.RenderableParticle=function(){this.x;this.y;this.screenZ;this.color;this.material};
+\ No newline at end of file
+diff --git a/examples/geometry/cube.html b/examples/geometry/cube.html
+index fe8b54d9c..2f1cdd17c 100755
+--- a/examples/geometry/cube.html
++++ b/examples/geometry/cube.html
+@@ -17,6 +17,10 @@
+ 	<body>
+ 
+ 		<script type="text/javascript" src="../../build/three.js"></script>
++		
++		<script type="text/javascript" src="primitives/Cube.js"></script>
++		<script type="text/javascript" src="primitives/Plane.js"></script>
++		
+ 		<script type="text/javascript" src="http://github.com/mrdoob/stats.js/raw/master/build/stats.js"></script>
+ 
+ 		<script type="text/javascript">
+@@ -45,8 +49,8 @@
+ 			init();
+ 			setInterval(loop, 1000/60);
+ 
+-			function init()
+-			{
++			function init() {
++			
+ 				container = document.createElement('div');
+ 				document.body.appendChild(container);
+ 				
+@@ -58,39 +62,43 @@
+ 				info.innerHTML = 'Drag to spin the cube';
+ 				container.appendChild(info);
+ 			
+-				camera = new Camera(0, 150, 400);
++				camera = new THREE.Camera(0, 150, 400);
+ 				camera.focus = 300;
+-				camera.target.y = 150;
++				camera.target.position.y = 150;
+ 				camera.updateMatrix();
+ 
+-				scene = new Scene();
++				scene = new THREE.Scene();
+ 
+ 				// Cube
+ 
+ 				geometry = new Cube(200, 200, 200);
+ 
+-				for (var i = 0; i < geometry.faces.length; i++)
++				for (var i = 0; i < geometry.faces.length; i++) {
++				
+ 					geometry.faces[i].color.setRGBA( Math.floor( Math.random() * 128), Math.floor( Math.random() * 128 + 128), Math.floor( Math.random() * 128 + 128), 255 );
++				}
+ 								
+-				cube = new Mesh(geometry, new FaceColorMaterial());
++				cube = new THREE.Mesh(geometry, new THREE.FaceColorFillMaterial());
+ 				cube.position.y = 150;
+ 				cube.updateMatrix();
+ 				scene.add(cube);
+ 				
+ 				// Plane
+ 				
+-				plane = new Mesh(new Plane(200, 200), new ColorMaterial(0xe0e0e0));
++				plane = new THREE.Mesh(new Plane(200, 200), new THREE.ColorFillMaterial(0xe0e0e0));
+ 				plane.rotation.x = 90 * (Math.PI / 180);
+ 				plane.updateMatrix();
+ 				scene.add(plane);
+ 				
+-				renderer = new CanvasRenderer();
++				renderer = new THREE.CanvasRenderer();
+ 				renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+ 
+-				container.appendChild(renderer.viewport);
++				container.appendChild(renderer.domElement);
+ 
+ 				stats = new Stats();
+-				container.appendChild(stats.getDisplayElement());
++				stats.domElement.style.position = 'absolute';
++				stats.domElement.style.top = '0px';
++				container.appendChild(stats.domElement);
+ 				
+ 				document.addEventListener('mousedown', onDocumentMouseDown, false);
+ 				document.addEventListener('touchstart', onDocumentTouchStart, false);
+@@ -99,8 +107,8 @@
+ 
+ 			//
+ 
+-			function onDocumentMouseDown( event )
+-			{
++			function onDocumentMouseDown( event ) {
++			
+ 				event.preventDefault();
+ 				
+ 				document.addEventListener('mousemove', onDocumentMouseMove, false);
+@@ -111,31 +119,31 @@
+ 				targetRotationOnMouseDown = targetRotation;
+ 			}
+ 
+-			function onDocumentMouseMove( event )
+-			{
++			function onDocumentMouseMove( event ) {
++			
+ 				mouseX = event.clientX - windowHalfX;
+ 				
+ 				targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.02;
+ 			}
+ 			
+-			function onDocumentMouseUp( event )
+-			{
++			function onDocumentMouseUp( event ) {
++			
+ 				document.removeEventListener('mousemove', onDocumentMouseMove, false);
+ 				document.removeEventListener('mouseup', onDocumentMouseUp, false);
+ 				document.removeEventListener('mouseout', onDocumentMouseOut, false);
+ 			}
+ 			
+-			function onDocumentMouseOut( event )
+-			{
++			function onDocumentMouseOut( event ) {
++			
+ 				document.removeEventListener('mousemove', onDocumentMouseMove, false);
+ 				document.removeEventListener('mouseup', onDocumentMouseUp, false);
+ 				document.removeEventListener('mouseout', onDocumentMouseOut, false);
+ 			}
+ 			
+-			function onDocumentTouchStart( event )
+-			{
+-				if(event.touches.length == 1)
+-				{
++			function onDocumentTouchStart( event ) {
++			
++				if(event.touches.length == 1) {
++				
+ 					event.preventDefault();
+ 
+ 					mouseXOnMouseDown = event.touches[0].pageX - windowHalfX;
+@@ -143,10 +151,10 @@
+ 				}
+ 			}
+ 
+-			function onDocumentTouchMove( event )
+-			{
+-				if(event.touches.length == 1)
+-				{
++			function onDocumentTouchMove( event ) {
++			
++				if(event.touches.length == 1) {
++				
+ 					event.preventDefault();
+ 					
+ 					mouseX = event.touches[0].pageX - windowHalfX;
+@@ -156,8 +164,8 @@
+ 
+ 			//
+ 
+-			function loop()
+-			{
++			function loop() {
++			
+ 				cube.rotation.y += (targetRotation - cube.rotation.y) * 0.05;
+ 				cube.updateMatrix();
+ 				
+diff --git a/examples/geometry/primitives/Cube.js b/examples/geometry/primitives/Cube.js
+new file mode 100755
+index 000000000..fb8806f77
+--- /dev/null
++++ b/examples/geometry/primitives/Cube.js
+@@ -0,0 +1,42 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++var Cube = function (width, height, depth) {
++
++	THREE.Geometry.call(this);
++	
++	var scope = this,	
++	width_half = width / 2,
++	height_half = height / 2,
++	depth_half = depth / 2;
++	
++	v(  width_half,  height_half, -depth_half );
++	v(  width_half, -height_half, -depth_half );
++	v( -width_half, -height_half, -depth_half );
++	v( -width_half,  height_half, -depth_half );
++	v(  width_half,  height_half,  depth_half );
++	v(  width_half, -height_half,  depth_half );
++	v( -width_half, -height_half,  depth_half );
++	v( -width_half,  height_half,  depth_half );
++	
++	f4( 0, 1, 2, 3 );
++	f4( 4, 7, 6, 5 );
++	f4( 0, 4, 5, 1 );
++	f4( 1, 5, 6, 2 );
++	f4( 2, 6, 7, 3 );
++	f4( 4, 0, 3, 7 );
++	
++	function v(x, y, z) {
++	
++		scope.vertices.push( new THREE.Vertex( new THREE.Vector3( x, y, z ) ) );
++	}
++
++	function f4(a, b, c, d) {
++	
++		scope.faces.push( new THREE.Face4( a, b, c, d ) );
++	}	
++}
++
++Cube.prototype = new THREE.Geometry();
++Cube.prototype.constructor = Cube;
+diff --git a/examples/geometry/primitives/Cylinder.js b/examples/geometry/primitives/Cylinder.js
+new file mode 100644
+index 000000000..4540f9b0b
+--- /dev/null
++++ b/examples/geometry/primitives/Cylinder.js
+@@ -0,0 +1,80 @@
++/**
++ * @author kile / http://kile.stravaganza.org/
++ */
++
++var Cylinder = function (numSegs, topRad, botRad, height, topOffset, botOffset) {
++
++	THREE.Geometry.call(this);
++	
++	var scope = this, i;
++
++	// VERTICES
++
++	// Top circle vertices
++	for (i = 0; i < numSegs; i++) {
++	
++		v( 
++			Math.sin(2 * 3.1415 * i / numSegs)*topRad,
++			Math.cos(2 * 3.1415 * i / numSegs)*topRad,
++			0);
++	}
++
++	// Bottom circle vertices
++	for (i = 0; i < numSegs; i++) {
++	
++		v(  
++			Math.sin(2 * 3.1415 * i / numSegs)*botRad,
++			Math.cos(2 * 3.1415 * i / numSegs)*botRad,
++			height);
++	}
++			
++			
++	// FACES
++	
++	// Body	
++	for (i = 0; i < numSegs; i++) {
++	
++		f4(i, i + numSegs, numSegs + (i + 1) % numSegs, (i + 1) % numSegs, '#ff0000');
++	}
++	
++	// Bottom circle
++	if (botRad != 0) {
++	
++		v(0, 0, -topOffset);
++		
++		for (i = numSegs; i < numSegs + (numSegs / 2); i++) {
++		
++			f4(2 * numSegs,
++			(2 * i - 2 * numSegs) % numSegs,
++			(2 * i - 2 * numSegs + 1) % numSegs,
++			(2 * i - 2 * numSegs + 2) % numSegs);
++		}
++	}
++
++	// Top circle
++	if (topRad != 0) {
++	
++		v(0, 0, height + topOffset);
++		
++		for (i = numSegs + (numSegs / 2); i < 2 * numSegs; i++) {
++		
++			f4(	(2 * i - 2 * numSegs + 2) % numSegs + numSegs,
++				(2 * i - 2 * numSegs + 1) % numSegs + numSegs,
++				(2 * i - 2 * numSegs) % numSegs+numSegs, 
++				2 * numSegs + 1);
++		}
++	}
++	
++	function v(x, y, z) {
++	
++		scope.vertices.push( new THREE.Vertex( new THREE.Vector3( x, y, z ) ) );
++	}
++
++	function f4(a, b, c, d) {
++	
++		scope.faces.push( new THREE.Face4(a, b, c, d) );
++	}	
++}
++
++Cylinder.prototype = new THREE.Geometry();
++Cylinder.prototype.constructor = Cylinder;
+diff --git a/examples/geometry/primitives/Plane.js b/examples/geometry/primitives/Plane.js
+new file mode 100755
+index 000000000..fdcdb117d
+--- /dev/null
++++ b/examples/geometry/primitives/Plane.js
+@@ -0,0 +1,32 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++var Plane = function (width, height) {
++
++	THREE.Geometry.call(this);
++
++	var scope = this,
++	width_half = width / 2,
++	height_half = height / 2;
++		
++	v( -width_half,  height_half, 0 );
++	v(  width_half,  height_half, 0 );
++	v(  width_half, -height_half, 0 );
++	v( -width_half, -height_half, 0 );
++		
++	f4( 0, 1, 2, 3 );
++	
++	function v(x, y, z) {
++	
++		scope.vertices.push( new THREE.Vertex( new THREE.Vector3( x, y, z ) ) );
++	}
++
++	function f4(a, b, c, d) {
++	
++		scope.faces.push( new THREE.Face4(a, b, c, d) );
++	}	
++}
++
++Plane.prototype = new THREE.Geometry();
++Plane.prototype.constructor = Plane;
+diff --git a/examples/particles/floor.html b/examples/particles/floor.html
+index d154f1a48..274803c6d 100644
+--- a/examples/particles/floor.html
++++ b/examples/particles/floor.html
+@@ -5,14 +5,13 @@
+ 		<meta charset="utf-8">
+ 		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+ 		<style type="text/css">
+-			body
+-			{
++			body {
+ 				background-color: #000000;
+ 				margin: 0px;
+ 				overflow: hidden;
+ 			}
+-			a
+-			{
++			
++			a {
+ 				color:#0078ff;
+ 			}
+ 		</style>
+@@ -20,6 +19,7 @@
+ 	<body>
+ 	
+ 		<script type="text/javascript" src="../../build/three.js"></script>
++		
+ 		<script type="text/javascript" src="http://github.com/mrdoob/stats.js/raw/master/build/stats.js"></script>
+ 
+ 		<script type="text/javascript">
+@@ -49,28 +49,28 @@
+ 			init();
+ 			setInterval(loop, 1000 / 60);
+ 
+-			function init()
+-			{
++			function init() {
++			
+ 				container = document.createElement('div');
+ 				document.body.appendChild(container);
+ 			
+-				camera = new Camera(0, 0, 1000);
++				camera = new THREE.Camera(0, 0, 1000);
+ 				camera.focus = 200;
+ 
+-				scene = new Scene();
++				scene = new THREE.Scene();
+ 				
+-				renderer = new CanvasRenderer();
++				renderer = new THREE.CanvasRenderer();
+ 				renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+ 
+ 				particles = new Array();
+ 
+-				var material = new ColorMaterial(0xffffff, 1);
++				var material = new THREE.ColorFillMaterial(0xffffff, 1);
+ 
+-				for (var ix = 0; ix < AMOUNTX; ix++)
+-				{
+-					for(var iy = 0; iy < AMOUNTY; iy++)
+-					{
+-						particle = new Particle( material );
++				for (var ix = 0; ix < AMOUNTX; ix++) {
++				
++					for(var iy = 0; iy < AMOUNTY; iy++) {
++					
++						particle = new THREE.Particle( material );
+ 						particle.position.x = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2);
+ 						particle.position.z = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2);
+ 						particle.updateMatrix();
+@@ -78,10 +78,12 @@
+ 					}
+ 				}
+ 
+-				container.appendChild(renderer.viewport);
++				container.appendChild(renderer.domElement);
+ 
+ 				stats = new Stats();
+-				container.appendChild( stats.getDisplayElement() );
++				stats.domElement.style.position = 'absolute';
++				stats.domElement.style.top = '0px';
++				container.appendChild(stats.domElement);
+ 				
+ 				document.addEventListener('mousemove', onDocumentMouseMove, false);
+ 				document.addEventListener('touchstart', onDocumentTouchStart, false);
+@@ -90,16 +92,16 @@
+ 
+ 			//
+ 
+-			function onDocumentMouseMove(event)
+-			{
++			function onDocumentMouseMove(event) {
++			
+ 				mouseX = event.clientX - windowHalfX;
+ 				mouseY = event.clientY - windowHalfY;
+ 			}
+ 			
+-			function onDocumentTouchStart( event )
+-			{
+-				if(event.touches.length > 1)
+-				{
++			function onDocumentTouchStart( event ) {
++			
++				if(event.touches.length > 1) {
++				
+ 					event.preventDefault();
+ 
+ 					mouseX = event.touches[0].pageX - windowHalfX;
+@@ -107,10 +109,10 @@
+ 				}
+ 			}
+ 
+-			function onDocumentTouchMove( event )
+-			{
+-				if(event.touches.length == 1)
+-				{
++			function onDocumentTouchMove( event ) {
++			
++				if(event.touches.length == 1) {
++				
+ 					event.preventDefault();
+ 					
+ 					mouseX = event.touches[0].pageX - windowHalfX;
+@@ -120,10 +122,10 @@
+ 			
+ 			//
+ 
+-			function loop()
+-			{
+-				camera.x += (mouseX - camera.x) * .05;
+-				camera.y += (-mouseY - camera.y) * .05;
++			function loop() {
++			
++				camera.position.x += (mouseX - camera.position.x) * .05;
++				camera.position.y += (-mouseY - camera.position.y) * .05;
+ 				camera.updateMatrix();
+ 
+ 				renderer.render(scene, camera);
+diff --git a/examples/particles/random.html b/examples/particles/random.html
+index 22efd714b..502eb5577 100644
+--- a/examples/particles/random.html
++++ b/examples/particles/random.html
+@@ -5,20 +5,21 @@
+ 		<meta charset="utf-8">
+ 		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+ 		<style type="text/css">
+-			body
+-			{
++			body {
+ 				background-color: #000000;
+ 				margin: 0px;
+ 				overflow: hidden;
+ 			}
+-			a
+-			{
++			
++			a {
+ 				color:#0078ff;
+ 			}
+ 		</style>
+ 	</head>
+ 	<body>
++	
+ 		<script type="text/javascript" src="../../build/three.js"></script>
++		
+ 		<script type="text/javascript" src="http://github.com/mrdoob/stats.js/raw/master/build/stats.js"></script>
+ 
+ 		<script type="text/javascript">
+@@ -41,37 +42,40 @@
+ 			var windowHalfX = window.innerWidth / 2;
+ 			var windowHalfY = window.innerHeight / 2;
+ 
++
+ 			init();
+ 			setInterval(loop, 1000 / 60);
+ 
+-			function init()
+-			{
++			function init() {
++			
+ 				container = document.createElement('div');
+ 				document.body.appendChild(container);				
+ 			
+-				camera = new Camera(0, 0, 1000);
++				camera = new THREE.Camera(0, 0, 1000);
+ 				camera.focus = 200;
+ 
+-				scene = new Scene();
++				scene = new THREE.Scene();
+ 				
+-				renderer = new CanvasRenderer();
++				renderer = new THREE.CanvasRenderer();
+ 				renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+ 
+-				for (var i = 0; i < 1000; i++)
+-				{
+-					particle = new Particle( new ColorMaterial(Math.random() * 0x808008 + 0x808080, 1) );
++				for (var i = 0; i < 1000; i++) {
++				
++					particle = new THREE.Particle(new THREE.ColorFillMaterial(Math.random() * 0x808008 + 0x808080, 1));
+ 					particle.size = Math.random() * 10 + 5;
+ 					particle.position.x = Math.random() * 2000 - 1000;
+ 					particle.position.y = Math.random() * 2000 - 1000;
+ 					particle.position.z = Math.random() * 2000 - 1000;
+ 					particle.updateMatrix();
+-					scene.add( particle );
++					scene.add(particle);
+ 				}
+ 
+-				container.appendChild(renderer.viewport);
++				container.appendChild(renderer.domElement);
+ 
+ 				stats = new Stats();
+-				container.appendChild( stats.getDisplayElement() );
++				stats.domElement.style.position = 'absolute';
++				stats.domElement.style.top = '0px';
++				container.appendChild(stats.domElement);
+ 				
+ 				document.addEventListener('mousemove', onDocumentMouseMove, false);
+ 				document.addEventListener('touchstart', onDocumentTouchStart, false);
+@@ -80,16 +84,16 @@
+ 
+ 			//
+ 
+-			function onDocumentMouseMove(event)
+-			{
++			function onDocumentMouseMove(event) {
++			
+ 				mouseX = event.clientX - windowHalfX;
+ 				mouseY = event.clientY - windowHalfY;
+ 			}
+ 			
+-			function onDocumentTouchStart( event )
+-			{
+-				if(event.touches.length == 1)
+-				{
++			function onDocumentTouchStart(event) {
++			
++				if(event.touches.length == 1) {
++				
+ 					event.preventDefault();
+ 
+ 					mouseX = event.touches[0].pageX - windowHalfX;
+@@ -97,10 +101,10 @@
+ 				}
+ 			}
+ 
+-			function onDocumentTouchMove( event )
+-			{
+-				if(event.touches.length == 1)
+-				{
++			function onDocumentTouchMove(event) {
++			
++				if(event.touches.length == 1) {
++				
+ 					event.preventDefault();
+ 					
+ 					mouseX = event.touches[0].pageX - windowHalfX;
+@@ -110,10 +114,10 @@
+ 			
+ 			//
+ 
+-			function loop()
+-			{
+-				camera.x += (mouseX - camera.x) * .05;
+-				camera.y += (-mouseY - camera.y) * .05;
++			function loop() {
++			
++				camera.position.x += (mouseX - camera.position.x) * .05;
++				camera.position.y += (-mouseY - camera.position.y) * .05;
+ 				camera.updateMatrix();
+ 
+ 				renderer.render(scene, camera);
+diff --git a/examples/particles/waves.html b/examples/particles/waves.html
+index c425f7095..793fe52de 100644
+--- a/examples/particles/waves.html
++++ b/examples/particles/waves.html
+@@ -19,6 +19,7 @@
+ 	</head>
+ 	<body>
+ 		<script type="text/javascript" src="../../build/three.js"></script>
++		
+ 		<script type="text/javascript" src="http://github.com/mrdoob/stats.js/raw/master/build/stats.js"></script>
+ 
+ 		<script type="text/javascript">
+@@ -49,29 +50,29 @@
+ 			init();
+ 			setInterval(loop, 1000 / 60);
+ 
+-			function init()
+-			{
++			function init() {
++			
+ 				container = document.createElement('div');
+ 				document.body.appendChild(container);				
+ 			
+-				camera = new Camera(0, 0, 1000);
++				camera = new THREE.Camera(0, 0, 1000);
+ 				camera.focus = 200;
+ 
+-				scene = new Scene();
++				scene = new THREE.Scene();
+ 				
+-				renderer = new CanvasRenderer();
++				renderer = new THREE.CanvasRenderer();
+ 				renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+ 
+ 				particles = new Array();
+ 
+ 				var i = 0;
+-				var material = new ColorMaterial(0xffffff, 1);
++				var material = new THREE.ColorFillMaterial(0xffffff, 1);
+ 
+-				for (var ix = 0; ix < AMOUNTX; ix++)
+-				{
+-					for(var iy = 0; iy < AMOUNTY; iy++)
+-					{
+-						particle = particles[i++] = new Particle( material );
++				for (var ix = 0; ix < AMOUNTX; ix++) {
++				
++					for(var iy = 0; iy < AMOUNTY; iy++) {
++					
++						particle = particles[i++] = new THREE.Particle( material );
+ 						particle.size = 1;
+ 						particle.position.x = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2);
+ 						particle.position.z = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2);
+@@ -82,10 +83,12 @@
+ 
+ 				count = 0;
+ 
+-				container.appendChild(renderer.viewport);
++				container.appendChild(renderer.domElement);
+ 
+ 				stats = new Stats();
+-				container.appendChild( stats.getDisplayElement() );
++				stats.domElement.style.position = 'absolute';
++				stats.domElement.style.top = '0px';
++				container.appendChild(stats.domElement);
+ 				
+ 				document.addEventListener('mousemove', onDocumentMouseMove, false);
+ 				document.addEventListener('touchstart', onDocumentTouchStart, false);
+@@ -94,51 +97,55 @@
+ 
+ 			//
+ 
+-			function onDocumentMouseMove(event)
+-			{
++			function onDocumentMouseMove(event) {
++			
+ 				mouseX = event.clientX - windowHalfX;
+ 				mouseY = event.clientY - windowHalfY;
++				
+ 			}
+ 			
+-			function onDocumentTouchStart( event )
+-			{
+-				if(event.touches.length == 1)
+-				{
++			function onDocumentTouchStart(event) {
++			
++				if(event.touches.length == 1) {
++				
+ 					event.preventDefault();
+ 
+ 					mouseX = event.touches[0].pageX - windowHalfX;
+ 					mouseY = event.touches[0].pageY - windowHalfY;
++					
+ 				}
+ 			}
+ 
+-			function onDocumentTouchMove( event )
+-			{
+-				if(event.touches.length == 1)
+-				{
++			function onDocumentTouchMove(event) {
++			
++				if(event.touches.length == 1) {
++				
+ 					event.preventDefault();
+ 					
+ 					mouseX = event.touches[0].pageX - windowHalfX;
+ 					mouseY = event.touches[0].pageY - windowHalfY;
++					
+ 				}
+ 			}
+ 			
+ 			//
+ 
+-			function loop()
+-			{
+-				camera.x += (mouseX - camera.x) * .05;
+-				camera.y += (-mouseY - camera.y) * .05;
++			function loop() {
++			
++				camera.position.x += (mouseX - camera.position.x) * .05;
++				camera.position.y += (-mouseY - camera.position.y) * .05;
+ 				camera.updateMatrix();
+ 
+ 				var i = 0;
+ 
+-				for (var ix = 0; ix < AMOUNTX; ix++)
+-				{
+-					for(var iy = 0; iy < AMOUNTY; iy++)
+-					{
++				for (var ix = 0; ix < AMOUNTX; ix++) {
++				
++					for(var iy = 0; iy < AMOUNTY; iy++) {
++					
+ 						particle = particles[i++];
+ 						particle.size = (Math.sin((ix + count) * .3) + 1) * 2 + (Math.sin((iy + count) * .5) + 1) * 2;
+ 						particle.position.y = (Math.sin((ix + count) * .3) * 50) + (Math.sin((iy + count) * .5) * 50);
++						
+ 					}
+ 				}
+ 
+diff --git a/src/Class.js b/src/Class.js
+deleted file mode 100755
+index ee8de758d..000000000
+--- a/src/Class.js
++++ /dev/null
+@@ -1,61 +0,0 @@
+-// http://ejohn.org/blog/simple-javascript-inheritance/
+-
+-// Inspired by base2 and Prototype
+-(function(){
+-  var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+-  // The base Class implementation (does nothing)
+-  this.Class = function(){};
+-  
+-  // Create a new Class that inherits from this class
+-  Class.extend = function(prop) {
+-    var _super = this.prototype;
+-    
+-    // Instantiate a base class (but only create the instance,
+-    // don't run the init constructor)
+-    initializing = true;
+-    var prototype = new this();
+-    initializing = false;
+-    
+-    // Copy the properties over onto the new prototype
+-    for (var name in prop) {
+-      // Check if we're overwriting an existing function
+-      prototype[name] = typeof prop[name] == "function" && 
+-        typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+-        (function(name, fn){
+-          return function() {
+-            var tmp = this._super;
+-            
+-            // Add a new ._super() method that is the same method
+-            // but on the super-class
+-            this._super = _super[name];
+-            
+-            // The method only need to be bound temporarily, so we
+-            // remove it when we're done executing
+-            var ret = fn.apply(this, arguments);        
+-            this._super = tmp;
+-            
+-            return ret;
+-          };
+-        })(name, prop[name]) :
+-        prop[name];
+-    }
+-    
+-    // The dummy class constructor
+-    function Class() {
+-      // All construction is actually done in the init method
+-      if ( !initializing && this.init )
+-        this.init.apply(this, arguments);
+-    }
+-    
+-    // Populate our constructed prototype object
+-    Class.prototype = prototype;
+-    
+-    // Enforce the constructor to be what we expect
+-    Class.constructor = Class;
+-
+-    // And make this class extendable
+-    Class.extend = arguments.callee;
+-    
+-    return Class;
+-  };
+-})();
+diff --git a/src/Three.js b/src/Three.js
+new file mode 100644
+index 000000000..5cf0752d0
+--- /dev/null
++++ b/src/Three.js
+@@ -0,0 +1,5 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++var THREE = THREE || {}
+diff --git a/src/cameras/Camera.js b/src/cameras/Camera.js
+index 58f818598..507615ec1 100755
+--- a/src/cameras/Camera.js
++++ b/src/cameras/Camera.js
+@@ -1,33 +1,33 @@
+-var Camera = Vector3.extend
+-({
+-	up: null,
+-	target: null,
+-	zoom: null,
+-	focus: null,
+-	roll: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.Camera = function (x, y, z) {
++
++	this.position = new THREE.Vector3(x, y, z);
++	this.target = {
++		position: new THREE.Vector3(0, 0, 0)
++	}
++
++	this.matrix = new THREE.Matrix4();
++	this.projectionMatrix = THREE.Matrix4.makePerspective(45, 1 /*SCREEN_WIDTH/SCREEN_HEIGHT*/, 0.001, 1000);
+ 	
+-	matrix: null,
++	this.up = new THREE.Vector3(0, 1, 0);
++	this.roll = 0;
+ 	
+-	init: function(x, y, z)
+-	{
+-		this._super(x, y, z);
+-		this.up = new Vector3( 0, 1, 0 );
+-		this.target = new Vector3( 0, 0, 0 );
+-		this.zoom = 3;
+-		this.focus = 500;
+-		this.roll = 0;
+-		
+-		this.matrix = new Matrix4();
+-		this.updateMatrix();
+-	},
++	// TODO: Need to remove this	
++	this.zoom = 3;
++	this.focus = 500;
+ 	
+-	updateMatrix: function()
+-	{
+-		this.matrix.lookAt( this, this.target, this.up );
+-	},
++	this.updateMatrix = function () {
++	
++		this.matrix.lookAt(this.position, this.target.position, this.up);
++	}
+ 
+-	toString: function()
+-	{
+-		return 'Camera ( ' + this.x + ', ' + this.y + ', ' + this.z + ' )';
++	this.toString = function () {
++	
++		return 'THREE.Camera ( ' + this.position + ', ' + this.target.position + ' )';
+ 	}
+-});
++	
++	this.updateMatrix();
++}
+diff --git a/src/core/Color.js b/src/core/Color.js
+index e85acb0e6..910584de6 100644
+--- a/src/core/Color.js
++++ b/src/core/Color.js
+@@ -1,55 +1,53 @@
+-var Color = Class.extend
+-({
+-	r: null, g: null, b: null, a: null,
+-	hex: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.Color = function (hex) {
++
++	var _r, _g, _b, _a, _hex;
+ 	
+-	styleString: null,
++	this.styleString;
+ 	
++	this.setHex = function (hex) {
+ 	
+-	init: function( hex )
+-	{
+-		this.setHex( hex ? hex : 0xff000000 );
+-	},
+-	
+-	setHex: function( hex )
+-	{
+-		this.hex = hex;
++		_hex = hex;
+ 		this.updateRGBA();
+ 		this.updateStyleString();
+-	},
+-	
+-	setRGBA: function( r, g, b, a )
+-	{
+-		this.r = r;
+-		this.g = g;
+-		this.b = b;
+-		this.a = a;
++	}
++	
++	this.setRGBA = function (r, g, b, a) {
++	
++		_r = r;
++		_g = g;
++		_b = b;
++		_a = a;
+ 		
+ 		this.updateHex();
+ 		this.updateStyleString();
+-	},
+-	
+-	updateHex: function()
+-	{
+-		this.hex = this.a << 24 | this.r << 16 | this.g << 8 | this.b;
+-	},
+-	
+-	updateRGBA: function()
+-	{
+-		this.r = this.hex >> 16 & 0xff;
+-		this.g = this.hex >> 8 & 0xff;
+-		this.b = this.hex & 0xff;
+-		this.a = this.hex >> 24 & 0xff;		
+-	},
+-	
+-	updateStyleString: function()
+-	{
+-		this.styleString = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + (this.a / 255) + ')';		
+-	},
+-	
+-	toString: function()
+-	{
+-		return 'Color ( r: ' + this.r + ', g: ' + this.g + ', b: ' + this.b + ', a: ' + this.a + ', hex: ' + this.hex + ', style: ' + this.styleString + ' )';	
+ 	}
+ 	
+-});
++	this.updateHex = function () {
++	
++		_hex = _a << 24 | _r << 16 | _g << 8 | _b;
++	}
++	
++	this.updateRGBA = function () {
++	
++		_r = _hex >> 16 & 0xff;
++		_g = _hex >> 8 & 0xff;
++		_b = _hex & 0xff;
++		_a = _hex >> 24 & 0xff;		
++	}
++	
++	this.updateStyleString = function () {
++	
++		this.styleString = 'rgba(' + _r + ',' + _g + ',' + _b + ',' + (_a / 255) + ')';	
++	}
++	
++	this.toString = function () {
++	
++		return 'THREE.Color ( r: ' + _r + ', g: ' + _g + ', b: ' + _b + ', a: ' + _a + ', hex: ' + _hex + ', style: ' + this.styleString + ' )';	
++	}
++	
++	this.setHex(hex);
++}
+diff --git a/src/core/Face3.js b/src/core/Face3.js
+index c6fbe7bd1..77be2ae51 100755
+--- a/src/core/Face3.js
++++ b/src/core/Face3.js
+@@ -1,29 +1,21 @@
+-var Face3 = Vector3.extend
+-({
+-	a: null, b: null, c: null,
+-	screen: null,
+-	uv: null,
+-	normal: null,
+-	color: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	init: function(a, b, c, uv, normal, color)
+-	{
+-		this._super((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3, (a.z + b.z + c.z) / 3);	
+-	
+-		this.a = a;
+-		this.b = b;
+-		this.c = c;
+-
+-		this.screen = new Vector3();
+-		
+-		this.uv = uv ? uv : [ [0, 0], [0, 0], [0, 0] ];
+-		this.normal = normal ? normal : new Vector3();
++THREE.Face3 = function (a, b, c, uv, normal, color) {
+ 
+-		this.color = color ? color : new Color();
+-	},
++	this.a = a;
++	this.b = b;
++	this.c = c;
++	
++	this.normal = normal || new THREE.Vector3();
++	this.screen = new THREE.Vector3();
++	
++	this.uv = uv || [ [0,0], [0,0], [0,0] ];
++	this.color = color || new THREE.Color();
+ 
+-	toString: function()
+-	{
+-		return 'Face3 ( ' + this.a + ', ' + this.b + ', ' + this.c + ' )';
++	this.toString = function () {
++	
++		return 'THREE.Face3 ( ' + this.a + ', ' + this.b + ', ' + this.c + ' )';
+ 	}
+-});
++}
+diff --git a/src/core/Face4.js b/src/core/Face4.js
+index 978b441ea..4e73f24d2 100755
+--- a/src/core/Face4.js
++++ b/src/core/Face4.js
+@@ -1,26 +1,22 @@
+-var Face4 = Vector3.extend
+-({
+-	a: null, b: null, c: null, d: null,
+-	normal: null,
+-	screen: null,
+-	color: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	init: function(a, b, c, d, uv, normal, color)
+-	{
+-		this._super((a.x + b.x + c.x + d.x) / 4, (a.y + b.y + c.y + d.y) / 4, (a.z + b.z + c.z + d.z) / 4);
+-	
+-		this.a = a;
+-		this.b = b;
+-		this.c = c;
+-		this.d = d;
+-		
+-		this.screen = new Vector3();
++THREE.Face4 = function (a, b, c, d, uv, normal, color) {
+ 
+-		this.color = color ? color : new Color();
+-	},
++	this.a = a;
++	this.b = b;
++	this.c = c;
++	this.d = d;
++	
++	this.normal = normal || new THREE.Vector3();
++	this.screen = new THREE.Vector3();
++	
++	this.uv = uv || [ [0,0], [0,0], [0,0], [0, 0] ];
++	this.color = color || new THREE.Color();
+ 
+-	toString: function()
+-	{
+-		return 'Face4 ( ' + this.a + ', ' + this.b + ', ' + this.c + ', ' + this.d + ' )';
++	this.toString = function () {
++	
++		return 'THREE.Face4 ( ' + this.a + ', ' + this.b + ', ' + this.c + ' ' + this.d + ' )';
+ 	}
+-});
++}
+diff --git a/src/core/Geometry.js b/src/core/Geometry.js
+index 1e8e60ce9..95c9e3051 100755
+--- a/src/core/Geometry.js
++++ b/src/core/Geometry.js
+@@ -1,11 +1,53 @@
+-var Geometry = Class.extend
+-({
+-	vertices: null,
+-	faces: null,
+-
+-	init: function()
+-	{
+-		this.vertices = new Array();
+-		this.faces = new Array();
++/**
++ * @author kile / http://kile.stravaganza.org/
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.Geometry = function () {
++
++	this.vertices = [];
++	this.faces = [];
++
++	this.computeNormals = function () {
++	
++		var v, f, vA, vB, vC, cb, ab, normal;
++	
++		for(v = 0; v < this.vertices.length; v++) {
++		
++			this.vertices[v].normal.set(0,0,0);
++		}
++	
++		for(f = 0; f < this.faces.length; f++) {
++		
++			vA = this.vertices[this.faces[f].a],
++			vB = this.vertices[this.faces[f].b],
++			vC = this.vertices[this.faces[f].c],
++			
++			cb = new THREE.Vector3(),
++			ab = new THREE.Vector3(),
++			normal = new THREE.Vector3();
++			
++			cb.sub(vC.position,vB.position);
++			ab.sub(vA.position,vB.position);
++			cb.cross(ab);
++			
++			if (!cb.isZero()) {
++			
++				cb.normalize();
++				
++			}
++				
++			this.faces[f].normal=cb;
++
++			vA.normal.addSelf(normal);
++			vB.normal.addSelf(normal);
++			vC.normal.addSelf(normal);
++			
++			if (this.faces[f] instanceof THREE.Face4) {
++			
++				this.vertices[this.faces[f].d].normal.addSelf(normal);
++				
++			}
++		}
+ 	}
+-});
++}
+diff --git a/src/core/Matrix3.js b/src/core/Matrix3.js
+index a5f20bb17..1792bd5aa 100755
+--- a/src/core/Matrix3.js
++++ b/src/core/Matrix3.js
+@@ -1,30 +1,30 @@
+-var Matrix3 = Class.extend
+-({
+-	n11: null, n12: null, n13: null,
+-	n21: null, n22: null, n23: null,
+-	n31: null, n32: null, n33: null,
++/**
++ * @author supereggbert / http://www.paulbrunt.co.uk/
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	init: function()
+-	{
+-		this.identity();
+-	},
++THREE.Matrix3 = function () {
+ 
+-	identity: function()
+-	{
++	this.n11 = 1; this.n12 = 0; this.n13 = 0;
++	this.n21 = 0; this.n22 = 1; this.n23 = 0;
++	this.n31 = 0; this.n32 = 0; this.n33 = 1;
++	
++	this.identity = function () {
++	
+ 		this.n11 = 1; this.n12 = 0; this.n13 = 0;
+ 		this.n21 = 0; this.n22 = 1; this.n23 = 0;
+ 		this.n31 = 0; this.n32 = 0; this.n33 = 1;
+-	},
++	}
+ 
+-	assign: function(m)
+-	{
++	this.assign = function (m) {
++	
+ 		this.n11 = m.n11; this.n12 = m.n12; this.n13 = m.n13;
+ 		this.n21 = m.n21; this.n22 = m.n22; this.n23 = m.n23;
+ 		this.n31 = m.n31; this.n32 = m.n32; this.n33 = m.n33;
+-	},
++	}
+ 
+-	multiplySelf: function(m)
+-	{
++	this.multiplySelf = function (m) {
++	
+ 		var n11 = this.n11, n12 = this.n12, n13 = this.n13, n14 = this.n14;
+ 		var n21 = this.n21, n22 = this.n22, n23 = this.n23, n24 = this.n24;
+ 		var n31 = this.n31, n32 = this.n32, n33 = this.n33, n34 = this.n34;
+@@ -40,10 +40,10 @@ var Matrix3 = Class.extend
+ 		this.n31 = n31 * m.n11 + n32 * m.n21 + n33 * m.n31;
+ 		this.n32 = n31 * m.n12 + n32 * m.n22 + n33 * m.n32;
+ 		this.n33 = n31 * m.n13 + n32 * m.n23 + n33 * m.n33;
+-	},
++	}
+ 
+-	inverse: function()
+-	{
++	this.inverse = function () {
++	
+ 		var n11 = this.n11, n12 = this.n12, n13 = this.n13, n14 = this.n14;
+ 		var n21 = this.n21, n22 = this.n22, n23 = this.n23, n24 = this.n24;
+ 		var n31 = this.n31, n32 = this.n32, n33 = this.n33, n34 = this.n34;
+@@ -51,21 +51,23 @@ var Matrix3 = Class.extend
+ 		this.n11 = n11; this.n12 = n21; this.n13 = n31;
+ 		this.n21 = n12; this.n22 = n22; this.n23 = n32;
+ 		this.n31 = n13; this.n32 = n23; this.n33 = n33;
+-	},
++	}
+ 
+-	clone: function()
+-	{
+-		var m = new Matrix3();
++	this.clone = function () {
++	
++		var m = new THREE.Matrix3();
++		
+ 		m.n11 = this.n11; m.n12 = this.n12; m.n13 = this.n13;
+ 		m.n21 = this.n21; m.n22 = this.n22; m.n23 = this.n23;
+ 		m.n31 = this.n31; m.n32 = this.n32; m.n33 = this.n33;
++		
+ 		return m;
+-	},
++	}
+     
+-	toString: function()
+-	{
++	this.toString = function () {
++	
+         	return "| " + this.n11 + " " + this.n12 + " " + this.n13 + " |\n" +
+                         "| " + this.n21 + " " + this.n22 + " " + this.n23 + " |\n" +
+                         "| " + this.n31 + " " + this.n32 + " " + this.n33 + " |";
+-	}
+-});
++ 	}
++}
+diff --git a/src/core/Matrix4.js b/src/core/Matrix4.js
+index 8e3768a68..47cb88788 100755
+--- a/src/core/Matrix4.js
++++ b/src/core/Matrix4.js
+@@ -1,125 +1,165 @@
+-var Matrix4 = Class.extend
+-({
+-	n11: null, n12: null, n13: null, n14: null,
+-	n21: null, n22: null, n23: null, n24: null,
+-	n31: null, n32: null, n33: null, n34: null,
+-
+-	x: null, y: null, z: null,
+-
+-	init: function()
+-	{
+-		this.identity();
+-	},
+-
+-	identity: function()
+-	{
++/**
++ * @author supereggbert / http://www.paulbrunt.co.uk/
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.Matrix4 = function () {
++
++	var x, y, z;
++
++	x = new THREE.Vector3();
++	y = new THREE.Vector3();
++	z = new THREE.Vector3();
++
++	this.n11 = 1; this.n12 = 0; this.n13 = 0; this.n14 = 0;
++	this.n21 = 0; this.n22 = 1; this.n23 = 0; this.n24 = 0;
++	this.n31 = 0; this.n32 = 0; this.n33 = 1; this.n34 = 0;
++	this.n41 = 0; this.n42 = 0; this.n43 = 0; this.n44 = 1;
++	
++	this.identity = function () {
++	
+ 		this.n11 = 1; this.n12 = 0; this.n13 = 0; this.n14 = 0;
+ 		this.n21 = 0; this.n22 = 1; this.n23 = 0; this.n24 = 0;
+ 		this.n31 = 0; this.n32 = 0; this.n33 = 1; this.n34 = 0;
+-		
+-		this.x = new Vector3(0,0,0);
+-		this.y = new Vector3(0,0,0);
+-		this.z = new Vector3(0,0,0);
+-	},
++		this.n41 = 0; this.n42 = 0; this.n43 = 0; this.n44 = 1;
++	}
+     
+-	lookAt: function(eye, center, up)
+-	{
+-		this.z.sub(center, eye);
+-		this.z.normalize();
+-
+-		this.x.copy(this.z);
+-		this.x.cross(up);
+-		this.x.normalize();
+-
+-		this.y.copy(this.x);
+-		this.y.cross(this.z);
+-		this.y.normalize();
+-		this.y.negate(); //
+-
+-		this.n11 = this.x.x;
+-		this.n12 = this.x.y;
+-		this.n13 = this.x.z;
+-		this.n14 = -this.x.dot(eye);
+-		this.n21 = this.y.x;
+-		this.n22 = this.y.y;
+-		this.n23 = this.y.z;
+-		this.n24 = -this.y.dot(eye);
+-		this.n31 = this.z.x;
+-		this.n32 = this.z.y;
+-		this.n33 = this.z.z;
+-		this.n34 = -this.z.dot(eye);
+-	},
+-
+-	transform: function(v)
+-	{
+-        	var vx = v.x, vy = v.y, vz = v.z;
++	this.lookAt = function (eye, center, up) {
++	
++		z.sub(center, eye);
++		z.normalize();
++
++		x.copy(z);
++		x.crossSelf(up);
++		x.normalize();
++
++		y.copy(x);
++		y.crossSelf(z);
++		y.normalize();
++		y.negate(); //
++
++		this.n11 = x.x;
++		this.n12 = x.y;
++		this.n13 = x.z;
++		this.n14 = -x.dot(eye);
++		this.n21 = y.x;
++		this.n22 = y.y;
++		this.n23 = y.z;
++		this.n24 = -y.dot(eye);
++		this.n31 = z.x;
++		this.n32 = z.y;
++		this.n33 = z.z;
++		this.n34 = -z.dot(eye);
++	}
++
++	this.transform = function (v) {
++	
++        	var vx = v.x, vy = v.y, vz = v.z, vw = (v.w ? v.w : 1.0);
+         
+-		v.x = this.n11 * vx + this.n12 * vy + this.n13 * vz + this.n14;
+-		v.y = this.n21 * vx + this.n22 * vy + this.n23 * vz + this.n24;
+-		v.z = this.n31 * vx + this.n32 * vy + this.n33 * vz + this.n34;
+-	},
+-    
++		v.x = this.n11 * vx + this.n12 * vy + this.n13 * vz + this.n14 * vw;
++		v.y = this.n21 * vx + this.n22 * vy + this.n23 * vz + this.n24 * vw;
++		v.z = this.n31 * vx + this.n32 * vy + this.n33 * vz + this.n34 * vw;
++
++		vw = this.n41 * vx + this.n42 * vy + this.n43 * vz + this.n44 * vw;
++
++		if(v.w) {
++		
++			v.w = vw;
++			
++		} else {
++		
++			v.x = v.x / vw;
++			v.y = v.y / vw;
++			v.z = v.z / vw;
++		}
++	}
++	
++	this.crossVector = function (a) {
++	
++		var v = new THREE.Vector4();
++		
++		v.x = this.n11 * a.x + this.n12 * a.y + this.n13 * a.z + this.n14 * a.w;
++		v.y = this.n21 * a.x + this.n22 * a.y + this.n23 * a.z + this.n24 * a.w;
++		v.z = this.n31 * a.x + this.n32 * a.y + this.n33 * a.z + this.n34 * a.w;
++		
++		v.w = (a.w) ? this.n41 * a.x + this.n42 * a.y + this.n43 * a.z + this.n44 * a.w : 1;
++		
++		return v;
++	}
++
++	this.multiply = function (a, b) {
++	
++		this.n11 = a.n11 * b.n11 + a.n12 * b.n21 + a.n13 * b.n31 + a.n14 * b.n41;
++		this.n12 = a.n11 * b.n12 + a.n12 * b.n22 + a.n13 * b.n32 + a.n14 * b.n42;
++		this.n13 = a.n11 * b.n13 + a.n12 * b.n23 + a.n13 * b.n33 + a.n14 * b.n43;
++		this.n14 = a.n11 * b.n14 + a.n12 * b.n24 + a.n13 * b.n34 + a.n14 * b.n44;
++
++		this.n21 = a.n21 * b.n11 + a.n22 * b.n21 + a.n23 * b.n31 + a.n24 * b.n41;
++		this.n22 = a.n21 * b.n12 + a.n22 * b.n22 + a.n23 * b.n32 + a.n24 * b.n42;
++		this.n23 = a.n21 * b.n13 + a.n22 * b.n23 + a.n23 * b.n33 + a.n24 * b.n34;
++		this.n24 = a.n21 * b.n14 + a.n22 * b.n24 + a.n23 * b.n34 + a.n24 * b.n44;
++
++		this.n31 = a.n31 * b.n11 + a.n32 * b.n21 + a.n33 * b.n31 + a.n34 * b.n41;
++		this.n32 = a.n31 * b.n12 + a.n32 * b.n22 + a.n33 * b.n32 + a.n34 * b.n42;
++		this.n33 = a.n31 * b.n13 + a.n32 * b.n23 + a.n33 * b.n33 + a.n34 * b.n43;
++		this.n34 = a.n31 * b.n14 + a.n32 * b.n24 + a.n33 * b.n34 + a.n34 * b.n44;
++
++		this.n41 = a.n41 * b.n11 + a.n42 * b.n21 + a.n43 * b.n31 + a.n44 * b.n41;
++		this.n42 = a.n41 * b.n12 + a.n42 * b.n22 + a.n43 * b.n32 + a.n44 * b.n42;
++		this.n43 = a.n41 * b.n13 + a.n42 * b.n23 + a.n43 * b.n33 + a.n44 * b.n43;
++		this.n44 = a.n41 * b.n14 + a.n42 * b.n24 + a.n43 * b.n34 + a.n44 * b.n44;
++	}
+ 
+-	multiply: function(a, b)
+-	{
+-		this.n11 = a.n11 * b.n11 + a.n12 * b.n21 + a.n13 * b.n31;
+-		this.n12 = a.n11 * b.n12 + a.n12 * b.n22 + a.n13 * b.n32;
+-		this.n13 = a.n11 * b.n13 + a.n12 * b.n23 + a.n13 * b.n33;
+-		this.n14 = a.n11 * b.n14 + a.n12 * b.n24 + a.n13 * b.n34 + a.n14;
+-
+-		this.n21 = a.n21 * b.n11 + a.n22 * b.n21 + a.n23 * b.n31;
+-		this.n22 = a.n21 * b.n12 + a.n22 * b.n22 + a.n23 * b.n32;
+-		this.n23 = a.n21 * b.n13 + a.n22 * b.n23 + a.n23 * b.n33;
+-		this.n24 = a.n21 * b.n14 + a.n22 * b.n24 + a.n23 * b.n34 + a.n24;
+-
+-		this.n31 = a.n31 * b.n11 + a.n32 * b.n21 + a.n33 * b.n31;
+-		this.n32 = a.n31 * b.n12 + a.n32 * b.n22 + a.n33 * b.n32;
+-		this.n33 = a.n31 * b.n13 + a.n32 * b.n23 + a.n33 * b.n33;
+-		this.n34 = a.n31 * b.n14 + a.n32 * b.n24 + a.n33 * b.n34 + a.n34;
+-	},
+-
+-	multiplySelf: function(m)
+-	{
+-		var n11 = this.n11, n12 = this.n12, n13 = this.n13, n14 = this.n14;
+-		var n21 = this.n21, n22 = this.n22, n23 = this.n23, n24 = this.n24;
+-		var n31 = this.n31, n32 = this.n32, n33 = this.n33, n34 = this.n34;
+-
+-		this.n11 = n11 * m.n11 + n12 * m.n21 + n13 * m.n31;
+-		this.n12 = n11 * m.n12 + n12 * m.n22 + n13 * m.n32;
+-		this.n13 = n11 * m.n13 + n12 * m.n23 + n13 * m.n33;
+-		this.n14 = n11 * m.n14 + n12 * m.n24 + n13 * m.n34 + n14;
+-
+-		this.n21 = n21 * m.n11 + n22 * m.n21 + n23 * m.n31;
+-		this.n22 = n21 * m.n12 + n22 * m.n22 + n23 * m.n32;
+-		this.n23 = n21 * m.n13 + n22 * m.n23 + n23 * m.n33;
+-		this.n24 = n21 * m.n14 + n22 * m.n24 + n23 * m.n34 + n24;
+-
+-		this.n31 = n31 * m.n11 + n32 * m.n21 + n33 * m.n31;
+-		this.n32 = n31 * m.n12 + n32 * m.n22 + n33 * m.n32;
+-		this.n33 = n31 * m.n13 + n32 * m.n23 + n33 * m.n33;
+-		this.n34 = n31 * m.n14 + n32 * m.n24 + n33 * m.n34 + n34;
+-	},
+-
+-	clone: function()
+-	{
+-		var m = new Matrix4();
++	this.multiplySelf = function (m) {
++	
++		var n11 = this.n11, n12 = this.n12, n13 = this.n13, n14 = this.n14,
++		n21 = this.n21, n22 = this.n22, n23 = this.n23, n24 = this.n24,
++		n31 = this.n31, n32 = this.n32, n33 = this.n33, n34 = this.n34,
++		n41 = this.n41, n42 = this.n42, n43 = this.n43, n44 = this.n44;
++
++		this.n11 = n11 * m.n11 + n12 * m.n21 + n13 * m.n31 + n14 * m.n41;
++		this.n12 = n11 * m.n12 + n12 * m.n22 + n13 * m.n32 + n14 * m.n42;
++		this.n13 = n11 * m.n13 + n12 * m.n23 + n13 * m.n33 + n14 * m.n43;
++		this.n14 = n11 * m.n14 + n12 * m.n24 + n13 * m.n34 + n14 * m.n44;
++
++		this.n21 = n21 * m.n11 + n22 * m.n21 + n23 * m.n31 + n24 * m.n41;
++		this.n22 = n21 * m.n12 + n22 * m.n22 + n23 * m.n32 + n24 * m.n42;
++		this.n23 = n21 * m.n13 + n22 * m.n23 + n23 * m.n33 + n24 * m.n43;
++		this.n24 = n21 * m.n14 + n22 * m.n24 + n23 * m.n34 + n24 * m.n44;
++
++		this.n31 = n31 * m.n11 + n32 * m.n21 + n33 * m.n31 + n34 * m.n41;
++		this.n32 = n31 * m.n12 + n32 * m.n22 + n33 * m.n32 + n34 * m.n42;
++		this.n33 = n31 * m.n13 + n32 * m.n23 + n33 * m.n33 + n34 * m.n43;
++		this.n34 = n31 * m.n14 + n32 * m.n24 + n33 * m.n34 + n34 * m.n44;
++
++		this.n41 = n41 * m.n11 + n42 * m.n21 + n43 * m.n31 + n44 * m.n41;
++		this.n42 = n41 * m.n12 + n42 * m.n22 + n43 * m.n32 + n44 * m.n42;
++		this.n43 = n41 * m.n13 + n42 * m.n23 + n43 * m.n33 + n44 * m.n43;
++		this.n44 = n41 * m.n14 + n42 * m.n24 + n43 * m.n34 + n44 * m.n44;
++	}
++
++	this.clone = function () {
++	
++		var m = new THREE.Matrix4();
+ 		m.n11 = this.n11; m.n12 = this.n12; m.n13 = this.n13; m.n14 = this.n14;
+ 		m.n21 = this.n21; m.n22 = this.n22; m.n23 = this.n23; m.n24 = this.n24;
+ 		m.n31 = this.n31; m.n32 = this.n32; m.n33 = this.n33; m.n34 = this.n34;
++		m.n41 = this.n41; m.n42 = this.n42; m.n43 = this.n43; m.n44 = this.n44;
+ 		return m;
+-	},
++	}
+     
+-	toString: function()
+-	{
++	this.toString = function() {
++	
+         	return "| " + this.n11 + " " + this.n12 + " " + this.n13 + " " + this.n14 + " |\n" +
+                         "| " + this.n21 + " " + this.n22 + " " + this.n23 + " " + this.n24 + " |\n" +
+-                        "| " + this.n31 + " " + this.n32 + " " + this.n33 + " " + this.n34 + " |";
++                        "| " + this.n31 + " " + this.n32 + " " + this.n33 + " " + this.n34 + " |\n" +
++                        "| " + this.n41 + " " + this.n42 + " " + this.n43 + " " + this.n44 + " |";
+ 	}
+-});
++}
++
++THREE.Matrix4.translationMatrix = function (x, y, z) {
+ 
+-Matrix4.translationMatrix = function(x, y, z)
+-{
+-	var m = new Matrix4();
++	var m = new THREE.Matrix4();
+ 
+ 	m.n14 = x;
+ 	m.n24 = y;
+@@ -128,9 +168,9 @@ Matrix4.translationMatrix = function(x, y, z)
+ 	return m;
+ }
+ 
+-Matrix4.scaleMatrix = function(x, y, z)
+-{
+-	var m = new Matrix4();
++THREE.Matrix4.scaleMatrix = function (x, y, z) {
++
++	var m = new THREE.Matrix4();
+ 
+ 	m.n11 = x;
+ 	m.n22 = y;
+@@ -139,9 +179,9 @@ Matrix4.scaleMatrix = function(x, y, z)
+ 	return m;
+ }
+ 
+-Matrix4.rotationXMatrix = function(theta)
+-{
+-	var rot = new Matrix4();
++THREE.Matrix4.rotationXMatrix = function (theta) {
++
++	var rot = new THREE.Matrix4();
+ 
+ 	rot.n22 = rot.n33 = Math.cos(theta);
+ 	rot.n32 = Math.sin(theta);
+@@ -150,9 +190,9 @@ Matrix4.rotationXMatrix = function(theta)
+ 	return rot;
+ }
+ 
+-Matrix4.rotationYMatrix = function(theta)
+-{
+-	var rot = new Matrix4();
++THREE.Matrix4.rotationYMatrix = function (theta) {
++
++	var rot = new THREE.Matrix4();
+ 
+ 	rot.n11 = rot.n33 = Math.cos(theta);
+ 	rot.n13 = Math.sin(theta);
+@@ -161,9 +201,9 @@ Matrix4.rotationYMatrix = function(theta)
+ 	return rot;
+ }
+ 
+-Matrix4.rotationZMatrix = function(theta)
+-{
+-	var rot = new Matrix4();
++THREE.Matrix4.rotationZMatrix = function(theta) {
++
++	var rot = new THREE.Matrix4();
+ 
+ 	rot.n11 = rot.n22 = Math.cos(theta);
+ 	rot.n21 = Math.sin(theta);
+@@ -171,3 +211,32 @@ Matrix4.rotationZMatrix = function(theta)
+ 
+ 	return rot;
+ }
++
++THREE.Matrix4.makeFrustum = function(left,right,bottom,top,near,far) {
++
++	var m = new THREE.Matrix4(),
++
++	x = 2 * near / (right - left),
++	y = 2 * near / (top - bottom),
++	a = (right + left) / (right - left),
++	b = (top + bottom) / (top - bottom),
++	c = -(far + near) / (far - near),
++	d = -2 * far * near / (far - near);
++
++	m.n11 = x; m.n13 = a;
++	m.n22 = y; m.n23 = b;
++	m.n33 = c; m.n34 = d;
++	m.n43 = -1; m.n44 = 0;
++
++	return m;
++}
++
++THREE.Matrix4.makePerspective = function(fovy, aspect, near, far) {
++
++	var ymax = near * Math.tan(fovy * 0.00872664625972),
++	ymin = -ymax,
++	xmin = ymin * aspect,
++	xmax = ymax * aspect;
++	
++	return THREE.Matrix4.makeFrustum(xmin, xmax, ymin, ymax, near, far);
++}
+diff --git a/src/core/Vector2.js b/src/core/Vector2.js
+index e6e8687fd..980af9383 100755
+--- a/src/core/Vector2.js
++++ b/src/core/Vector2.js
+@@ -1,100 +1,89 @@
+-var Vector2 = Class.extend
+-({
+-	x: null, y: null,
+-	
+-	init: function(x, y)
+-	{
+-		this.x = x ? x : 0;
+-		this.y = y ? y : 0;
+-	},
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	copy: function(v)
+-	{
++THREE.Vector2 = function (x, y) {
++	
++	this.x = x || 0;
++	this.y = y || 0;
++	
++	this.set = function (x, y) {
++	
++		this.x = x;
++		this.y = y;
++	}	
++	
++	this.copy = function (v) {
++	
+ 		this.x = v.x;
+ 		this.y = v.y;
+-	},
++	}
++	
++	this.addSelf = function (v) {
+ 	
+-	addSelf: function(v)
+-	{
+ 		this.x += v.x;
+ 		this.y += v.y;
+-	},
++	}
+ 
+-	add: function(v1, v2)
+-	{
++	this.add = function (v1, v2) {
++	
+ 		this.x = v1.x + v2.x;
+ 		this.y = v1.y + v2.y;
+-	},
++	}
++	
++	this.subSelf = function (v) {
+ 	
+-	subSelf: function(v)
+-	{
+ 		this.x -= v.x;
+ 		this.y -= v.y;
+-	},
++	}
+ 
+-	sub: function(v1, v2)
+-	{
++	this.sub = function (v1, v2) {
++	
+ 		this.x = v1.x - v2.x;
+ 		this.y = v1.y - v2.y;
+-	},
++	}
++	
++	this.multiplyScalar = function (s) {
+ 	
+-	multiply: function(s)
+-	{
+ 		this.x *= s;
+ 		this.y *= s;
+-	},
++	}
++	
++	this.unit = function () {
+ 	
+-	unit: function()
+-	{
+ 		this.multiply(1 / this.length());
+-	},
++	}
++	
++	this.expand = function(v1, v2) {
+ 	
+-	expand: function(v1, v2)
+-	{
+ 		this.unit( this.sub(v2, v1) );
+ 		v2.addSelf(this);
+ 		// v1.subSelf(this);
+-	},
++	}
+ 
+-	length: function()
+-	{
++	this.length = function () {
++	
+ 		return Math.sqrt(this.x * this.x + this.y * this.y);
+-	},
++	}
++	
++	this.lengthSq = function () {
+ 	
+-	lengthSq: function()
+-	{
+ 		return this.x * this.x + this.y * this.y;
+-	},
++	}
++	
++	this.negate = function() {
+ 	
+-	negate: function()
+-	{
+ 		this.x = -this.x;
+ 		this.y = -this.y;
+-	},
++	}
+ 	
+-	clone: function()
+-	{
+-		return new Vector2(this.x, this.y);
+-	},	
++	this.clone = function () {
+ 	
+-	toString: function()
+-	{
+-		return 'Vector2 (' + this.x + ', ' + this.y + ')';
++		return new THREE.Vector2(this.x, this.y);
+ 	}
+ 	
+-});
+-
+-Vector2.add = function(a, b)
+-{
+-	return new Vector2( a.x + b.x, a.y + b.y );
+-}
+-
+-Vector2.sub = function(a, b)
+-{
+-	return new Vector2( a.x - b.x, a.y - b.y );
+-}		
+-
+-Vector2.multiply = function(a, s)
+-{
+-	return new Vector2( a.x * s, a.y * s );
++	this.toString = function () {
++	
++		return 'THREE.Vector2 (' + this.x + ', ' + this.y + ')';
++	}
+ }
+diff --git a/src/core/Vector3.js b/src/core/Vector3.js
+index 5a7c11e32..18154ed4f 100755
+--- a/src/core/Vector3.js
++++ b/src/core/Vector3.js
+@@ -1,159 +1,145 @@
+-var Vector3 = Class.extend
+-({
+-	x: null, y: null, z: null,
+-	// sx: null, sy: null, sz: null,
+-	// userData: null,
+-	
+-	dx: null, dy: null, dz: null,
+-	tx: null, ty: null, tz: null,
+-	// oll: null,
+-	
+-	init: function(x, y, z)
+-	{
+-		this.x = x ? x : 0;
+-		this.y = y ? y : 0;
+-		this.z = z ? z : 0;
+-	},
++/**
++ * @author kile / http://kile.stravaganza.org/
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	copy: function(v)
+-	{
++THREE.Vector3 = function (x, y, z) {
++
++	this.x = x || 0;
++	this.y = y || 0;
++	this.z = z || 0;
++
++	this.set = function (x, y, z) {
++	
++		this.x = x;
++		this.y = y;
++		this.z = z;
++	}
++
++	this.copy = function (v) {
++	
+ 		this.x = v.x;
+ 		this.y = v.y;
+ 		this.z = v.z;
+-	},
++	}
++
++	this.add = function(v1, v2) {
++	
++		this.x = v1.x + v2.x;
++		this.y = v1.y + v2.y;
++		this.z = v1.z + v2.z;	
++	}
++
++	this.addSelf = function (v) {
+ 	
+-	addSelf: function(v)
+-	{
+ 		this.x += v.x;
+ 		this.y += v.y;
+ 		this.z += v.z;
+-	},
++	}
++	
++	this.addScalar = function (s) {
++	
++		this.x += s;
++		this.y += s;
++		this.z += s;
++	}	
+ 
+-	add: function(v1, v2)
+-	{
+-		this.x = v1.x + v2.x;
+-		this.y = v1.y + v2.y;
+-		this.z = v1.z + v2.z;
+-	},
++	this.sub = function(v1, v2) {
++	
++		this.x = v1.x - v2.x;
++		this.y = v1.y - v2.y;
++		this.z = v1.z - v2.z;	
++	}
++	
++	this.subSelf = function (v) {
+ 	
+-	subSelf: function(v)
+-	{
+ 		this.x -= v.x;
+ 		this.y -= v.y;
+ 		this.z -= v.z;
+-	},
+-
+-	sub: function(v1, v2)
+-	{
+-		this.x = v1.x - v2.x;
+-		this.y = v1.y - v2.y;
+-		this.z = v1.z - v2.z;
+-	},
+-	
+-	cross: function(v)
+-	{
+-		this.tx = this.x;
+-		this.ty = this.y;
+-		this.tz = this.z;
++	}
++	
++	this.crossSelf = function (v) {
++	
++		var tx = this.x, ty = this.y, tz = this.z;
+ 		
+-		this.x = this.ty * v.z - this.tz * v.y;
+-		this.y = this.tz * v.x - this.tx * v.z;
+-		this.z = this.tx * v.y - this.ty * v.x;
+-	},
++		this.x = ty * v.z - tz * v.y;
++		this.y = tz * v.x - tx * v.z;
++		this.z = tx * v.y - ty * v.x;
++	}
++	
++	this.multiplySelf = function (v) {
++	
++		this.x *= v.x;
++		this.y *= v.y;
++		this.z *= v.z;
++	}	
++	
++	this.multiplyScalar = function (s) {
+ 	
+-	multiply: function(s)
+-	{
+ 		this.x *= s;
+ 		this.y *= s;
+ 		this.z *= s;
+-	},
++	}
+ 	
+-	distanceTo: function(v)
+-	{
+-		this.dx = this.x - v.x;
+-		this.dy = this.y - v.y;
+-		this.dz = this.z - v.z;
+-		
+-		return Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
+-	},
+-	
+-	distanceToSquared: function(v)
+-	{
+-		this.dx = this.x - v.x;
+-		this.dy = this.y - v.y;
+-		this.dz = this.z - v.z;
+-		
+-		return this.dx * this.dx + this.dy * this.dy + this.dz * this.dz;
+-	},
++	this.dot = function (v) {
++	
++		return this.x * v.x + this.y * v.y + this.z * v.z;
++	}
++	
++	this.distanceTo = function (v) {
++	
++		var dx = this.x - v.x, dy = this.y - v.y, dz = this.z - v.z;
++		return Math.sqrt(dx * dx + dy * dy + dz * dz);
++	}
++	
++	this.distanceToSquared = function (v) {
++	
++		var dx = this.x - v.x, dy = this.y - v.y, dz = this.z - v.z;
++		return dx * dx + dy * dy + dz * dz;
++	}
++	
++	this.length = function () {
+ 	
+-	length: function()
+-	{
+ 		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+-	},
++	}
++	
++	this.lengthSq = function () {
+ 	
+-	lengthSq: function()
+-	{
+ 		return this.x * this.x + this.y * this.y + this.z * this.z;
+-	},
++	}
++	
++	this.negate = function () {
+ 	
+-	negate: function()
+-	{
+ 		this.x = -this.x;
+ 		this.y = -this.y;
+ 		this.z = -this.z;
+-	},
+-	
+-	normalize: function()
+-	{
+-		if (this.length() > 0)
+-			this.ool = 1.0 / this.length();
+-		else
+-			this.ool = 0;
++	}
++	
++	this.normalize = function () {
++	
++		if (this.length() > 0) {
++		
++			this.multiplyScalar(1 / this.length());
+ 			
+-		this.x *= this.ool;
+-		this.y *= this.ool;
+-		this.z *= this.ool;
+-		return this;
+-	},
+-	
+-	dot: function(v)
+-	{
+-		return this.x * v.x + this.y * v.y + this.z * v.z;
+-	},
++		} else {
++		
++			this.multiplyScalar(0);
++		}
++	}
+ 	
+-	clone: function()
+-	{
+-		return new Vector3(this.x, this.y, this.z);
+-	},	
++	this.isZero = function () {
+ 	
+-	toString: function()
+-	{
+-		return 'Vector3 (' + this.x + ', ' + this.y + ', ' + this.z + ')';
++		var almostZero = 0.0001;
++		return (Math.abs(this.x) < almostZero) && (Math.abs(this.y) < almostZero) && (Math.abs(this.z) < almostZero);
++	}	
++	
++	this.clone = function () {
++	
++		return new THREE.Vector3(this.x, this.y, this.z);
+ 	}
+ 	
+-});
+-
+-Vector3.add = function(a, b)
+-{
+-	return new Vector3( a.x + b.x, a.y + b.y, a.z + b.z );
+-}
+-
+-Vector3.sub = function(a, b)
+-{
+-	return new Vector3( a.x - b.x, a.y - b.y, a.z - b.z );
+-}		
+-
+-Vector3.multiply = function(a, s)
+-{
+-	return new Vector3( a.x * s, a.y * s, a.z * s );
+-}
+-
+-Vector3.cross = function(a, b)
+-{
+-	return new Vector3( a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x );
+-}
+-
+-Vector3.dot = function(a, b)
+-{
+-	return a.x * b.x + a.y * b.y + a.z * b.z;
++	this.toString = function () {
++	
++		return 'THREE.Vector3 (' + this.x + ', ' + this.y + ', ' + this.z + ')';
++	}
+ }
+diff --git a/src/core/Vector4.js b/src/core/Vector4.js
+new file mode 100644
+index 000000000..a1a52dd3c
+--- /dev/null
++++ b/src/core/Vector4.js
+@@ -0,0 +1,74 @@
++/**
++ * @author supereggbert / http://www.paulbrunt.co.uk/
++ */
++
++THREE.Vector4 = function (x, y, z, w) {
++
++	this.x = x || 0;
++	this.y = y || 0;
++	this.z = z || 0;
++	this.w = w || 1;
++
++	this.set = function (x, y, z, w) {
++	
++		this.x = x;
++		this.y = y;
++		this.z = z;
++		this.w = w;
++	}
++
++	this.copy = function (v) {
++	
++		this.x = v.x;
++		this.y = v.y;
++		this.z = v.z;
++		this.w = v.w;
++	}
++
++	this.add = function (v1, v2) {
++	
++		this.x = v1.x + v2.x;
++		this.y = v1.y + v2.y;
++		this.z = v1.z + v2.z;	
++		this.w = v1.w + v2.w;
++	}
++
++	this.addSelf = function (v) {
++	
++		this.x += v.x;
++		this.y += v.y;
++		this.z += v.z;
++		this.w += v.w;
++	}
++
++	this.sub = function (v1, v2) {
++	
++		this.x = v1.x - v2.x;
++		this.y = v1.y - v2.y;
++		this.z = v1.z - v2.z;	
++		this.w = v1.w - v2.w;
++	}
++	
++	this.subSelf = function (v) {
++	
++		this.x -= v.x;
++		this.y -= v.y;
++		this.z -= v.z;
++		this.w -= v.w;
++	}
++
++	this.clone = function () {
++	
++		return new THREE.Vector4(this.x, this.y, this.z, this.w);
++	}
++	
++	this.toVector3 = function () {
++
++		return new THREE.Vector3(this.x / this.w, this.y / this.w, this.z / this.w);
++	}
++
++	this.toString = function () {
++	
++		return 'THREE.Vector4 (' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ')';
++	}
++}
+diff --git a/src/core/Vertex.js b/src/core/Vertex.js
+index 196a8768c..61baac932 100755
+--- a/src/core/Vertex.js
++++ b/src/core/Vertex.js
+@@ -1,18 +1,17 @@
+-var Vertex = Vector3.extend
+-({
+-	u: null, v: null,
+-	screen: null,
+-	normal : null,
+-	visible: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	init: function(x, y, z)
+-	{
+-		this._super(x, y, z);
+-		this.screen = new Vector3();
+-	},
++THREE.Vertex = function (position, normal) {
+ 
+-	toString: function()
+-	{
+-		return 'Vertex ( ' + this.x + ', ' + this.y + ', ' + this.z + ' )';
++	this.position = position || new THREE.Vector3();
++	this.normal = normal || new THREE.Vector3();
++	this.screen = new THREE.Vector3();
++	
++	this.visible = true; // internal
++
++	this.toString = function () {
++	
++		return 'THREE.Vertex ( position: ' + this.position + ', normal: ' + this.normal + ' )';
+ 	}
+-});
++}
+diff --git a/src/materials/ColorFillMaterial.js b/src/materials/ColorFillMaterial.js
+new file mode 100755
+index 000000000..43253a320
+--- /dev/null
++++ b/src/materials/ColorFillMaterial.js
+@@ -0,0 +1,13 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.ColorFillMaterial = function (hex, opacity) {
++
++	this.color = new THREE.Color( (opacity ? (opacity * 0xff) << 24 : 0xff000000) | hex );
++	
++	this.toString = function () {
++	
++		return 'THREE.ColorFillMaterial ( color: ' + this.color + ' )';	
++	}
++}
+diff --git a/src/materials/ColorMaterial.js b/src/materials/ColorMaterial.js
+deleted file mode 100755
+index 3274f9472..000000000
+--- a/src/materials/ColorMaterial.js
++++ /dev/null
+@@ -1,9 +0,0 @@
+-var ColorMaterial = Class.extend
+-({
+-	color: null,
+-
+-	init: function( hex, opacity )
+-	{
+-		this.color = new Color( (opacity ? (opacity * 0xff) << 24 : 0xff000000) | hex );
+-	}
+-});
+diff --git a/src/materials/ColorStrokeMaterial.js b/src/materials/ColorStrokeMaterial.js
+new file mode 100755
+index 000000000..94fe285c1
+--- /dev/null
++++ b/src/materials/ColorStrokeMaterial.js
+@@ -0,0 +1,14 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.ColorStrokeMaterial = function (hex, opacity, lineWidth) {
++
++	this.lineWidth = lineWidth || 1;
++	this.color = new THREE.Color( (opacity ? (opacity * 0xff) << 24 : 0xff000000) | hex );
++	
++	this.toString = function () {
++	
++		return 'THREE.ColorStrokeMaterial ( lineWidth: ' + this.lineWidth + ', color: ' + this.color + ' )';
++	}	
++}
+diff --git a/src/materials/FaceColorFillMaterial.js b/src/materials/FaceColorFillMaterial.js
+new file mode 100755
+index 000000000..c694be2a3
+--- /dev/null
++++ b/src/materials/FaceColorFillMaterial.js
+@@ -0,0 +1,12 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.FaceColorFillMaterial = function () {
++
++	this.toString = function () {
++
++		return 'THREE.FaceColorFillMaterial ( )';
++		
++	}
++}
+diff --git a/src/materials/FaceColorMaterial.js b/src/materials/FaceColorMaterial.js
+deleted file mode 100755
+index 52f5c7620..000000000
+--- a/src/materials/FaceColorMaterial.js
++++ /dev/null
+@@ -1,3 +0,0 @@
+-var FaceColorMaterial = Class.extend
+-({
+-});
+diff --git a/src/materials/FaceColorStrokeMaterial.js b/src/materials/FaceColorStrokeMaterial.js
+new file mode 100755
+index 000000000..b6474e863
+--- /dev/null
++++ b/src/materials/FaceColorStrokeMaterial.js
+@@ -0,0 +1,14 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.FaceColorStrokeMaterial = function (lineWidth) {
++
++	this.lineWidth = lineWidth || 1;
++	
++	this.toString = function () {
++
++		return 'THREE.FaceColorStrokeMaterial ( lineWidth: ' + this.lineWidth + ' )';
++		
++	}	
++}
+diff --git a/src/objects/Line.js b/src/objects/Line.js
+new file mode 100755
+index 000000000..4f6a07a0b
+--- /dev/null
++++ b/src/objects/Line.js
+@@ -0,0 +1,14 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.Line = function (geometry, material) {
++
++	THREE.Object3D.call(this, material);
++	
++	this.geometry = geometry;
++
++}
++
++THREE.Line.prototype = new THREE.Object3D();
++THREE.Line.prototype.constructor = THREE.Line;
+diff --git a/src/objects/Mesh.js b/src/objects/Mesh.js
+index 104561606..11296c192 100755
+--- a/src/objects/Mesh.js
++++ b/src/objects/Mesh.js
+@@ -1,14 +1,16 @@
+-var Mesh = Object3D.extend
+-({
+-	geometry: null,
+-	material: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.Mesh = function (geometry, material) {
++
++	THREE.Object3D.call(this, material);
++	
++	this.geometry = geometry;
+ 	
+-	doubleSide: null,
+-
+-	init: function( geometry, material )
+-	{
+-		this._super();
+-		this.geometry = geometry;
+-		this.material = material;
+-	}
+-});
++	this.doubleSided = false;
++
++}
++
++THREE.Mesh.prototype = new THREE.Object3D();
++THREE.Mesh.prototype.constructor = THREE.Mesh;
+diff --git a/src/objects/Object3D.js b/src/objects/Object3D.js
+index 993925457..88895c6e7 100644
+--- a/src/objects/Object3D.js
++++ b/src/objects/Object3D.js
+@@ -1,29 +1,27 @@
+-var Object3D = Class.extend
+-({
+-	position: null,
+-	rotation: null,
+-	scale: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	matrix: null,
+-	screen: null,
++THREE.Object3D = function (material) {
+ 
+-	init: function()
+-	{
+-		this.position = new Vector3(0, 0, 0);
+-		this.rotation = new Vector3(0, 0, 0);
+-		this.scale = new Vector3(1, 1, 1);
++	this.position = new THREE.Vector3(0, 0, 0);
++	this.rotation = new THREE.Vector3(0, 0, 0);
++	this.scale = new THREE.Vector3(1, 1, 1);
+ 
+-		this.matrix = new Matrix4();
+-		this.screen = new Vector3(0, 0, 0);		
+-	},
++	this.matrix = new THREE.Matrix4();
++	this.screen = new THREE.Vector3(0, 0, 0);
++	
++	this.material = material instanceof Array ? material : [material];
++
++	this.updateMatrix = function () {
+ 
+-	updateMatrix: function()
+-	{
+ 		this.matrix.identity();
+-		this.matrix.multiplySelf( Matrix4.translationMatrix( this.position.x, this.position.y, this.position.z) );
+-		this.matrix.multiplySelf( Matrix4.rotationXMatrix( this.rotation.x ) );
+-		this.matrix.multiplySelf( Matrix4.rotationYMatrix( this.rotation.y ) );
+-		this.matrix.multiplySelf( Matrix4.rotationZMatrix( this.rotation.z ) );
+-		this.matrix.multiplySelf( Matrix4.scaleMatrix( this.scale.x, this.scale.y, this.scale.z ) );
++
++		this.matrix.multiplySelf(THREE.Matrix4.translationMatrix(this.position.x, this.position.y, this.position.z));
++		this.matrix.multiplySelf(THREE.Matrix4.rotationXMatrix(this.rotation.x));
++		this.matrix.multiplySelf(THREE.Matrix4.rotationYMatrix(this.rotation.y));
++		this.matrix.multiplySelf(THREE.Matrix4.rotationZMatrix(this.rotation.z));
++		this.matrix.multiplySelf(THREE.Matrix4.scaleMatrix(this.scale.x, this.scale.y, this.scale.z));
++		
+ 	}
+-});
++}
+diff --git a/src/objects/Particle.js b/src/objects/Particle.js
+index 5fe782b33..ad07f0b76 100755
+--- a/src/objects/Particle.js
++++ b/src/objects/Particle.js
+@@ -1,11 +1,13 @@
+-var Particle = Object3D.extend
+-({
+-	size: 1,
+-	material: null,
+-
+-	init: function( material )
+-	{
+-		this._super();
+-		this.material = material;
+-	}
+-});
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.Particle = function (material) {
++
++	THREE.Object3D.call(this, material);
++
++	this.size = 1;
++}
++
++THREE.Particle.prototype = new THREE.Object3D();
++THREE.Particle.prototype.constructor = THREE.Particle;
+diff --git a/src/objects/primitives/Cube.js b/src/objects/primitives/Cube.js
+deleted file mode 100755
+index c0a8d82f1..000000000
+--- a/src/objects/primitives/Cube.js
++++ /dev/null
+@@ -1,37 +0,0 @@
+-var Cube = Geometry.extend
+-({
+-	init: function( width, height, depth )
+-	{
+-		this._super();
+-		
+-		var width_half = width / 2;
+-		var height_half = height / 2;
+-		var depth_half = depth / 2;
+-		
+-		this.v(  width_half,  height_half, -depth_half );
+-		this.v(  width_half, -height_half, -depth_half );
+-		this.v( -width_half, -height_half, -depth_half );
+-		this.v( -width_half,  height_half, -depth_half );
+-		this.v(  width_half,  height_half,  depth_half );
+-		this.v(  width_half, -height_half,  depth_half );
+-		this.v( -width_half, -height_half,  depth_half );
+-		this.v( -width_half,  height_half,  depth_half );
+-		
+-		this.f4( 0, 1, 2, 3 );
+-		this.f4( 4, 7, 6, 5 );
+-		this.f4( 0, 4, 5, 1 );
+-		this.f4( 1, 5, 6, 2 );
+-		this.f4( 2, 6, 7, 3 );
+-		this.f4( 4, 0, 3, 7 );
+-	},
+-
+-	v: function( x, y, z )
+-	{
+-		this.vertices.push( new Vertex( x, y, z ) );
+-	},
+-
+-	f4: function( a, b, c, d )
+-	{
+-		this.faces.push( new Face4( this.vertices[a], this.vertices[b], this.vertices[c], this.vertices[d] ) );
+-	}	
+-});
+diff --git a/src/objects/primitives/Plane.js b/src/objects/primitives/Plane.js
+deleted file mode 100755
+index 85427c52d..000000000
+--- a/src/objects/primitives/Plane.js
++++ /dev/null
+@@ -1,27 +0,0 @@
+-var Plane = Geometry.extend
+-({
+-	init: function( width, height )
+-	{
+-		this._super();
+-		
+-		var width_half = width / 2;
+-		var height_half = height / 2;
+-		
+-		this.v( -width_half,  height_half, 0 );
+-		this.v(  width_half,  height_half, 0 );
+-		this.v(  width_half, -height_half, 0 );
+-		this.v( -width_half, -height_half, 0 );
+-		
+-		this.f4( 0, 1, 2, 3 );
+-	},
+-	
+-	v: function( x, y, z )
+-	{
+-		this.vertices.push( new Vertex( x, y, z ) );
+-	},
+-
+-	f4: function( a, b, c, d )
+-	{
+-		this.faces.push( new Face4( this.vertices[a], this.vertices[b], this.vertices[c], this.vertices[d] ) );
+-	}	
+-});
+diff --git a/src/renderers/CanvasRenderer.js b/src/renderers/CanvasRenderer.js
+index 79fdb045b..b0d13c139 100755
+--- a/src/renderers/CanvasRenderer.js
++++ b/src/renderers/CanvasRenderer.js
+@@ -1,75 +1,101 @@
+-var CanvasRenderer = Renderer.extend
+-({
+-	context: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	init: function()
+-	{
+-		this._super();
++THREE.CanvasRenderer = function () {
+ 
+-		this.viewport = document.createElement("canvas");
+-		this.viewport.style.position = "absolute";
++	THREE.Renderer.call(this);
+ 
+-		this.context = this.viewport.getContext("2d");
+-	},
+-
+-	setSize: function( width, height )
+-	{
+-		this._super( width, height );
+-
+-		this.viewport.width = this.width;
+-		this.viewport.height = this.height;
++	var viewport = document.createElement("canvas"),
++	context = viewport.getContext("2d");
++	
++	this.setSize = function (width, height) {
++	
++		viewport.width = width;
++		viewport.height = height;
+ 		
+-		this.context.setTransform(1, 0, 0, 1, this.widthHalf, this.heightHalf);
+-	},
++		context.setTransform(1, 0, 0, 1, width / 2, height / 2);
++	}
++	
++	this.domElement = viewport;
+ 
+-	render: function( scene, camera )
+-	{
+-		this._super( scene, camera );
++	this.render = function (scene, camera) {
++	
++		var i, j, element, pi2 = Math.PI * 2,
++		elementsLength, material, materialLength;
+ 
+-		var element , pi2 = Math.PI * 2;
++		context.clearRect (-viewport.width / 2, -viewport.height / 2, viewport.width, viewport.height);
+ 
+-		this.context.clearRect (-this.widthHalf, -this.heightHalf, this.width, this.height);
++		this.project(scene, camera);
++
++		elementsLength = this.renderList.length;
++		
++		for (i = 0; i < elementsLength; i++) {
++		
++			element = this.renderList[i];
++			materialLength = element.material.length;
+ 		
+-		for (j = 0; j < this.renderList.length; j++)
+-		{
+-			element = this.renderList[j];
++			for (j = 0; j < materialLength; j++) {
++		
++				material = element.material[j];
+ 			
+-			if (element.material instanceof ColorMaterial)
+-			{
+-				this.context.fillStyle = element.material.color.styleString;
+-			}
+-			else if (element.material instanceof FaceColorMaterial)
+-			{
+-				this.context.fillStyle = element.color.styleString;
+-			}
++				context.beginPath();
++
++				if (element instanceof THREE.RenderableFace3) {
+ 			
+-			if (element instanceof Face3)
+-			{
+-				this.context.beginPath();
+-				this.context.moveTo(element.a.screen.x, element.a.screen.y);
+-				this.context.lineTo(element.b.screen.x, element.b.screen.y);
+-				this.context.lineTo(element.c.screen.x, element.c.screen.y);
+-				this.context.fill();
+-				this.context.closePath();
+-			}
+-			else if (element instanceof Face4)
+-			{
+-				this.context.beginPath();
+-				this.context.moveTo(element.a.screen.x, element.a.screen.y);
+-				this.context.lineTo(element.b.screen.x, element.b.screen.y);
+-				this.context.lineTo(element.c.screen.x, element.c.screen.y);
+-				this.context.lineTo(element.d.screen.x, element.d.screen.y);
+-				this.context.fill();
+-				this.context.closePath();
+-			}
+-			else if (element instanceof Particle)
+-			{
+-				this.context.beginPath();
+-				this.context.arc(element.screen.x, element.screen.y, element.size * element.screen.z, 0, pi2, true);
+-				this.context.fill();
+-				this.context.closePath();				
+-			}
++					context.moveTo(element.v1.x, element.v1.y);
++					context.lineTo(element.v2.x, element.v2.y);
++					context.lineTo(element.v3.x, element.v3.y);
++					context.lineTo(element.v1.x, element.v1.y);
++				
++				} else if (element instanceof THREE.RenderableFace4) {
++
++					context.moveTo(element.v1.x, element.v1.y);
++					context.lineTo(element.v2.x, element.v2.y);
++					context.lineTo(element.v3.x, element.v3.y);
++					context.lineTo(element.v4.x, element.v4.y);
++					context.lineTo(element.v1.x, element.v1.y);
++				
++				} else if (element instanceof THREE.RenderableParticle) {
++			
++					context.arc(element.x, element.y, element.size * element.screenZ, 0, pi2, true);
++				}
++				
++				
++				if (material instanceof THREE.ColorFillMaterial) {
++			
++					context.fillStyle = material.color.styleString;
++					context.fill();
+ 			
++				} else if (material instanceof THREE.FaceColorFillMaterial) {
++			
++					context.fillStyle = element.color.styleString;
++					context.fill();
++
++				} else if (material instanceof THREE.ColorStrokeMaterial) {
++				
++					context.lineWidth = material.lineWidth;
++					context.lineJoin = "round";
++					context.lineCap = "round";
++
++					context.strokeStyle = material.color.styleString;
++					context.stroke();
++				
++				} else if (material instanceof THREE.FaceColorStrokeMaterial) {
++				
++					context.lineWidth = material.lineWidth;
++					context.lineJoin = "round";
++					context.lineCap = "round";
++					
++					context.strokeStyle = element.color.styleString;					
++					context.stroke();
++				}
++				
++				context.closePath();			
++			}
+ 		}
+ 	}
+-});
++}
++
++THREE.CanvasRenderer.prototype = new THREE.Renderer();
++THREE.CanvasRenderer.prototype.constructor = THREE.CanvasRenderer;
+diff --git a/src/renderers/GLRenderer.js b/src/renderers/GLRenderer.js
+new file mode 100644
+index 000000000..ec7baba39
+--- /dev/null
++++ b/src/renderers/GLRenderer.js
+@@ -0,0 +1,323 @@
++/**
++ * @author supereggbert / http://www.paulbrunt.co.uk/
++ */
++
++/* TODO: Refactoring */
++
++var GLRenderer = Renderer.extend
++({
++	init: function()
++	{
++		this._super();
++		
++		this.viewport = document.createElement("canvas");
++		this.viewport.style.position = "absolute";
++		
++		try {
++			this.gl = this.viewport.getContext("experimental-webgl");
++		} catch(e) {}
++			
++		if (!this.gl) {
++			alert("WebGL not supported");
++			throw "cannot create webgl context";
++		}
++		
++		this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
++		this.gl.clearDepth(1.0);
++		this.gl.enable(this.gl.DEPTH_TEST);
++		this.gl.depthFunc(this.gl.LESS);
++		this.gl.enable(this.gl.BLEND);
++		this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE_MINUS_SRC_ALPHA);
++		this.gl.clearColor(0,0,0,0);
++		this.createProgram();
++		this.initParticles(32);
++	},
++	
++	setSize: function( width, height )
++	{
++		this._super( width, height );
++
++		this.viewport.width = this.width;
++		this.viewport.height = this.height;
++		this.gl.viewport(0,0,this.width,this.height);
++	},
++	
++	initParticles: function (segments)
++	{
++		var gl=this.gl;
++		var x,y;
++		var vertexArray=[0,0,0];
++		var faceArray=[];
++		piStep=6.282/segments;
++		for(var i=0;i<segments;i++){
++			x=Math.sin(piStep*i);
++			y=Math.cos(piStep*i);
++			vertexArray.push(x,y,0);
++			if(i>0)
++			{
++				faceArray.push(0,i,i+1);
++			}
++		}
++		faceArray.push(0,i,1);
++		
++		var vtxShader=[
++		"attribute vec3 position;",
++		"uniform vec3 location;",
++		"uniform mat4 cameraMatrix;",
++		"uniform mat4 pMatrix;",
++		"uniform float size;",
++		"void main(){",
++		"vec4 pos=cameraMatrix*vec4(location,1.0);",
++		"pos=vec4(position*vec3(size),0.0)+pos;",
++		"gl_Position = pMatrix*pos;",
++		"}"
++		].join("");
++		
++		frgShader=[
++		"uniform vec4 color;",
++		"void main(){",
++		"gl_FragColor=color;",
++		"}"
++		].join("");
++		
++		var vertexShader=gl.createShader(gl.VERTEX_SHADER);
++		var fragmentShader=gl.createShader(gl.FRAGMENT_SHADER);
++
++		gl.shaderSource(vertexShader, vtxShader);
++		gl.compileShader(vertexShader);
++				
++		gl.shaderSource(fragmentShader,frgShader);
++		gl.compileShader(fragmentShader);
++		
++		this.particleProgram = gl.createProgram();
++		gl.attachShader(this.particleProgram, vertexShader);
++		gl.attachShader(this.particleProgram, fragmentShader);
++		gl.linkProgram(this.particleProgram);
++		
++		this.particleProgram.cameraMatrix=gl.getUniformLocation(this.particleProgram, "cameraMatrix");
++		this.particleProgram.pMatrix=gl.getUniformLocation(this.particleProgram, "pMatrix");
++		this.particleProgram.color=gl.getUniformLocation(this.particleProgram, "color");
++		this.particleProgram.size=gl.getUniformLocation(this.particleProgram, "size");
++		this.particleProgram.location=gl.getUniformLocation(this.particleProgram, "location");
++		this.particleProgram.position=gl.getAttribLocation(this.particleProgram, "position");
++		
++		this.particleProgram.mvMatrixArray=new WebGLFloatArray(16);
++		this.particleProgram.pMatrixArray=new WebGLFloatArray(16);
++		
++		this.particleProgram.webGLVertexBuffer = gl.createBuffer();
++		gl.bindBuffer( gl.ARRAY_BUFFER, this.particleProgram.webGLVertexBuffer );
++		gl.bufferData( gl.ARRAY_BUFFER, new WebGLFloatArray(vertexArray), gl.STATIC_DRAW );
++					
++		this.particleProgram.webGLFaceBuffer = gl.createBuffer();
++		gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, this.particleProgram.webGLFaceBuffer );
++		gl.bufferData( gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(faceArray), gl.STATIC_DRAW );	
++		this.particleProgram.faceNum=faceArray.length;
++		
++		this.particleProgram.cameraMatrixArray=new WebGLFloatArray(16);
++		this.particleProgram.pMatrixArray=new WebGLFloatArray(16);
++	},
++	
++	createProgram: function()
++	{
++		var gl=this.gl;
++		
++		var vtxShader=[
++		"attribute vec3 position;",
++		"attribute vec4 color;",
++		"uniform mat4 mvMatrix;",
++		"uniform mat4 pMatrix;",
++		"varying vec4 vcolor;",
++		"void main(){",
++		"vcolor=color;",
++		"gl_Position = pMatrix*mvMatrix*vec4(position,1.0);",
++		"}"
++		].join("");
++		
++		frgShader=[
++		"varying vec4 vcolor;",
++		"void main(){",
++		"gl_FragColor=vcolor;",
++		"}"
++		].join("");
++		
++		var vertexShader=gl.createShader(gl.VERTEX_SHADER);
++		var fragmentShader=gl.createShader(gl.FRAGMENT_SHADER);
++
++		gl.shaderSource(vertexShader, vtxShader);
++		gl.compileShader(vertexShader);
++	
++		gl.shaderSource(fragmentShader,frgShader);
++		gl.compileShader(fragmentShader);
++		
++		
++		this.program = gl.createProgram();
++		gl.attachShader(this.program, vertexShader);
++		gl.attachShader(this.program, fragmentShader);
++		gl.linkProgram(this.program);
++		
++		this.program.mvMatrix=gl.getUniformLocation(this.program, "mvMatrix");
++		this.program.pMatrix=gl.getUniformLocation(this.program, "pMatrix");
++		this.program.position=gl.getAttribLocation(this.program, "position");
++		this.program.color=gl.getAttribLocation(this.program, "color");
++		
++		this.program.mvMatrixArray=new WebGLFloatArray(16);
++		this.program.pMatrixArray=new WebGLFloatArray(16);
++	},
++	
++	matrix2Array: function( matrix, array )
++	{
++		array[0]=matrix.n11;
++		array[1]=matrix.n12;
++		array[2]=matrix.n13;
++		array[3]=matrix.n14;
++		array[4]=matrix.n21;
++		array[5]=matrix.n22;
++		array[6]=matrix.n23;
++		array[7]=matrix.n24;
++		array[8]=matrix.n31;
++		array[9]=matrix.n32;
++		array[10]=matrix.n33;
++		array[11]=matrix.n34;
++		array[12]=matrix.n41;
++		array[13]=matrix.n42;
++		array[14]=matrix.n43;
++		array[15]=matrix.n44;
++	},
++	
++	render: function( scene, camera )
++	{		
++		var gl=this.gl;
++		var vertexArray,colorArray,faceArray;
++		
++		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
++		
++		for (var i = 0; i < scene.objects.length; i++)
++		{
++			object = scene.objects[i];
++			if (object instanceof Mesh)
++			{
++				// Very inefficient but easiest way initially
++				
++				var vertexArray = [];
++				var faceArray = [];
++				var colorArray = [];
++				var vertexIndex = 0;
++				var color;
++							
++				for (j = 0; j < object.geometry.faces.length; j++)
++				{
++					face = object.geometry.faces[j];
++					if (object.material instanceof ColorMaterial)
++					{
++						color=object.material.color;
++					}
++					else if (object.material instanceof FaceColorMaterial)
++					{
++						color = face.color;
++					}
++					if (face instanceof Face3)
++					{
++						vertexArray.push( face.a.x, face.a.y, face.a.z );
++						vertexArray.push( face.b.x, face.b.y, face.b.z );
++						vertexArray.push( face.c.x, face.c.y, face.c.z );
++						colorArray.push( color.r/255, color.g/255, color.b/255, color.a/255 );
++						colorArray.push( color.r/255, color.g/255, color.b/255, color.a/255 );
++						colorArray.push( color.r/255, color.g/255, color.b/255, color.a/255 );
++						faceArray.push( vertexIndex, vertexIndex+1, vertexIndex+2 );
++						vertexIndex += 3;
++					}
++					else if (face instanceof Face4)
++					{					
++						vertexArray.push( face.a.x, face.a.y, face.a.z );
++						vertexArray.push( face.b.x, face.b.y, face.b.z );
++						vertexArray.push( face.c.x, face.c.y, face.c.z );
++						vertexArray.push( face.d.x, face.d.y, face.d.z );
++						colorArray.push( color.r/255, color.g/255, color.b/255, color.a/255 );
++						colorArray.push( color.r/255, color.g/255, color.b/255, color.a/255 );
++						colorArray.push( color.r/255, color.g/255, color.b/255, color.a/255 );
++						colorArray.push( color.r/255, color.g/255, color.b/255, color.a/255 );
++						faceArray.push( vertexIndex, vertexIndex+1, vertexIndex+2 );
++						faceArray.push( vertexIndex, vertexIndex+2, vertexIndex+3 );
++						vertexIndex += 4;
++					}
++				}
++
++				vertexArray = new WebGLFloatArray(vertexArray);
++				colorArray = new WebGLFloatArray(colorArray);
++				faceArray = new WebGLUnsignedShortArray(faceArray);
++				
++				
++				if (!object.WebGLVertexBuffer) object.WebGLVertexBuffer = gl.createBuffer();
++				gl.bindBuffer( gl.ARRAY_BUFFER, object.WebGLVertexBuffer );
++				gl.bufferData( gl.ARRAY_BUFFER, vertexArray, gl.DYNAMIC_DRAW );
++					
++				if (!object.WebGLColorBuffer) object.WebGLColorBuffer = gl.createBuffer();
++				gl.bindBuffer( gl.ARRAY_BUFFER, object.WebGLColorBuffer );
++				gl.bufferData( gl.ARRAY_BUFFER, colorArray, gl.DYNAMIC_DRAW );
++					
++				if(!object.WebGLFaceBuffer) object.WebGLFaceBuffer = gl.createBuffer();
++				gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, object.WebGLFaceBuffer );
++				gl.bufferData( gl.ELEMENT_ARRAY_BUFFER, faceArray, gl.DYNAMIC_DRAW );
++					
++				gl.useProgram(this.program);
++			
++				this.matrix.multiply( camera.matrix, object.matrix );
++				
++				this.matrix2Array( this.matrix, this.program.mvMatrixArray );
++				this.matrix2Array( camera.projectionMatrix, this.program.pMatrixArray );
++				
++				gl.uniformMatrix4fv(this.program.pMatrix, true, this.program.pMatrixArray);
++				gl.uniformMatrix4fv(this.program.mvMatrix, true, this.program.mvMatrixArray);
++				
++				for(var n=0; n<8; n++) gl.disableVertexAttribArray(i);
++				
++				gl.bindBuffer(gl.ARRAY_BUFFER, object.WebGLVertexBuffer);
++				gl.enableVertexAttribArray(this.program.position);
++				gl.vertexAttribPointer(this.program.position, 3, gl.FLOAT, false, 0, 0);
++				
++				gl.bindBuffer(gl.ARRAY_BUFFER, object.WebGLColorBuffer);
++				gl.enableVertexAttribArray(this.program.color);
++				gl.vertexAttribPointer(this.program.color, 4, gl.FLOAT, false, 0, 0);
++				
++				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, object.WebGLFaceBuffer);
++				gl.drawElements(gl.TRIANGLES,faceArray.length, gl.UNSIGNED_SHORT, 0);
++				
++			}
++			else if (object instanceof Particle)
++			{	
++				var color
++				if (object.material instanceof ColorMaterial)
++				{
++					color=object.material.color;
++				}
++				else if (object.material instanceof FaceColorMaterial)
++				{
++					color = face.color;
++				}
++					
++				gl.useProgram(this.particleProgram);
++				
++				gl.bindBuffer(gl.ARRAY_BUFFER, this.particleProgram.webGLVertexBuffer);
++				gl.enableVertexAttribArray(this.particleProgram.position);
++				gl.vertexAttribPointer(this.particleProgram.position, 3, gl.FLOAT, false, 0, 0);
++				
++				gl.uniform3f( this.particleProgram.location, object.position.x, object.position.y, object.position.z );
++				gl.uniform4f( this.particleProgram.color, color.r/255, color.g/255, color.b/255, color.a/255 );
++				gl.uniform1f( this.particleProgram.size, object.size);
++				
++				this.matrix2Array( camera.matrix, this.particleProgram.cameraMatrixArray );
++				this.matrix2Array( camera.projectionMatrix, this.particleProgram.pMatrixArray );
++				
++				gl.uniformMatrix4fv(this.particleProgram.pMatrix, true, this.particleProgram.pMatrixArray);
++				gl.uniformMatrix4fv(this.particleProgram.cameraMatrix, true, this.particleProgram.cameraMatrixArray);
++				
++				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.particleProgram.webGLFaceBuffer);
++				gl.drawElements(gl.TRIANGLES,this.particleProgram.faceNum, gl.UNSIGNED_SHORT, 0);
++				
++			}
++			
++		}
++	}
++});
++	
++	
+diff --git a/src/renderers/Renderer.js b/src/renderers/Renderer.js
+index 5facb4f5d..307153b30 100755
+--- a/src/renderers/Renderer.js
++++ b/src/renderers/Renderer.js
+@@ -1,68 +1,52 @@
+-var Renderer = Class.extend
+-({
+-	matrix: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	viewport: null,
+-	renderList: null,
++THREE.Renderer = function() {
+ 
+-	face3Pool: null,
+-	face4Pool: null,
++	var face3Pool = [],
++	face4Pool = [],
++	particlePool = [],
+ 
+-	width: null,
+-	height: null,
+-	widthHalf: null,
+-	heightHalf: null,
++	matrix = new THREE.Matrix4();
+ 
+-	init: function()
+-	{
+-		this.matrix = new Matrix4();
++	this.renderList;
+ 
+-		this.face3Pool = new Array();
+-		this.face4Pool = new Array();
+-	},
+-
+-	setSize: function( width, height )
+-	{
+-		this.width = width;
+-		this.height = height;
+-
+-		this.widthHalf = this.width / 2;
+-		this.heightHalf = this.height / 2;
+-	},
+-
+-	sort: function(a, b)
+-	{
+-		return a.screen.z - b.screen.z;
+-	},
+-
+-	render: function( scene, camera )
+-	{
+-		var vertex, face, object;
+-		var face3count = 0, face4count = 0;
++	function sort(a, b) {
++	
++		return a.screenZ - b.screenZ;
++	}
+ 
+-		var focuszoom = camera.focus * camera.zoom;
++	this.project = function (scene, camera) {
++	
++		var i, j, vertex, face, object, v1, v2, v3, v4,
++		face3count = 0, face4count = 0, particleCount = 0,
++		camerafocus = camera.focus, focuszoom = camera.focus * camera.zoom,
++		verticesLength = 0, facesLength = 0;
+ 
+-		this.renderList = new Array();
++		this.renderList = [];
+ 
+-		for (var i = 0; i < scene.objects.length; i++)
+-		{
++		for (i = 0; i < scene.objects.length; i++) {
++		
+ 			object = scene.objects[i];
+ 
+-			if (object instanceof Mesh)
+-			{
+-				this.matrix.multiply( camera.matrix, object.matrix );
++			if (object instanceof THREE.Mesh) {
++			
++				matrix.multiply(camera.matrix, object.matrix);
+ 
+ 				// vertices
+ 
+-				for (var j = 0; j < object.geometry.vertices.length; j++)
+-				{
++				verticesLength = object.geometry.vertices.length;
++
++				for (j = 0; j < verticesLength; j++) {
++				
+ 					vertex = object.geometry.vertices[j];
+ 
+-					vertex.screen.copy( vertex );
++					vertex.screen.copy(vertex.position);
+ 
+-					this.matrix.transform( vertex.screen );
++					matrix.transform(vertex.screen);
+ 
+-					vertex.screen.z = focuszoom / (camera.focus + vertex.screen.z);
++					vertex.screen.z = focuszoom / (camerafocus + vertex.screen.z);
+ 
+ 					vertex.visible = vertex.screen.z > 0;					
+ 
+@@ -72,81 +56,116 @@ var Renderer = Class.extend
+ 
+ 				// faces
+ 
+-				for (j = 0; j < object.geometry.faces.length; j++)
+-				{
++				facesLength = object.geometry.faces.length;
++
++				for (j = 0; j < facesLength; j++) {
++				
+ 					face = object.geometry.faces[j];
+ 					
+ 					// TODO: Use normals for culling
+ 
+-					if (face instanceof Face3)
+-					{
+-						if (face.a.visible && face.b.visible && face.c.visible && (object.doubleSided ||
+-						   (face.c.screen.x - face.a.screen.x) * (face.b.screen.y - face.a.screen.y) -
+-						   (face.c.screen.y - face.a.screen.y) * (face.b.screen.x - face.a.screen.x) > 0) )
+-						{
+-							face.screen.z = (face.a.screen.z + face.b.screen.z + face.c.screen.z) * 0.3;
++					if (face instanceof THREE.Face3) {
++					
++						v1 = object.geometry.vertices[face.a];
++						v2 = object.geometry.vertices[face.b];
++						v3 = object.geometry.vertices[face.c];
++					
++						if (v1.visible && v2.visible && v3.visible && (object.doubleSided ||
++						   (v3.screen.x - v1.screen.x) * (v2.screen.y - v1.screen.y) -
++						   (v3.screen.y - v1.screen.y) * (v2.screen.x - v1.screen.x) > 0) ) {
++						   
++							face.screen.z = (v1.screen.z + v2.screen.z + v3.screen.z) * 0.3;
+ 							
+-							if (this.face3Pool[face3count] == null)
+-								this.face3Pool[face3count] = new Face3(new Vertex(), new Vertex(), new Vertex());
+-
+-							this.face3Pool[face3count].a.screen.copy(face.a.screen);
+-							this.face3Pool[face3count].b.screen.copy(face.b.screen);
+-							this.face3Pool[face3count].c.screen.copy(face.c.screen);
+-							this.face3Pool[face3count].screen.z = face.screen.z;
+-							this.face3Pool[face3count].color = face.color;
+-							this.face3Pool[face3count].material = object.material;
++							if (face3Pool[face3count] == null)
++								face3Pool[face3count] = new THREE.RenderableFace3();
++
++							face3Pool[face3count].v1.x = v1.screen.x;
++							face3Pool[face3count].v1.y = v1.screen.y;
++							face3Pool[face3count].v2.x = v2.screen.x;
++							face3Pool[face3count].v2.y = v2.screen.y;
++							face3Pool[face3count].v3.x = v3.screen.x;
++							face3Pool[face3count].v3.y = v3.screen.y;
++							face3Pool[face3count].screenZ = face.screen.z;
++							
++							face3Pool[face3count].color = face.color;
++							face3Pool[face3count].material = object.material;
+ 
+-							this.renderList.push( this.face3Pool[face3count] );
++							this.renderList.push(face3Pool[face3count]);
+ 
+ 							face3count++;
+ 						}
+-					}
+-					else if (face instanceof Face4)
+-					{
+-						if (face.a.visible && face.b.visible && face.c.visible && (object.doubleSided ||
+-						   ((face.d.screen.x - face.a.screen.x) * (face.b.screen.y - face.a.screen.y) -
+-						   (face.d.screen.y - face.a.screen.y) * (face.b.screen.x - face.a.screen.x) > 0 ||
+-						   (face.b.screen.x - face.c.screen.x) * (face.d.screen.y - face.c.screen.y) -
+-						   (face.b.screen.y - face.c.screen.y) * (face.d.screen.x - face.c.screen.x) > 0)) )
+-						{
+-							face.screen.z = (face.a.screen.z + face.b.screen.z + face.c.screen.z + face.d.screen.z) * 0.25;
+-
+-							if (this.face4Pool[face4count] == null)
+-								this.face4Pool[face4count] = new Face4(new Vertex(), new Vertex(), new Vertex(), new Vertex());
+-
+-							this.face4Pool[face4count].a.screen.copy(face.a.screen);
+-							this.face4Pool[face4count].b.screen.copy(face.b.screen);
+-							this.face4Pool[face4count].c.screen.copy(face.c.screen);
+-							this.face4Pool[face4count].d.screen.copy(face.d.screen);
+-							this.face4Pool[face4count].screen.z = face.screen.z;
+-							this.face4Pool[face4count].color = face.color;
+-							this.face4Pool[face4count].material = object.material;
+-
+-							this.renderList.push( this.face4Pool[face4count] );
++						
++					} else if (face instanceof THREE.Face4) {
++
++						v1 = object.geometry.vertices[face.a];
++						v2 = object.geometry.vertices[face.b];
++						v3 = object.geometry.vertices[face.c];
++						v4 = object.geometry.vertices[face.d];				
++					
++						if (v1.visible && v2.visible && v3.visible && v4.visible && (object.doubleSided ||
++						   ((v4.screen.x - v1.screen.x) * (v2.screen.y - v1.screen.y) -
++						   (v4.screen.y - v1.screen.y) * (v2.screen.x - v1.screen.x) > 0 ||
++						   (v2.screen.x - v3.screen.x) * (v4.screen.y - v3.screen.y) -
++						   (v2.screen.y - v3.screen.y) * (v4.screen.x - v3.screen.x) > 0)) ) {
++						   
++							face.screen.z = (v1.screen.z + v2.screen.z + v3.screen.z + v4.screen.z) * 0.25;
++
++							if (face4Pool[face4count] == null)
++								face4Pool[face4count] = new THREE.RenderableFace4();
++
++							face4Pool[face4count].v1.x = v1.screen.x;
++							face4Pool[face4count].v1.y = v1.screen.y;
++							face4Pool[face4count].v2.x = v2.screen.x;
++							face4Pool[face4count].v2.y = v2.screen.y;
++							face4Pool[face4count].v3.x = v3.screen.x;
++							face4Pool[face4count].v3.y = v3.screen.y;
++							face4Pool[face4count].v4.x = v4.screen.x;
++							face4Pool[face4count].v4.y = v4.screen.y;
++							face4Pool[face4count].screenZ = face.screen.z;
++							
++							face4Pool[face4count].color = face.color;
++							face4Pool[face4count].material = object.material;
++
++							this.renderList.push(face4Pool[face4count]);
+ 
+ 							face4count++;
+-						}						
++						}
+ 					}
+ 				}
+-			}
+-			else if (object instanceof Particle)
+-			{
++				
++			} else if (object instanceof THREE.Particle) {
++			
+ 				object.screen.copy(object.position);
+-
+-				camera.matrix.transform( object.screen );
+-
+-				object.screen.z = focuszoom / (camera.focus + object.screen.z);
+-
+-				if (object.screen.z < 0)
+-					continue;					
++				
++				camera.matrix.transform(object.screen);
++				
++				object.screen.z = focuszoom / (camerafocus + object.screen.z);
++
++				if (object.screen.z < 0) {
++				
++					continue;
++				}
+ 
+ 				object.screen.x *= object.screen.z;
+ 				object.screen.y *= object.screen.z;
+ 
+-				this.renderList.push( object );
++				if (particlePool[particleCount] == null)
++					particlePool[particleCount] = new THREE.RenderableParticle();
++
++				particlePool[particleCount].x = object.screen.x;
++				particlePool[particleCount].y = object.screen.y;
++				particlePool[particleCount].screenZ = object.screen.z;
++				
++				particlePool[particleCount].size = object.size;				
++				particlePool[particleCount].material = object.material;
++				particlePool[particleCount].color = object.color;
++
++				this.renderList.push( particlePool[particleCount] );
++				
++				particleCount++;
+ 			}
+ 		}
+ 
+-		this.renderList.sort(this.sort);
++		this.renderList.sort(sort);
+ 	}
+-});
++}
+diff --git a/src/renderers/SVGRenderer.js b/src/renderers/SVGRenderer.js
+index d6d19afa1..d4dab30e3 100755
+--- a/src/renderers/SVGRenderer.js
++++ b/src/renderers/SVGRenderer.js
+@@ -1,94 +1,112 @@
+-var SVGRenderer = Renderer.extend
+-({
+-	svgPathPool: null,
+-	svgCirclePool: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	init: function()
+-	{
+-		this._super();
++THREE.SVGRenderer = function () {
+ 
+-		this.viewport = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+-		this.viewport.style.position = "absolute";
+-
+-		this.svgPathPool = new Array();
+-		this.svgCirclePool = new Array();
+-	},
++	THREE.Renderer.call(this);
++	
++	var viewport = document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
++	svgPathPool = [], svgCirclePool = [];
+ 
+-	setSize: function( width, height )
+-	{
+-		this.viewport.setAttribute('viewBox', (-width / 2) + ' ' + (-height / 2) + ' ' + width + ' ' + height );
+-		this.viewport.setAttribute('width', width);
+-		this.viewport.setAttribute('height', height);
+-	},
++	this.setSize = function (width, height) {
++	
++		viewport.setAttribute('viewBox', (-width / 2) + ' ' + (-height / 2) + ' ' + width + ' ' + height );
++		viewport.setAttribute('width', width);
++		viewport.setAttribute('height', height);
++	}
+ 	
+-	render: function( scene, camera )
+-	{
+-		this._super( scene, camera );
++	this.domElement = viewport;
+ 
+-		while (this.viewport.childNodes.length > 0)
+-		{
+-			this.viewport.removeChild(this.viewport.childNodes[0]);
++	this.render = function (scene, camera) {
++	
++		var i, j, element, elementsLength, material, materialLength,
++		pathCount = 0, circleCount = 0, svgNode;
++	
++		this.project(scene, camera);
++	
++		while (viewport.childNodes.length > 0) {
++		
++			viewport.removeChild(viewport.childNodes[0]);
+ 		}
+ 		
+-		var pathCount = 0, circleCount = 0, svgNode;
++		elementsLength = this.renderList.length;
+ 		
+-		for (j = 0; j < this.renderList.length; j++)
+-		{
+-			element = this.renderList[j];
++		for (i = 0; i < elementsLength; i++) {
++			
++			element = this.renderList[i];
++			materialLength = element.material.length;
++			
++			for (j = 0; j < materialLength; j++) {
++			
++				material = element.material[j];
+ 
+-			if (element instanceof Face3)
+-			{
+-				svgNode = this.getPathNode(pathCount++);
+-				svgNode.setAttribute('d', 'M ' + element.a.screen.x + ' ' + element.a.screen.y + ' L ' + element.b.screen.x + ' ' + element.b.screen.y + ' L ' + element.c.screen.x + ',' + element.c.screen.y + 'z');					
+-			}
+-			else if (element instanceof Face4)
+-			{
+-				svgNode = this.getPathNode(pathCount++);
+-				svgNode.setAttribute('d', 'M ' + element.a.screen.x + ' ' + element.a.screen.y + ' L ' + element.b.screen.x + ' ' + element.b.screen.y + ' L ' + element.c.screen.x + ',' + element.c.screen.y + ' L ' + element.d.screen.x + ',' + element.d.screen.y + 'z');
+-			}
+-			else if (element instanceof Particle)
+-			{
+-				svgNode = this.getCircleNode(circleCount++);
+-				svgNode.setAttribute('cx', element.screen.x);
+-				svgNode.setAttribute('cy', element.screen.y);
+-				svgNode.setAttribute('r', element.size * element.screen.z);
+-			}
++				if (element instanceof THREE.RenderableFace3) {
++					
++					svgNode = getPathNode(pathCount++);
++					svgNode.setAttribute('d', 'M ' + element.v1.x + ' ' + element.v1.y + ' L ' + element.v2.x + ' ' + element.v2.y + ' L ' + element.v3.x + ',' + element.v3.y + 'z');
++					
++				} else if (element instanceof THREE.RenderableFace4) {
++				
++					svgNode = getPathNode(pathCount++);
++					svgNode.setAttribute('d', 'M ' + element.v1.x + ' ' + element.v1.y + ' L ' + element.v2.x + ' ' + element.v2.y + ' L ' + element.v3.x + ',' + element.v3.y + ' L ' + element.v4.x + ',' + element.v4.y + 'z');
++					
++				} else if (element instanceof THREE.RenderableParticle) {
++				
++					svgNode = getCircleNode(circleCount++);
++					svgNode.setAttribute('cx', element.x);
++					svgNode.setAttribute('cy', element.y);
++					svgNode.setAttribute('r', element.size * element.screenZ);
++				}
+ 
+-			if (element.material instanceof ColorMaterial)
+-			{
+-				svgNode.setAttribute('style', 'fill: rgb(' + element.material.color.r + ',' + element.material.color.g + ',' + element.material.color.b + ')');
+-			}
+-			else if (element.material instanceof FaceColorMaterial)
+-			{
+-				svgNode.setAttribute('style', 'fill: rgb(' + element.color.r + ',' + element.color.g + ',' + element.color.b + ')');
+-			}
++				if (material instanceof THREE.ColorFillMaterial) {
++				
++					svgNode.setAttribute('style', 'fill: ' + material.color.styleString + '; stroke-width:10');
++					
++				} else if (material instanceof THREE.FaceColorFillMaterial) {
++				
++					svgNode.setAttribute('style', 'fill: ' + element.color.styleString + '; stroke-width:10');
++					
++				} else if (material instanceof THREE.ColorStrokeMaterial) {
++				
++					svgNode.setAttribute('style', 'fill: none; stroke: ' + material.color.styleString + '; stroke-width: ' + material.lineWidth + '; stroke-linecap: round; stroke-linejoin: round');
++				
++				} else if (material instanceof THREE.FaceColorStrokeMaterial) {
++				
++					svgNode.setAttribute('style', 'fill: none; stroke: ' + element.color.styleString + '; stroke-width: ' + material.lineWidth + '; stroke-linecap: round; stroke-linejoin: round');
++				}
++				
+ 
+-			this.viewport.appendChild(svgNode);
+-		}
+-	},
++				viewport.appendChild(svgNode);
++			}
++		}	
++	}
++	
++	function getPathNode(id) {
+ 	
+-	getPathNode: function( id )
+-	{
+-		if (this.svgPathPool[id] == null)
+-		{
+-			this.svgPathPool[id] = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+-			// this.svgPathPool[id].setAttribute('shape-rendering', 'crispEdges'); //optimizeSpeed
+-			return this.svgPathPool[id];
++		if (svgPathPool[id] == null) {
++		
++			svgPathPool[id] = document.createElementNS('http://www.w3.org/2000/svg', 'path');
++			// svgPathPool[id].setAttribute('shape-rendering', 'crispEdges'); //optimizeSpeed
++			return svgPathPool[id];
+ 		}
+ 		
+-		return this.svgPathPool[id];
+-	},
++		return svgPathPool[id];
++	}
++	
++	function getCircleNode(id) {
+ 	
+-	getCircleNode: function( id )
+-	{
+-		if (this.svgCirclePool[id] == null)
+-		{
+-			this.svgCirclePool[id] = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+-			// this.svgCirclePool[id].setAttribute('shape-rendering', 'crispEdges'); //optimizeSpeed
+-			this.svgCirclePool[id].setAttribute('fill', 'red');
+-			return this.svgCirclePool[id];
++		if (svgCirclePool[id] == null) {
++		
++			svgCirclePool[id] = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
++			// svgCirclePool[id].setAttribute('shape-rendering', 'crispEdges'); //optimizeSpeed
++			// svgCirclePool[id].setAttribute('fill', 'red');
++			return svgCirclePool[id];
+ 		}
+ 		
+-		return this.svgCirclePool[id];
+-	}
+-});
++		return svgCirclePool[id];
++	}	
++}
++
++THREE.SVGRenderer.prototype = new THREE.Renderer();
++THREE.SVGRenderer.prototype.constructor = THREE.CanvasRenderer;
+diff --git a/src/renderers/renderables/RenderableFace3.js b/src/renderers/renderables/RenderableFace3.js
+new file mode 100644
+index 000000000..3fccf67e9
+--- /dev/null
++++ b/src/renderers/renderables/RenderableFace3.js
+@@ -0,0 +1,15 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.RenderableFace3 = function () {
++
++	this.v1 = new THREE.Vector2();
++	this.v2 = new THREE.Vector2();
++	this.v3 = new THREE.Vector2();
++	
++	this.screenZ;
++	
++	this.color;
++	this.material;
++}
+diff --git a/src/renderers/renderables/RenderableFace4.js b/src/renderers/renderables/RenderableFace4.js
+new file mode 100644
+index 000000000..0dd326290
+--- /dev/null
++++ b/src/renderers/renderables/RenderableFace4.js
+@@ -0,0 +1,16 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.RenderableFace4 = function () {
++
++	this.v1 = new THREE.Vector2();
++	this.v2 = new THREE.Vector2();
++	this.v3 = new THREE.Vector2();
++	this.v4 = new THREE.Vector2();	
++	
++	this.screenZ;
++	
++	this.color;
++	this.material;
++}
+diff --git a/src/renderers/renderables/RenderableParticle.js b/src/renderers/renderables/RenderableParticle.js
+new file mode 100644
+index 000000000..2d190d374
+--- /dev/null
++++ b/src/renderers/renderables/RenderableParticle.js
+@@ -0,0 +1,13 @@
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
++
++THREE.RenderableParticle = function () {
++
++	this.x;
++	this.y;
++	this.screenZ;
++	
++	this.color;
++	this.material;
++}
+diff --git a/src/scenes/Scene.js b/src/scenes/Scene.js
+index c6e969d38..88fea8ed0 100755
+--- a/src/scenes/Scene.js
++++ b/src/scenes/Scene.js
+@@ -1,26 +1,33 @@
+-var Scene = Class.extend
+-({
+-	objects: null,
++/**
++ * @author mr.doob / http://mrdoob.com/
++ */
+ 
+-	init: function()
+-	{
+-		this.objects = new Array();
+-	},
++THREE.Scene = function () {
+ 
+-	add: function( object )
+-	{
+-		this.objects.push( object );
+-	},
++	this.objects = [];
+ 
+-	remove: function( object )
+-	{
+-		for(var i = 0; i < this.objects.length; i++)
+-			if(object == this.objects[i])
++	this.add = function (object) {
++	
++		this.objects.push(object);
++	}
++	
++	/*
++	this.remove = function (object) {
++		
++		var nrObjects = this.objects.length;
++	
++		for(var i = 0; i < nrObjects; i++) {
++		
++			if(object == this.objects[i]) {
++			
+ 				alert("yay");
+-	},
+-
+-	toString: function()
+-	{
+-		return 'Scene ( ' + this.objects + ' )';
++			}
++		}
++	}
++	*/
++	
++	this.toString = function () {
++	
++		return 'THREE.Scene ( ' + this.objects + ' )';
+ 	}
+-});
++}
+diff --git a/utils/deployer.py b/utils/deployer.py
+new file mode 100755
+index 000000000..a55633c9e
+--- /dev/null
++++ b/utils/deployer.py
+@@ -0,0 +1,62 @@
++import sys
++import os
++
++# MERGER
++
++rev = 5;
++
++files = [];
++files.append('Three.js');
++files.append('core/Color.js');
++files.append('core/Vector2.js');
++files.append('core/Vector3.js');
++files.append('core/Vector4.js');
++files.append('core/Matrix4.js');
++files.append('core/Vertex.js');
++files.append('core/Face3.js');
++files.append('core/Face4.js');
++files.append('core/Geometry.js');
++files.append('cameras/Camera.js');
++files.append('objects/Object3D.js');
++files.append('objects/Line.js');
++files.append('objects/Mesh.js');
++files.append('objects/Particle.js');
++files.append('materials/ColorFillMaterial.js');
++files.append('materials/ColorStrokeMaterial.js');
++files.append('materials/FaceColorFillMaterial.js');
++files.append('materials/FaceColorStrokeMaterial.js');
++files.append('scenes/Scene.js');
++files.append('renderers/Renderer.js');
++files.append('renderers/CanvasRenderer.js');
++files.append('renderers/SVGRenderer.js');
++files.append('renderers/renderables/RenderableFace3.js');
++files.append('renderers/renderables/RenderableFace4.js');
++files.append('renderers/renderables/RenderableParticle.js');
++
++string = '';
++
++for item in files:
++	src_file = open('../src/' + item,'r');
++	string += src_file.read() + "\n";
++
++dep_file = open('temp.js','w');
++dep_file.write(string);
++dep_file.close();
++
++
++# YUICOMPRESSOR
++
++os.system("java -jar yuicompressor-2.4.2.jar temp.js -o ../build/three.js --charset utf-8 -v");
++
++
++# HEADER
++
++output = '../build/three.js';
++string = "// three.js r" + str(rev) + " - http://github.com/mrdoob/three.js\n";
++
++src_file = open(output,'r');
++string += src_file.read();
++
++dep_file = open(output,'w');
++dep_file.write(string);
++dep_file.close();
+diff --git a/utils/yuicompressor-2.4.2.jar b/utils/yuicompressor-2.4.2.jar
+new file mode 100644
+index 000000000..c29470bd0
+Binary files /dev/null and b/utils/yuicompressor-2.4.2.jar differ
