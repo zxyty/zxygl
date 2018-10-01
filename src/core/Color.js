@@ -1,5 +1,5 @@
 export default class Color {
-  constructor(hex) {
+  constructor(hex) {  // 0xff000000
     this.r = null;
     this.g = null;
     this.b = null;
@@ -9,7 +9,8 @@ export default class Color {
 
     this.styleString = null;
 
-    this.setHex(hex ? hex : 0xff000000);
+    // this.setHex(hex ? hex : 0xff000000);
+    this.setHex(hex);
   }
   setHex(hex) {
     this.hex = hex;
@@ -39,7 +40,7 @@ export default class Color {
 
   updateStyleString() {
     this.styleString =
-      "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a / 255 + ")";
+      "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
   }
 
   toString() {
