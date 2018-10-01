@@ -1,9 +1,9 @@
 import Vector3 from "./Vector3";
 import Color from "./Color";
 
-export default class Face3 extends Vector3 {
+export default class Face3 {
   constructor(a, b, c, uv, normal, color) {
-    super((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3, (a.z + b.z + c.z) / 3);
+    // super((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3, (a.z + b.z + c.z) / 3);
 
     this.a = a;
     this.b = b;
@@ -11,10 +11,10 @@ export default class Face3 extends Vector3 {
 
     this.screen = new Vector3();
 
-    this.uv = uv ? uv : [[0,0],[0,0],[0,0]];
-    this.normal = normal ? normal : new Vector3();
+    this.uv = uv || [[0,0],[0,0],[0,0]];
+    this.normal = normal || new Vector3();
 
-    this.color = color ? color : new Color();
+    this.color = color || new Color();
     
   }
 
