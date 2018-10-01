@@ -39,6 +39,12 @@ export default class Vector3 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
   }
 
+  set(x, y, z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+
   copy(v) {
     this.x = v.x;
     this.y = v.y;
@@ -57,6 +63,12 @@ export default class Vector3 {
     this.z = v1.z + v2.z;
   }
 
+  addScalar(s) {
+    this.x += s;
+    this.y += s;
+    this.z += s;
+  }
+
   subSelf(v) {
     this.x -= v.x;
     this.y -= v.y;
@@ -69,17 +81,23 @@ export default class Vector3 {
     this.z = v1.z - v2.z;
   }
 
-  cross(v) {
-    this.tx = this.x;
-    this.ty = this.y;
-    this.tz = this.z;
+  crossSelf(v: Vector3) {
+    let tx = this.x;
+    let ty = this.y;
+    let tz = this.z;
 
-    this.x = this.ty * v.z - this.tz * v.y;
-    this.y = this.tz * v.x - this.tx * v.z;
-    this.z = this.tx * v.y - this.ty * v.x;
+    this.x = ty * v.z - tz * v.y;
+    this.y = tz * v.x - tx * v.z;
+    this.z = tx * v.y - ty * v.x;
   }
 
-  multiply(s) {
+  multiplySelf(v: Vector3) {
+    this.x *= v.x;
+    this.y *= v.y;
+    this.z *= v.z;
+  }
+
+  multiplyScalar(s) {
     this.x *= s;
     this.y *= s;
     this.z *= s;
@@ -117,21 +135,23 @@ export default class Vector3 {
 
   normalize() {
     if (this.length() > 0) {
-      this.ool = 1.0 / this.length();
-    } else {
-      this.ool = 0;
-    }
-
-    this.x *= this.ool;
-    this.y *= this.ool;
-    this.z *= this.ool;
-
-    return this;
+		
+			this.multiplyScalar(1 / this.length());
+			
+		} else {
+		
+			this.multiplyScalar(0);
+		}
   }
 
   dot(v) {
     return this.x * v.x + this.y * v.y + this.z * v.z;
   }
+
+  isZero() {
+		let almostZero = 0.0001;
+		return (Math.abs(this.x) < almostZero) && (Math.abs(this.y) < almostZero) && (Math.abs(this.z) < almostZero);
+	}	
 
   clone() {
     return new Vector3(this.x, this.y, this.z);
