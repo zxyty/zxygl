@@ -6,6 +6,7 @@ import Matrix3 from "./core/Matrix3";
 import Matrix4 from "./core/Matrix4";
 import Vector2 from "./core/Vector2";
 import Vector3 from "./core/Vector3";
+import Vector4 from "./core/Vector4";
 import Vertex from "./core/Vertex";
 import Color from "./core/Color";
 
@@ -42,6 +43,7 @@ window.ZXYGL = {
   Matrix4: Matrix4,
   Vector2: Vector2,
   Vector3: Vector3,
+  Vector4: Vector4,
   Vertex: Vertex,
   Color: Color,
 

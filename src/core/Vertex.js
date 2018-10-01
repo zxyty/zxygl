@@ -1,19 +1,15 @@
 import Vector3 from './Vector3';
 
-export default class Vertex extends Vector3 {
-    constructor(x, y, z) {
-        super(x, y, z);
-
-        this.u = null;
-        this.v = null;
-
+export default class Vertex {
+    constructor(position: Vector3, normal: Vector3) {
+        this.position = position || new Vector3();
+        this.normal = normal || new Vector3();
         this.screen = new Vector3();
-
-        this.normal = null;
-        this.visible = null;
+        
+        this.visible = true; // internal
     }
 
     toString() {
-        return 'Vertex ( ' + this.x + ', ' + this.y + ', ' + this.z + ' )';
+        return 'Vertex ( position: ' + this.position + ', normal: ' + this.normal + ' )';
     }
 }
