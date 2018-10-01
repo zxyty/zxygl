@@ -23,7 +23,9 @@ import Camera from "./cameras/Camera";
 
 // materials
 import ColorFillMaterial from "./materials/ColorFillMaterial";
-import FaceColorMaterial from "./materials/FaceColorMaterial";
+import ColorStrokeMaterial from "./materials/ColorStrokeMaterial";
+import FaceColorFillMaterial from "./materials/FaceColorFillMaterial";
+import FaceColorStrokeMaterial from "./materials/FaceColorStrokeMaterial";
 
 // objects
 import Object3D from "./objects/Object3D";
@@ -60,8 +62,9 @@ window.ZXYGL = {
 
   // materials
   ColorFillMaterial: ColorFillMaterial,
-  FaceColorMaterial: FaceColorMaterial,
-
+  ColorStrokeMaterial: ColorStrokeMaterial,
+  FaceColorFillMaterial: FaceColorFillMaterial,
+  FaceColorStrokeMaterial: FaceColorStrokeMaterial,
 
   // objects
   Object3D: Object3D,
