@@ -16,6 +16,11 @@ export default class Vector2 {
     return new Vector2(a.x * s, a.y * s);
   }
 
+  set(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
   copy(v) {
     this.x = v.x;
     this.y = v.y;
@@ -41,13 +46,13 @@ export default class Vector2 {
     this.y = v1.y - v2.y;
   }
 
-  multiply(s) {
+  multiplyScalar(s) {
     this.x *= s;
-    this.y *= s;
+		this.y *= s;
   }
 
   unit() {
-    this.multiply(1 / this.length());
+    this.multiplyScalar(1 / this.length());
   }
 
   expand(v1, v2) {
@@ -62,6 +67,11 @@ export default class Vector2 {
 
   lengthSq() {
     return this.x * this.x + this.y * this.y;
+  }
+
+  negate() {
+    this.x = -this.x;
+    this.y = -this.y;
   }
 
   clone() {
