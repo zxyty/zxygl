@@ -3,12 +3,13 @@ import Color from "../../core/Color";
 import { tMaterial } from "../../type";
 
 export default class RenderableFace4 {
-    // color: Color
-    // material: tMaterial
-    // screenZ: number
-    color;
-    material;
-    screenZ;
+    color: Color;
+    material: Array<tMaterial>;
+    screenZ: number;
+    v1: Vector2;
+    v2: Vector2;
+    v3: Vector2;
+    v4: Vector2;
 
     constructor() {
         this.v1 = new Vector2;

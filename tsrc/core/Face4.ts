@@ -3,14 +3,15 @@ import Color from "./Color";
 import Vertex from "./Vertex";
 
 export default class Face4 {
-  // a: Vertex
-  // b: Vertex
-  // c: Vertex
-  // d: Vertex
-  a;
-  b;
-  c;
-  d;
+  a: Vertex;
+  b: Vertex;
+  c: Vertex;
+  d: Vertex;
+
+  screen: Vector3;
+  normal: Vector3;
+  color: Color;
+  uv: Array<Array<number>>
 
   constructor(a, b, c, d, uv, normal, color) {
     // super(
@@ -25,7 +26,7 @@ export default class Face4 {
     this.d = d;
 
     this.screen = new Vector3();
-    this.normal = normal || Vector3();
+    this.normal = normal || new Vector3();
 
     this.color = color || new Color();
     this.uv = uv || [[0, 0], [0, 0], [0, 0], [0, 0]];

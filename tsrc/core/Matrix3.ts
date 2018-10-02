@@ -1,4 +1,8 @@
 export default class Matrix3 {
+  n11: number; n12: number; n13: number;
+  n21: number; n22: number; n23: number;
+  n31: number; n32: number; n33: number;
+
   constructor() {
     this.identity();
   }
@@ -68,7 +72,7 @@ export default class Matrix3 {
   }
 
   clone() {
-    let m = new Matrix3();
+    let m: Matrix3 = new Matrix3();
     m.n11 = this.n11;
     m.n12 = this.n12;
     m.n13 = this.n13;

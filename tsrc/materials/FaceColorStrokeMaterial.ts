@@ -1,4 +1,7 @@
 export default class FaceColorStrokeMaterial {
+    lineWidth: number;
+
+
     constructor(lineWidth) {
         this.lineWidth = lineWidth || 1;
     }

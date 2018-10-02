@@ -13,15 +13,11 @@ import RenderableParticle from "./renderables/RenderableParticle";
 import { tRenderable } from "../type";
 
 export default class Renderer {
-  // renderList: tRenderable[]
-  // face3Pool: RenderableFace3[]
-  // face4Pool: RenderableFace4[]
-  // particlePool: RenderableParticle[]
-
-  renderList;
-  face3Pool;
-  face4Pool;
-  particlePool;
+  renderList: tRenderable[];
+  face3Pool: RenderableFace3[];
+  face4Pool: RenderableFace4[];
+  particlePool: RenderableParticle[];
+  matrix: Matrix4;
 
   constructor() {
     this.matrix = new Matrix4();
@@ -32,12 +28,11 @@ export default class Renderer {
     this.face4Pool = new Array();
   }
 
-  sort(a, b) {
-    return a.screen.z - b.screen.z;
+  sort(a: tRenderable, b: tRenderable) {
+    return a.screenZ - b.screenZ;
   }
 
-  // project(scene: Scene, camera: Camera) {
-  project(scene, camera) {
+  project(scene: Scene, camera: Camera) {
     let i, j, vertex, face, object, v1, v2, v3, v4;
     let face3count = 0, face4count = 0, particleCount = 0;
     let camerafocus = camera.focus, focuszoom = camera.focus * camera.zoom;
@@ -63,7 +58,7 @@ export default class Renderer {
           this.matrix.transform(vertex.screen);            // 得到 uCameraViewMatrix * uModelViewMatrix * vec4(aVertexPosition, 1.0);
 
           vertex.screen.z = focuszoom / (camerafocus + vertex.screen.z);
-          vertex.screen.z = vertex.screen.z > 0;
+          vertex.visible = vertex.screen.z > 0;
 
           vertex.screen.x *= vertex.screen.z;
 					vertex.screen.y *= vertex.screen.z; 
@@ -79,7 +74,7 @@ export default class Renderer {
             v1 = object.geometry.vertices[face.a];
             v2 = object.geometry.vertices[face.b];
             v3 = object.geometry.vertices[face.c];
-
+            
             if(v1.visible && v2.visible && v3.visible && (object.doubleSided || 
               (v3.screen.x - v1.screen.x) * (v2.screen.y - v1.screen.y) -
               (v3.screen.y - v1.screen.y) * (v2.screen.x - v1.screen.x) > 0)) {
@@ -124,20 +119,20 @@ export default class Renderer {
                   this.face4Pool[face4count] = new RenderableFace4();
                 }
 
-                face4Pool[face4count].v1.x = v1.screen.x;
-                face4Pool[face4count].v1.y = v1.screen.y;
-                face4Pool[face4count].v2.x = v2.screen.x;
-                face4Pool[face4count].v2.y = v2.screen.y;
-                face4Pool[face4count].v3.x = v3.screen.x;
-                face4Pool[face4count].v3.y = v3.screen.y;
-                face4Pool[face4count].v4.x = v4.screen.x;
-                face4Pool[face4count].v4.y = v4.screen.y;
+                this.face4Pool[face4count].v1.x = v1.screen.x;
+                this.face4Pool[face4count].v1.y = v1.screen.y;
+                this.face4Pool[face4count].v2.x = v2.screen.x;
+                this.face4Pool[face4count].v2.y = v2.screen.y;
+                this.face4Pool[face4count].v3.x = v3.screen.x;
+                this.face4Pool[face4count].v3.y = v3.screen.y;
+                this.face4Pool[face4count].v4.x = v4.screen.x;
+                this.face4Pool[face4count].v4.y = v4.screen.y;
 
-                face4Pool[face4count].screenZ = face.screen.z;
-                face4Pool[face4count].color = face.color;
-                face4Pool[face4count].material = object.material;
+                this.face4Pool[face4count].screenZ = face.screen.z;
+                this.face4Pool[face4count].color = face.color;
+                this.face4Pool[face4count].material = object.material;
 
-                this.renderList.push(face4Pool[face4count]);
+                this.renderList.push(this.face4Pool[face4count]);
                 face4count++;
             }
 
@@ -168,7 +163,7 @@ export default class Renderer {
         this.particlePool[particleCount].screenZ = object.screen.z;
         this.particlePool[particleCount].size = object.size;				
         this.particlePool[particleCount].material = object.material;
-        this.particlePool[particleCount].color = object.color;
+        // this.particlePool[particleCount].color = object.color;
 
         this.renderList.push( this.particlePool[particleCount] );
         particleCount++;
@@ -176,6 +171,6 @@ export default class Renderer {
 
     }
 
-    this.renderList.sort(sort); 
+    this.renderList.sort(this.sort); 
   }
 }

@@ -1,4 +1,11 @@
 export default class Color {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+  hex: number;
+  styleString: string;
+
   constructor(hex) {  // 0xff000000
     this.r = null;
     this.g = null;

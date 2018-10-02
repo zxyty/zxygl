@@ -88,7 +88,9 @@ const ZXYGL = {
   Cylinder: Cylinder
 };
 
+// @ts-ignore
 if(__ENV__ == 'dist') {
+// @ts-ignore
   window.ZXYGL = ZXYGL;
 } 
 

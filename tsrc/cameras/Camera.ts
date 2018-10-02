@@ -1,7 +1,23 @@
 import Vector3 from "../core/Vector3";
 import Matrix4 from "../core/Matrix4";
 
+interface interfaceTarge {
+  position: Vector3;
+}
+
 export default class Camera {
+  position: Vector3;
+  target: interfaceTarge;
+  up: Vector3;
+  
+  matrix: Matrix4;
+  projectionMatrix: Matrix4;
+
+  roll: number;
+
+  zoom: number;
+  focus: number;
+
   constructor(x, y, z) {
     this.position = new Vector3(x, y, z);     // 相机位置
     this.target = {

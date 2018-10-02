@@ -3,8 +3,13 @@ import Matrix4 from "../core/Matrix4";
 import { tMaterial } from "../type";
 
 export default class Object3D {
-  // material: tMaterial[]
-  material;
+  material: Array<tMaterial>;
+  
+  position: Vector3;
+  rotation: Vector3;
+  scale: Vector3;
+  matrix: Matrix4;
+  screen: Vector3;
 
   constructor(material) {
     this.position = new Vector3(0, 0, 0);
@@ -26,9 +31,7 @@ export default class Object3D {
         this.position.z
       )
     );
-    // this.matrix.multiplySelf(
-    //   Matrix4.rotationMatrix(this.rotation.x, this.rotation.y, this.rotation.z)
-    // );
+    
     this.matrix.multiplySelf(
       Matrix4.rotationXMatrix(this.rotation.x)
     );

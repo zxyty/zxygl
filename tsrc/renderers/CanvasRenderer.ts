@@ -13,6 +13,10 @@ import ColorStrokeMaterial from "../materials/ColorStrokeMaterial";
 import FaceColorStrokeMaterial from "../materials/FaceColorStrokeMaterial";
 
 export default class CanvasRenderer extends Renderer {
+  domElement: any;
+  viewport: any;
+  context: CanvasRenderingContext2D;
+
   constructor() {
     super();
 
@@ -21,18 +25,18 @@ export default class CanvasRenderer extends Renderer {
     this.context = this.viewport.getContext("2d");
   }
 
-  setSize(width, height) {
+  setSize(width: number, height: number) {
     // super.setSize(width, height);
 
-    this.viewport.width = this.width;
-    this.viewport.height = this.height;
+    this.viewport.width = width;
+    this.viewport.height = height;
 
     this.context.setTransform(1, 0, 0, 1, width / 2, height / 2);
   }
 
-  // render(scene: Scene, camera: Camera) {
-  render(scene, camera) {
+  render(scene: Scene, camera: Camera) {
     // super.render(scene, camera);
+    
     let i, j, element, pi2 = 2 * Math.PI;
     let elementsLength, material, materialsLength;
 
@@ -67,8 +71,8 @@ export default class CanvasRenderer extends Renderer {
           this.context.fillStyle = material.color.styleString;
           this.context.fill();
         } else if(material instanceof FaceColorFillMaterial) {
-          context.fillStyle = element.color.styleString;
-					context.fill();
+          this.context.fillStyle = element.color.styleString;
+					this.context.fill();
         } else if(material instanceof ColorStrokeMaterial) {
           this.context.lineWidth = material.lineWidth;
           this.context.lineJoin = "round";

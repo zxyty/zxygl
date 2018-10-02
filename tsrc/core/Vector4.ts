@@ -2,6 +2,9 @@ import Vector3 from "./Vector3";
 
 export default class Vector4 {
     x: number;
+    y: number;
+    z: number;
+    w: number;
     
     constructor(x, y, z, w) {
         this.x = x || 0;
@@ -17,40 +20,35 @@ export default class Vector4 {
         this.w = w;
     }
 
-    // copy(v: Vector4) {
-    copy(v) {
+    copy(v: Vector4) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
         this.w = v.w;
     }
 
-    // add(v1: Vector4, v2: Vector4) {
-    add(v1, v2) {
+    add(v1: Vector4, v2: Vector4) {
         this.x = v1.x + v2.x;
         this.y = v1.y + v2.y;
         this.z = v1.z + v2.z;
         this.w = v1.w + v2.w;
     }
 
-    // addSelf(v: Vector4) {
-    addSelf(v) {
+    addSelf(v: Vector4) {
         this.x += v.x;
         this.y += v.y;
         this.z += v.z;
         this.w += v.w;
     }
 
-    // sub(v1: Vector4, v2: Vector4) {
-    sub(v1, v2) {
+    sub(v1: Vector4, v2: Vector4) {
         this.x = v1.x - v2.x;
         this.y = v1.y - v2.y;
         this.z = v1.z - v2.z;
         this.w = v1.w - v2.w;
     }
 
-    // subSelf(v: Vector4) {
-    subSelf(v) {
+    subSelf(v: Vector4) {
         this.x -= v.x;
         this.y -= v.y;
         this.z -= v.z;

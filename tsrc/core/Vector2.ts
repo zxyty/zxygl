@@ -1,18 +1,21 @@
 export default class Vector2 {
-  constructor(x, y) {
+  x: number;
+  y: number;
+  
+  constructor(x: number, y: number) {
     this.x = x ? x : 0;
     this.y = y ? y : 0;
   }
 
-  static add(a, b) {
+  static add(a: Vector2, b: Vector2) {
     return new Vector2(a.x + b.x, a.y + b.y);
   }
 
-  static sub(a, b) {
+  static sub(a: Vector2, b: Vector2) {
     return new Vector2(a.x - b.x, a.y - b.y);
   }
 
-  static multiply(a, s) {
+  static multiply(a: Vector2, s: number) {
     return new Vector2(a.x * s, a.y * s);
   }
 

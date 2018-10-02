@@ -1,4 +1,18 @@
 export default class Vector3 {
+  x: number;
+  y: number;
+  z: number;
+  
+  dx: number;
+  dy: number;
+  dz: number;
+
+  tx: number;
+  ty: number;
+  tz: number;
+
+  ool: any;
+  
   constructor(x, y, z) {
     this.x = x ? x : 0;
     this.y = y ? y : 0;
@@ -81,8 +95,7 @@ export default class Vector3 {
     this.z = v1.z - v2.z;
   }
 
-  // crossSelf(v: Vector3) {
-  crossSelf(v) {
+  crossSelf(v: Vector3) {
     let tx = this.x;
     let ty = this.y;
     let tz = this.z;
@@ -92,8 +105,7 @@ export default class Vector3 {
     this.z = tx * v.y - ty * v.x;
   }
 
-  // multiplySelf(v: Vector3) {
-  multiplySelf(v) {
+  multiplySelf(v: Vector3) {
     this.x *= v.x;
     this.y *= v.y;
     this.z *= v.z;

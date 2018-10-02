@@ -1,5 +1,5 @@
 export default class FaceColorFillMaterial {
-    toString () {
+  toString () {
 		return 'FaceColorFillMaterial ( )';
 	}
 }

@@ -3,6 +3,15 @@ import Vector4 from "./Vector4";
 import * as Default from '../default';
 
 export default class Matrix4 {
+  n11: number; n12: number; n13: number; n14: number;
+  n21: number; n22: number; n23: number; n24: number;
+  n31: number; n32: number; n33: number; n34: number;
+  n41: number; n42: number; n43: number; n44: number;
+
+  x: Vector3;
+  y: Vector3;
+  z: Vector3;
+
   constructor() {
     this.identity();
   }
@@ -97,8 +106,7 @@ export default class Matrix4 {
     this.z = new Vector3(0, 0, 0);
   }
 
-  // lookAt(eye: Vector3, center: Vector3, up: Vector3) {
-  lookAt(eye, center, up) {
+  lookAt(eye: Vector3, center: Vector3, up: Vector3) {
     this.z.sub(center, eye);
     this.z.normalize();
 
@@ -148,7 +156,7 @@ export default class Matrix4 {
 
   corssVector(a) {
 
-    let v = new Vector4();
+    let v: Vector4 = new Vector4();
 
     v.x = this.n11 * a.x + this.n12 * a.y + this.n13 * a.z + this.n14 * a.w;
     v.y = this.n21 * a.x + this.n22 * a.y + this.n23 * a.z + this.n24 * a.w;
