@@ -3,10 +3,14 @@ import Color from "./Color";
 import Vertex from "./Vertex";
 
 export default class Face4 {
-  a: Vertex
-  b: Vertex
-  c: Vertex
-  d: Vertex
+  // a: Vertex
+  // b: Vertex
+  // c: Vertex
+  // d: Vertex
+  a;
+  b;
+  c;
+  d;
 
   constructor(a, b, c, d, uv, normal, color) {
     // super(

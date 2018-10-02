@@ -2,8 +2,6 @@ import Renderer from "./Renderer";
 import Particle from "../objects/Particle";
 import Face3 from "../core/Face3";
 import Face4 from "../core/Face4";
-import ColorMaterial from "../materials/ColorMaterial";
-import FaceColorMaterial from "../materials/FaceColorMaterial";
 import Scene from "../scenes/Scene";
 import Camera from "../cameras/Camera";
 import RenderableFace3 from "./renderables/RenderableFace3";
@@ -32,7 +30,8 @@ export default class CanvasRenderer extends Renderer {
     this.context.setTransform(1, 0, 0, 1, width / 2, height / 2);
   }
 
-  render(scene: Scene, camera: Camera) {
+  // render(scene: Scene, camera: Camera) {
+  render(scene, camera) {
     // super.render(scene, camera);
     let i, j, element, pi2 = 2 * Math.PI;
     let elementsLength, material, materialsLength;
@@ -92,6 +91,6 @@ export default class CanvasRenderer extends Renderer {
       }
 
     }
-    
+
   }
 }

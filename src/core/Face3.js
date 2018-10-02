@@ -3,9 +3,12 @@ import Color from "./Color";
 import Vertex from "./Vertex";
 
 export default class Face3 {
-  a: Vertex
-  b: Vertex
-  c: Vertex
+  // a: Vertex
+  // b: Vertex
+  // c: Vertex
+  a;
+  b;
+  c;
 
   constructor(a, b, c, uv, normal, color) {
     // super((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3, (a.z + b.z + c.z) / 3);

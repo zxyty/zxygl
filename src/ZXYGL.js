@@ -16,7 +16,6 @@ import Scene from "./scenes/Scene";
 // renderers
 import Renderer from "./renderers/Renderer";
 import CanvasRenderer from "./renderers/CanvasRenderer";
-import SvgRenderer from "./renderers/SvgRenderer";
 
 // renderer able
 import RenderableFace3 from "./renderers/renderables/RenderableFace3";

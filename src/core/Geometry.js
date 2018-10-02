@@ -4,8 +4,10 @@ import Vector3 from "./Vector3";
 import Face3 from "./Face3";
 
 export default class Geometry {
-  vertices: Vertex[]
-  faces: Face4[] | Face3[]
+  // vertices: Vertex[]
+  // faces: Face4[] | Face3[]
+  vertices;
+  faces;
 
   constructor() {
     this.vertices = new Array();

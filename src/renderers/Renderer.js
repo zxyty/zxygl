@@ -13,10 +13,15 @@ import RenderableParticle from "./renderables/RenderableParticle";
 import { tRenderable } from "../type";
 
 export default class Renderer {
-  renderList: tRenderable[]
-  face3Pool: RenderableFace3[]
-  face4Pool: RenderableFace4[]
-  particlePool: RenderableParticle[]
+  // renderList: tRenderable[]
+  // face3Pool: RenderableFace3[]
+  // face4Pool: RenderableFace4[]
+  // particlePool: RenderableParticle[]
+
+  renderList;
+  face3Pool;
+  face4Pool;
+  particlePool;
 
   constructor() {
     this.matrix = new Matrix4();
@@ -31,7 +36,8 @@ export default class Renderer {
     return a.screen.z - b.screen.z;
   }
 
-  project(scene: Scene, camera: Camera) {
+  // project(scene: Scene, camera: Camera) {
+  project(scene, camera) {
     let i, j, vertex, face, object, v1, v2, v3, v4;
     let face3count = 0, face4count = 0, particleCount = 0;
     let camerafocus = camera.focus, focuszoom = camera.focus * camera.zoom;

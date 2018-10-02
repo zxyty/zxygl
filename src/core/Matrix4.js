@@ -97,7 +97,8 @@ export default class Matrix4 {
     this.z = new Vector3(0, 0, 0);
   }
 
-  lookAt(eye: Vector3, center: Vector3, up: Vector3) {
+  // lookAt(eye: Vector3, center: Vector3, up: Vector3) {
+  lookAt(eye, center, up) {
     this.z.sub(center, eye);
     this.z.normalize();
 

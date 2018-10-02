@@ -6,13 +6,15 @@ import * as Default from "../../default";
 // 感觉可以重新设计vertices
 export default class Cylinder extends Geometry {
   constructor(
-    numSegs: number,
-    topRad: number,
-    botRad: number,
-    height: number,
+    numSegs,
+    topRad,
+    botRad,
+    height,
     topOffset,
     botOffset
   ) {
+    super();
+    
     // Vertices
     // Top circle vertices
     for (let i = 0; i < numSegs; i++) {

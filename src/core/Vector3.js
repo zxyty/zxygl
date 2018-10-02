@@ -81,7 +81,8 @@ export default class Vector3 {
     this.z = v1.z - v2.z;
   }
 
-  crossSelf(v: Vector3) {
+  // crossSelf(v: Vector3) {
+  crossSelf(v) {
     let tx = this.x;
     let ty = this.y;
     let tz = this.z;
@@ -91,7 +92,8 @@ export default class Vector3 {
     this.z = tx * v.y - ty * v.x;
   }
 
-  multiplySelf(v: Vector3) {
+  // multiplySelf(v: Vector3) {
+  multiplySelf(v) {
     this.x *= v.x;
     this.y *= v.y;
     this.z *= v.z;

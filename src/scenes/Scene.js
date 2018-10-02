@@ -1,7 +1,8 @@
 import Object3D from "../objects/Object3D";
 
 export default class Scene {
-  objects: Object3D[]
+  // objects: Object3D[];
+  objects;
 
   constructor() {
     this.objects = new Array();
