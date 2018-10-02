@@ -1,10 +1,12 @@
-import Object3D from "./Object3D";
-import { tMaterial } from "../type";
-export default class Particle extends Object3D {
-  // constructor(material: tMaterial) {
-  constructor(material) {
-    super(material);
-
-    this.size = 1;
-  }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Object3D_1 = require("./Object3D");
+class Particle extends Object3D_1.default {
+    // constructor(material: tMaterial) {
+    constructor(material) {
+        super(material);
+        this.size = 1;
+    }
 }
+exports.default = Particle;
+//# sourceMappingURL=Particle.js.map

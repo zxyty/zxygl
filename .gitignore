@@ -3,3 +3,4 @@ package-lock.lock
 out.diff
 static/
 dist/
+src/

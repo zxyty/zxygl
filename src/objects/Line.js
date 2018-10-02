@@ -1,11 +1,12 @@
-import Object3D from "./Object3D";
-import Geometry from "../core/Geometry";
-
-export default class Line extends Object3D {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Object3D_1 = require("./Object3D");
+class Line extends Object3D_1.default {
     // constructor(geometry: Geometry, material: MaterialType) {
     constructor(geometry, material) {
         super(material);
-
         this.geometry = geometry;
     }
 }
+exports.default = Line;
+//# sourceMappingURL=Line.js.map

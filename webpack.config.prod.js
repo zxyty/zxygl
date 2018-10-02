@@ -1,7 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // const extractTextPlugin = new ExtractTextPlugin('css/[name].css'); // 去掉css文件夹路径
 const extractTextPlugin = new ExtractTextPlugin('[name].css');
@@ -25,7 +24,7 @@ let entryJs = (function () {
 
 // 多文件html封装打包
 var Htmlplugins = (function () {
-  var entryHtml = Glob.sync(srcDir + '/views/tpl/*.html');
+  var entryHtml = Glob.sync(__dirname + '/views/*.html');
   var r = [];
 
   entryHtml.forEach(function (filePath) {
@@ -34,7 +33,7 @@ var Htmlplugins = (function () {
       var conf = {
           filename: filename + '.html',       // 生成的 html 存放路径，相对于 path
           inject: 'body',
-          template: __dirname + '/src/views/tpl/' + filename + '.html',
+          template: __dirname + '/views/' + filename + '.html',
           minify: {                           // 压缩 HTML 文件
               removeComments: true,           // 移除 HTML 中的注释
               collapseWhitespace: true        // 删除空白符与换行符
@@ -117,25 +116,23 @@ module.exports = {
   plugins: [
     extractTextPlugin,
     new webpack.DefinePlugin({
-      "process.env": {
-          NODE_ENV: JSON.stringify("production")
-      }
+      __ENV__: JSON.stringify("production")
     }),
     
     // 分析代码
-    // new BundleAnalyzerPlugin({ analyzerPort: 30010, }),
+    new BundleAnalyzerPlugin({ analyzerPort: 30010, }),
   ].concat(Htmlplugins),
 
   // When using the uglifyjs-webpack-plugin you must provide the sourceMap: true option to enable SourceMap support.
   // 压缩js
   optimization: {
     minimizer: [
-        new UglifyJsPlugin({
-            uglifyOptions: {
-                compress: false,
-            },
-            sourceMap: true
-        })
+      new UglifyJsPlugin({
+          uglifyOptions: {
+              compress: true,
+          },
+          sourceMap: true
+      })
     ]
   },
 
@@ -158,7 +155,7 @@ module.exports = {
       rewrites: [
         // { from: /^\/$/, to: '/src/views/landing.html' },
         // { from: /^\/subpage/, to: '/src/views/subpage.html' },
-        { from: /./, to: '/src/views/404.html' }
+        { from: /./, to: '/views/404.html' }
       ],
       disableDotRule: true,       // 禁用路径上匹配点"."的规则
     },

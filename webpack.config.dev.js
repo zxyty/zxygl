@@ -24,7 +24,7 @@ let entryJs = (function () {
 
 // 多文件html封装打包
 var Htmlplugins = (function () {
-  var entryHtml = Glob.sync(srcDir + '/views/tpl/*.html');
+  var entryHtml = Glob.sync(__dirname + '/views/*.html');
   var r = [];
 
   entryHtml.forEach(function (filePath) {
@@ -33,7 +33,7 @@ var Htmlplugins = (function () {
       var conf = {
           filename: filename + '.html',       // 生成的 html 存放路径，相对于 path
           inject: 'body',
-          template: __dirname + '/src/views/tpl/' + filename + '.html',
+          template: __dirname + '/views/' + filename + '.html',
           minify: {                           // 压缩 HTML 文件
               removeComments: true,           // 移除 HTML 中的注释
               collapseWhitespace: false       // 删除空白符与换行符
@@ -116,9 +116,7 @@ module.exports = {
   plugins: [
     extractTextPlugin,
     new webpack.DefinePlugin({
-      "process.env": {
-          NODE_ENV: JSON.stringify("development")
-      }
+      "__ENV__": JSON.stringify("development")
     }),
 
     // When using the uglifyjs-webpack-plugin you must provide the sourceMap: true option to enable SourceMap support.
@@ -139,7 +137,7 @@ module.exports = {
 
   devServer: {
     disableHostCheck: false,  // 设置为true时，此选项会绕过主机检查。不建议这样做，因为不检查主机的应用程序容易受到DNS重新绑定攻击
-    clientLogLevel: "none",   // 可能的值是none，error，warning或者info（默认值）。
+    clientLogLevel: "info",   // 可能的值是none，error，warning或者info（默认值）。
     
     compress: true,           // Enable gzip compression for everything served:
 
@@ -157,7 +155,7 @@ module.exports = {
       rewrites: [
         // { from: /^\/$/, to: '/src/views/tpl/landing.html' },
         // { from: /^\/subpage/, to: '/src/views/tpl/subpage.html' },
-        { from: /./, to: '/src/views/tpl/404.html' }
+        { from: /./, to: '/views/404.html' }
       ],
       disableDotRule: true,       // 禁用路径上匹配点"."的规则
     },
@@ -182,27 +180,3 @@ module.exports = {
   },
   mode: "development", //"production"
 }
-
-// module.exports = {
-//   entry: "./src/ZXYGL.js",
-//   output: {
-//     filename: "./ZXYGL.js"
-//   },
-//   module: {
-//     //webpack使用loader的方式处理各种各样的资源
-//     rules: [
-//       {
-//         test: /\.js$/, //处理以.js结尾的文件
-//         use: {
-//         //   query: {
-//         //     presets: ["es2015", "stage-0"]
-//         //   },
-//         //   exclude: /node_modules/, //处理除了nodde_modules里的js文件
-//           loader: "babel-loader" //用babel-loader处理
-//         }
-//       }
-//     ]
-//   },
-//   mode: "development", //"production"
-//   // mode: "production"
-// };

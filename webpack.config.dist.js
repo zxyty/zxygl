@@ -19,20 +19,21 @@ module.exports = {
 
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": {
-          NODE_ENV: JSON.stringify("production")
-      }
+      // "process.env": {
+      //     NODE_ENV: JSON.stringify("dist")
+      // }
+      "__ENV__": JSON.stringify("dist")
     }),
   ],
   // 压缩js
   optimization: {
     minimizer: [
-        new UglifyJsPlugin({
-            uglifyOptions: {
-                compress: false,
-            },
-            sourceMap: true
-        })
+      new UglifyJsPlugin({
+          uglifyOptions: {
+              compress: true,
+          },
+          sourceMap: true
+      })
     ]
   },
 

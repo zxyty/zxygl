@@ -1,91 +1,86 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // core
-import Face3 from "./core/Face3";
-import Face4 from "./core/Face4";
-import Geometry from "./core/Geometry";
-import Matrix3 from "./core/Matrix3";
-import Matrix4 from "./core/Matrix4";
-import Vector2 from "./core/Vector2";
-import Vector3 from "./core/Vector3";
-import Vector4 from "./core/Vector4";
-import Vertex from "./core/Vertex";
-import Color from "./core/Color";
-
+const Face3_1 = require("./core/Face3");
+const Face4_1 = require("./core/Face4");
+const Geometry_1 = require("./core/Geometry");
+const Matrix3_1 = require("./core/Matrix3");
+const Matrix4_1 = require("./core/Matrix4");
+const Vector2_1 = require("./core/Vector2");
+const Vector3_1 = require("./core/Vector3");
+const Vector4_1 = require("./core/Vector4");
+const Vertex_1 = require("./core/Vertex");
+const Color_1 = require("./core/Color");
 // scenes
-import Scene from "./scenes/Scene";
-
+const Scene_1 = require("./scenes/Scene");
 // renderers
-import Renderer from "./renderers/Renderer";
-import CanvasRenderer from "./renderers/CanvasRenderer";
-
+const Renderer_1 = require("./renderers/Renderer");
+const CanvasRenderer_1 = require("./renderers/CanvasRenderer");
 // renderer able
-import RenderableFace3 from "./renderers/renderables/RenderableFace3";
-import RenderableFace4 from "./renderers/renderables/RenderableFace4";
-import RenderableParticle from "./renderers/renderables/RenderableParticle";
-
+const RenderableFace3_1 = require("./renderers/renderables/RenderableFace3");
+const RenderableFace4_1 = require("./renderers/renderables/RenderableFace4");
+const RenderableParticle_1 = require("./renderers/renderables/RenderableParticle");
 // cameras
-import Camera from "./cameras/Camera";
-
+const Camera_1 = require("./cameras/Camera");
 // materials
-import ColorFillMaterial from "./materials/ColorFillMaterial";
-import ColorStrokeMaterial from "./materials/ColorStrokeMaterial";
-import FaceColorFillMaterial from "./materials/FaceColorFillMaterial";
-import FaceColorStrokeMaterial from "./materials/FaceColorStrokeMaterial";
-
+const ColorFillMaterial_1 = require("./materials/ColorFillMaterial");
+const ColorStrokeMaterial_1 = require("./materials/ColorStrokeMaterial");
+const FaceColorFillMaterial_1 = require("./materials/FaceColorFillMaterial");
+const FaceColorStrokeMaterial_1 = require("./materials/FaceColorStrokeMaterial");
 // objects
-import Object3D from "./objects/Object3D";
-import Mesh from "./objects/Mesh";
-import Particle from "./objects/Particle";
-import Line from "./objects/Line";
-
+const Object3D_1 = require("./objects/Object3D");
+const Mesh_1 = require("./objects/Mesh");
+const Particle_1 = require("./objects/Particle");
+const Line_1 = require("./objects/Line");
 // objects primitives
-import Plane from "./objects/primitives/Plane";
-import Cube from "./objects/primitives/Cube";
-import Cylinder from "./objects/primitives/Cylinder";
-
-
-window.ZXYGL = {
-  // core
-  Color: Color,
-  Face3: Face3,
-  Face4: Face4,
-  Geometry: Geometry,
-  Matrix3: Matrix3,
-  Matrix4: Matrix4,
-  Vector2: Vector2,
-  Vector3: Vector3,
-  Vector4: Vector4,
-  Vertex: Vertex,
-
-  // scenes
-  Scene: Scene,
-
-  // renderer
-  Renderer: Renderer,
-  CanvasRenderer: CanvasRenderer,
-  SvgRenderer: SvgRenderer,
-
-  // renderer able
-  RenderableFace3: RenderableFace3,
-  RenderableFace4: RenderableFace4,
-  RenderableParticle: RenderableParticle,
-
-  // cameras
-  Camera: Camera,
-
-  // materials
-  ColorFillMaterial: ColorFillMaterial,
-  ColorStrokeMaterial: ColorStrokeMaterial,
-  FaceColorFillMaterial: FaceColorFillMaterial,
-  FaceColorStrokeMaterial: FaceColorStrokeMaterial,
-
-  // objects
-  Object3D: Object3D,
-  Mesh: Mesh,
-  Particle: Particle,
-  Line: Line,
-
-  // objects primitives
-  Plane: Plane,
-  Cube: Cube,
-  Cylinder: Cylinder
+const Plane_1 = require("./objects/primitives/Plane");
+const Cube_1 = require("./objects/primitives/Cube");
+const Cylinder_1 = require("./objects/primitives/Cylinder");
+const ZXYGL = {
+    // core
+    Color: Color_1.default,
+    Face3: Face3_1.default,
+    Face4: Face4_1.default,
+    Geometry: Geometry_1.default,
+    Matrix3: Matrix3_1.default,
+    Matrix4: Matrix4_1.default,
+    Vector2: Vector2_1.default,
+    Vector3: Vector3_1.default,
+    Vector4: Vector4_1.default,
+    Vertex: Vertex_1.default,
+    // scenes
+    Scene: Scene_1.default,
+    // renderer
+    Renderer: Renderer_1.default,
+    CanvasRenderer: CanvasRenderer_1.default,
+    // renderer able
+    RenderableFace3: RenderableFace3_1.default,
+    RenderableFace4: RenderableFace4_1.default,
+    RenderableParticle: RenderableParticle_1.default,
+    // cameras
+    Camera: Camera_1.default,
+    // materials
+    ColorFillMaterial: ColorFillMaterial_1.default,
+    ColorStrokeMaterial: ColorStrokeMaterial_1.default,
+    FaceColorFillMaterial: FaceColorFillMaterial_1.default,
+    FaceColorStrokeMaterial: FaceColorStrokeMaterial_1.default,
+    // objects
+    Object3D: Object3D_1.default,
+    Mesh: Mesh_1.default,
+    Particle: Particle_1.default,
+    Line: Line_1.default,
+    // objects primitives
+    Plane: Plane_1.default,
+    Cube: Cube_1.default,
+    Cylinder: Cylinder_1.default
 };
+if (__ENV__ == 'dist') {
+    window.ZXYGL = ZXYGL;
+}
+// else if(__ENV__ == 'production') {
+//   export default Zxygl;
+// } else if(__ENV__ == 'development') {
+//   export default Zxygl;
+// }
+exports.default = ZXYGL;
+//# sourceMappingURL=ZXYGL.js.map

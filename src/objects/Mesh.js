@@ -1,18 +1,13 @@
-import Object3D from "./Object3D";
-import { tMaterial } from "../type";
-import Geometry from "../core/Geometry";
-
-export default class Mesh extends Object3D {
-  // doubleSided: Boolean
-  doubleSided;
-
-  // constructor(geometry: Geometry, material: tMaterial) {
-  constructor(geometry, material) {
-    super(material);
-
-    this.geometry = geometry;
-	
-	  this.doubleSided = false;
-  }
-  
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Object3D_1 = require("./Object3D");
+class Mesh extends Object3D_1.default {
+    // constructor(geometry: Geometry, material: tMaterial) {
+    constructor(geometry, material) {
+        super(material);
+        this.geometry = geometry;
+        this.doubleSided = false;
+    }
 }
+exports.default = Mesh;
+//# sourceMappingURL=Mesh.js.map
