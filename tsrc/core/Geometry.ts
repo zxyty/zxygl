@@ -11,14 +11,15 @@ export default class Geometry {
     this.vertices = new Array();
     this.faces = new Array();
   }
-  v(x, y, z) {
-    this.vertices.push(new Vertex(new Vector3(x, y, z)));
+  v(x: number, y: number, z: number) {
+    this.vertices.push(new Vertex(new Vector3(x, y, z), null));
   }
-  f4(a, b, c, d) {
-    this.faces.push(new Face4(a, b, c, d));
+  f4(a: number, b: number, c: number, d: number) {
+    
+    this.faces.push(new Face4(this.vertices[a], this.vertices[b], this.vertices[c], this.vertices[d], null, null, null))
   }
   computeNormals() {
-    let v, f, vA, vB, vC, cb, ca, normal;
+    let v, f, vA, vB, vC, cb, ab, normal;
     
     for (v = 0; v < this.vertices.length; v++) {
       this.vertices[v].normal.set(0, 0 ,0);
@@ -48,7 +49,8 @@ export default class Geometry {
       vC.normal.addSelf(normal);
 
       if(this.faces[f] instanceof Face4) {
-        this.vertices[this.faces[f].d].normal.addSelf(normal);
+        let face =  this.faces[f] as Face4;
+        this.vertices[face.d].normal.addSelf(normal);
       }
 
     }

@@ -5,8 +5,8 @@ import Geometry from "../core/Geometry";
 export default class Mesh extends Object3D {
   doubleSided: Boolean;
   geometry: Geometry;
-  
-  constructor(geometry: Geometry, material: tMaterial) {
+
+  constructor(geometry: Geometry, material: Array<tMaterial>) {
     super(material);
 
     this.geometry = geometry;

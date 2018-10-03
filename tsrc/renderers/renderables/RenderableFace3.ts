@@ -13,9 +13,9 @@ export default class RenderableFace3 {
     screenZ: number;
 
     constructor() {
-        this.v1 = new Vector2();
-        this.v2 = new Vector2();
-        this.v3 = new Vector2();
+        this.v1 = new Vector2(0, 0);
+        this.v2 = new Vector2(0, 0);
+        this.v3 = new Vector2(0, 0);
         
         this.screenZ;
         

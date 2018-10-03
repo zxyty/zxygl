@@ -13,25 +13,22 @@ export default class Matrix3 {
     this.n31 = 0; this.n32 = 0; this.n33 = 1;
   }
 
-  assign(m) {
+  assign(m: Matrix3) {
     this.n11 = m.n11; this.n12 = m.n12; this.n13 = m.n13;
     this.n21 = m.n21; this.n22 = m.n22; this.n23 = m.n23;
     this.n31 = m.n31; this.n32 = m.n32; this.n33 = m.n33;
   }
 
-  multiplySelf(m) {
+  multiplySelf(m: Matrix3) {
     let n11 = this.n11,
       n12 = this.n12,
-      n13 = this.n13,
-      n14 = this.n14;
+      n13 = this.n13;
     let n21 = this.n21,
       n22 = this.n22,
-      n23 = this.n23,
-      n24 = this.n24;
+      n23 = this.n23;
     let n31 = this.n31,
       n32 = this.n32,
-      n33 = this.n33,
-      n34 = this.n34;
+      n33 = this.n33;
 
     this.n11 = n11 * m.n11 + n12 * m.n21 + n13 * m.n31;
     this.n12 = n11 * m.n12 + n12 * m.n22 + n13 * m.n32;
@@ -49,16 +46,13 @@ export default class Matrix3 {
   inverse() {
     let n11 = this.n11,
       n12 = this.n12,
-      n13 = this.n13,
-      n14 = this.n14;
+      n13 = this.n13;
     let n21 = this.n21,
       n22 = this.n22,
-      n23 = this.n23,
-      n24 = this.n24;
+      n23 = this.n23;
     let n31 = this.n31,
       n32 = this.n32,
-      n33 = this.n33,
-      n34 = this.n34;
+      n33 = this.n33;
 
     this.n11 = n11;
     this.n12 = n21;

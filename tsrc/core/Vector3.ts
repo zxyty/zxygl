@@ -12,8 +12,8 @@ export default class Vector3 {
   tz: number;
 
   ool: any;
-  
-  constructor(x, y, z) {
+
+  constructor(x: number, y: number, z: number) {
     this.x = x ? x : 0;
     this.y = y ? y : 0;
     this.z = z ? z : 0;
@@ -29,19 +29,19 @@ export default class Vector3 {
     this.ool = null;
   }
 
-  static add(a, b) {
+  static add(a: Vector3, b: Vector3) {
     return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
   }
 
-  static sub(a, b) {
+  static sub(a: Vector3, b: Vector3) {
     return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
   }
 
-  static multiply(a, s) {
+  static multiply(a: Vector3, s: number) {
     return new Vector3(a.x * s, a.y * s, a.z * s);
   }
 
-  static cross(a, b) {
+  static cross(a: Vector3, b: Vector3) {
     return new Vector3(
       a.y * b.z - a.z * b.y,
       a.z * b.x - a.x * b.z,
@@ -49,47 +49,47 @@ export default class Vector3 {
     );
   }
 
-  static dot(a, b) {
+  static dot(a: Vector3, b: Vector3) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
   }
 
-  set(x, y, z) {
+  set(x: number, y: number, z: number) {
     this.x = x;
     this.y = y;
     this.z = z;
   }
 
-  copy(v) {
+  copy(v: Vector3) {
     this.x = v.x;
     this.y = v.y;
     this.z = v.z;
   }
 
-  addSelf(v) {
+  addSelf(v: Vector3) {
     this.x += v.x;
     this.y += v.y;
     this.z += v.z;
   }
 
-  add(v1, v2) {
+  add(v1: Vector3, v2: Vector3) {
     this.x = v1.x + v2.x;
     this.y = v1.y + v2.y;
     this.z = v1.z + v2.z;
   }
 
-  addScalar(s) {
+  addScalar(s: number) {
     this.x += s;
     this.y += s;
     this.z += s;
   }
 
-  subSelf(v) {
+  subSelf(v: Vector3) {
     this.x -= v.x;
     this.y -= v.y;
     this.z -= v.z;
   }
 
-  sub(v1, v2) {
+  sub(v1: Vector3, v2: Vector3) {
     this.x = v1.x - v2.x;
     this.y = v1.y - v2.y;
     this.z = v1.z - v2.z;
@@ -111,13 +111,13 @@ export default class Vector3 {
     this.z *= v.z;
   }
 
-  multiplyScalar(s) {
+  multiplyScalar(s: number) {
     this.x *= s;
     this.y *= s;
     this.z *= s;
   }
 
-  distanceTo(v) {
+  distanceTo(v: Vector3) {
     this.dx = this.x - v.x;
     this.dy = this.y - v.y;
     this.dz = this.z - v.z;
@@ -125,7 +125,7 @@ export default class Vector3 {
     return Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
   }
 
-  distanceToSquared(v) {
+  distanceToSquared(v: Vector3) {
     this.dx = this.x - v.x;
     this.dy = this.y - v.y;
     this.dz = this.z - v.z;
@@ -158,7 +158,7 @@ export default class Vector3 {
 		}
   }
 
-  dot(v) {
+  dot(v: Vector3) {
     return this.x * v.x + this.y * v.y + this.z * v.z;
   }
 

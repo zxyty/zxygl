@@ -12,7 +12,7 @@ export default class Face3 {
   color: Color;
   uv: Array<Array<number>>
 
-  constructor(a, b, c, uv, normal, color) {
+  constructor(a: Vertex, b: Vertex, c: Vertex, uv: Array<Array<number>>, normal: Vector3, color: Color) {
     // super((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3, (a.z + b.z + c.z) / 3);
 
     this.a = a;

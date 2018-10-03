@@ -3,7 +3,7 @@ import Vertex from "../../core/Vertex";
 import Face4 from "../../core/Face4";
 
 export default class Cube extends Geometry {
-  constructor(width, height, depth) {
+  constructor(width: number, height: number, depth: number) {
     super();
 
     let widthHalf = width / 2;

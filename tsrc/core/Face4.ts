@@ -13,7 +13,7 @@ export default class Face4 {
   color: Color;
   uv: Array<Array<number>>
 
-  constructor(a, b, c, d, uv, normal, color) {
+  constructor(a: Vertex, b: Vertex, c: Vertex, d: Vertex, uv: Array<Array<number>>, normal: Vector3, color: Color) {
     // super(
     //   (a.x + b.x + c.x + d.x) / 4,
     //   (a.y + b.y + c.y + d.y) / 4,

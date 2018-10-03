@@ -2,7 +2,7 @@ import Geometry from "../../core/Geometry";
 import Vertex from "../../core/Vertex";
 import Face4 from "../../core/Face4";
 export default class Plane extends Geometry {
-  constructor(width, height) {
+  constructor(width: number, height: number) {
     super();
 
     let widthHalf = width / 2;

@@ -13,8 +13,8 @@ import ColorStrokeMaterial from "../materials/ColorStrokeMaterial";
 import FaceColorStrokeMaterial from "../materials/FaceColorStrokeMaterial";
 
 export default class CanvasRenderer extends Renderer {
-  domElement: any;
-  viewport: any;
+  domElement: HTMLCanvasElement;
+  viewport: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
 
   constructor() {
@@ -36,7 +36,7 @@ export default class CanvasRenderer extends Renderer {
 
   render(scene: Scene, camera: Camera) {
     // super.render(scene, camera);
-    
+
     let i, j, element, pi2 = 2 * Math.PI;
     let elementsLength, material, materialsLength;
 

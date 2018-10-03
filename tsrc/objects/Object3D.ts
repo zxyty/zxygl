@@ -11,7 +11,7 @@ export default class Object3D {
   matrix: Matrix4;
   screen: Vector3;
 
-  constructor(material) {
+  constructor(material: Array<tMaterial>) {
     this.position = new Vector3(0, 0, 0);
     this.rotation = new Vector3(0, 0, 0);
     this.scale = new Vector3(1, 1, 1);

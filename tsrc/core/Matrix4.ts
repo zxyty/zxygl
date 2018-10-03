@@ -16,7 +16,7 @@ export default class Matrix4 {
     this.identity();
   }
 
-  static translationMatrix(x, y, z) {
+  static translationMatrix(x: number, y: number, z: number) {
     let m = new Matrix4();
 
     m.n14 = x;
@@ -26,7 +26,7 @@ export default class Matrix4 {
     return m;
   }
 
-  static scaleMatrix(x, y, z) {
+  static scaleMatrix(x: number, y: number, z: number) {
     let m = new Matrix4();
 
     m.n11 = x;
@@ -36,7 +36,7 @@ export default class Matrix4 {
     return m;
   }
 
-  static rotationXMatrix(theta) {
+  static rotationXMatrix(theta: number) {
     let rot = new Matrix4();
 
     rot.n22 = rot.n33 = Math.cos(theta);
@@ -46,7 +46,7 @@ export default class Matrix4 {
     return rot;
   }
 
-  static rotationYMatrix(theta) {
+  static rotationYMatrix(theta: number) {
     let rot = new Matrix4();
 
     rot.n11 = rot.n33 = Math.cos(theta);
@@ -56,7 +56,7 @@ export default class Matrix4 {
     return rot;
   }
 
-  static rotationZMatrix(theta) {
+  static rotationZMatrix(theta: number) {
     let rot = new Matrix4();
 
     rot.n11 = rot.n22 = Math.cos(theta);
@@ -66,7 +66,7 @@ export default class Matrix4 {
     return rot;
   }
 
-  static makeFrustum(left, right, bottom, top, near, far) {
+  static makeFrustum(left: number, right: number, bottom: number, top: number, near: number, far: number) {
 
     let m = new Matrix4(),
     x = 2 * near / (right - left),
@@ -84,7 +84,7 @@ export default class Matrix4 {
     return m;
   }
 
-  static makePerspective(fovy, aspect, near, far) {
+  static makePerspective(fovy: number, aspect: number, near: number, far: number) {
     
     let ymax = near * Math.tan(fovy * Default.PERPI); // Math.tan(fovy * Math.PI / 360.0) 
     let ymin = -ymax;
@@ -110,16 +110,16 @@ export default class Matrix4 {
     this.z.sub(center, eye);
     this.z.normalize();
 
-    this.x.copy(this.z);
+    this.x.copy(this.z);      // right轴
     this.x.crossSelf(up);
     this.x.normalize();
 
-    this.y.copy(this.x);
+    this.y.copy(this.x);      // up轴
     this.y.crossSelf(this.z);
     this.y.normalize();
     this.y.negate(); //
 
-    this.n11 = this.x.x;
+    this.n11 = this.x.x;      
     this.n12 = this.x.y;
     this.n13 = this.x.z;
     this.n14 = -this.x.dot(eye);
@@ -133,7 +133,7 @@ export default class Matrix4 {
     this.n34 = -this.z.dot(eye);
   }
 
-  transform(v) {  // 乘以一个4维向量  得到一个向量
+  transform(v: Vector4 | Vector3) {  // 乘以一个4维向量  得到一个向量
     let vx = v.x,
       vy = v.y,
       vz = v.z,
@@ -154,9 +154,9 @@ export default class Matrix4 {
     }
   }
 
-  corssVector(a) {
+  corssVector(a: Vector4) {
 
-    let v: Vector4 = new Vector4();
+    let v: Vector4 = new Vector4(0, 0, 0, 0);
 
     v.x = this.n11 * a.x + this.n12 * a.y + this.n13 * a.z + this.n14 * a.w;
     v.y = this.n21 * a.x + this.n22 * a.y + this.n23 * a.z + this.n24 * a.w;
@@ -167,7 +167,7 @@ export default class Matrix4 {
     return v;
   }
 
-  multiply(a, b) {
+  multiply(a: Matrix4, b: Matrix4) {
 
     this.n11 = a.n11 * b.n11 + a.n12 * b.n21 + a.n13 * b.n31 + a.n14 * b.n41;
     this.n12 = a.n11 * b.n12 + a.n12 * b.n22 + a.n13 * b.n32 + a.n14 * b.n42;
@@ -191,7 +191,7 @@ export default class Matrix4 {
 
   }
 
-  multiplySelf(m) {
+  multiplySelf(m: Matrix4) {
     let n11 = this.n11, n12 = this.n12, n13 = this.n13, n14 = this.n14,
     n21 = this.n21, n22 = this.n22, n23 = this.n23, n24 = this.n24,
     n31 = this.n31, n32 = this.n32, n33 = this.n33, n34 = this.n34,

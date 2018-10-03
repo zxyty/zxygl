@@ -6,7 +6,7 @@ export default class Color {
   hex: number;
   styleString: string;
 
-  constructor(hex) {  // 0xff000000
+  constructor(hex: number) {  // 0xff000000
     this.r = null;
     this.g = null;
     this.b = null;
@@ -19,13 +19,13 @@ export default class Color {
     // this.setHex(hex ? hex : 0xff000000);
     this.setHex(hex);
   }
-  setHex(hex) {
+  setHex(hex: number) {
     this.hex = hex;
     this.updateRGBA();
     this.updateStyleString();
   }
 
-  setRGBA(r, g, b, a) {
+  setRGBA(r: number, g: number, b: number, a: number) {
     this.r = r;
     this.g = g;
     this.b = b;

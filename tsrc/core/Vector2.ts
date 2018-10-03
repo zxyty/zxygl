@@ -1,7 +1,7 @@
 export default class Vector2 {
   x: number;
   y: number;
-  
+
   constructor(x: number, y: number) {
     this.x = x ? x : 0;
     this.y = y ? y : 0;
@@ -19,37 +19,37 @@ export default class Vector2 {
     return new Vector2(a.x * s, a.y * s);
   }
 
-  set(x, y) {
+  set(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
 
-  copy(v) {
+  copy(v: Vector2) {
     this.x = v.x;
     this.y = v.y;
   }
 
-  addSelf(v) {
+  addSelf(v: Vector2) {
     this.x += v.x;
     this.y += v.y;
   }
 
-  add(v1, v2) {
+  add(v1: Vector2, v2: Vector2) {
     this.x = v1.x + v2.x;
     this.y = v1.y + v2.y;
   }
 
-  subSelf(v) {
+  subSelf(v: Vector2) {
     this.x -= v.x;
     this.y -= v.y;
   }
 
-  sub(v1, v2) {
+  sub(v1: Vector2, v2: Vector2) {
     this.x = v1.x - v2.x;
     this.y = v1.y - v2.y;
   }
 
-  multiplyScalar(s) {
+  multiplyScalar(s: number) {
     this.x *= s;
 		this.y *= s;
   }
@@ -58,9 +58,10 @@ export default class Vector2 {
     this.multiplyScalar(1 / this.length());
   }
 
-  expand(v1, v2) {
+  expand(v1: Vector2, v2: Vector2) {
     // 暂时有问题
-    this.unit(this.sub(v1, v2));
+    this.sub(v1, v2);
+    this.unit();
     v2.addSelf(this);
   }
 
