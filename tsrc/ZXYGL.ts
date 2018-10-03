@@ -9,6 +9,7 @@ import Vector3 from "./core/Vector3";
 import Vector4 from "./core/Vector4";
 import Vertex from "./core/Vertex";
 import Color from "./core/Color";
+import Rectangle from "./core/Rectangle";
 
 // scenes
 import Scene from "./scenes/Scene";
@@ -54,6 +55,7 @@ const ZXYGL = {
   Vector3: Vector3,
   Vector4: Vector4,
   Vertex: Vertex,
+  Rectangle: Rectangle,
 
   // scenes
   Scene: Scene,
