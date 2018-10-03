@@ -11,12 +11,15 @@ import RenderableFace3 from "./renderables/RenderableFace3";
 import RenderableFace4 from "./renderables/RenderableFace4";
 import RenderableParticle from "./renderables/RenderableParticle";
 import { tRenderable } from "../type";
+import RenderableLine from "./renderables/RenderableLine";
+import Line from "../objects/Line";
 
 export default class Renderer {
   renderList: tRenderable[];
   face3Pool: RenderableFace3[];
   face4Pool: RenderableFace4[];
   particlePool: RenderableParticle[];
+  linePool: RenderableLine[]
   matrix: Matrix4;
 
   constructor() {
@@ -26,6 +29,8 @@ export default class Renderer {
 
     this.face3Pool = new Array();
     this.face4Pool = new Array();
+    this.linePool = new Array();
+
   }
 
   sort(a: tRenderable, b: tRenderable) {
@@ -33,15 +38,25 @@ export default class Renderer {
   }
 
   project(scene: Scene, camera: Camera) {
-    let i, j, vertex, face, object, v1, v2, v3, v4;
-    let face3count = 0, face4count = 0, particleCount = 0;
+    let i, j, vertex, vertex2, face, object, v1, v2, v3, v4;
+    let face3count = 0, face4count = 0, lineCount = 0, particleCount = 0;
     let camerafocus = camera.focus, focuszoom = camera.focus * camera.zoom;
     let verticesLength = 0, faceLength = 0;
 
     this.renderList = [];
 
+    if(camera.autoUpdateMatrix) {
+      
+      camera.updateMatrix();
+
+    }
+
     for(i = 0; i < scene.objects.length; i++) {
       object = scene.objects[i];
+
+      if(object.autoUpdateMatrix) {
+        object.updateMatrix();
+      }
 
       if(object instanceof Mesh) {
 
@@ -81,7 +96,7 @@ export default class Renderer {
 
                 face.screen.z = (v1.screen.z + v2.screen.z + v3.screen.z) * 0.3;  // 这里*0.33 会更精确点
                 
-                if(this.face3Pool[face3count] == null) {
+                if(!this.face3Pool[face3count]) {
                   this.face3Pool[face3count] = new RenderableFace3();
                   
                 }
@@ -115,7 +130,7 @@ export default class Renderer {
               (v2.screen.y - v3.screen.y) * (v4.screen.x - v3.screen.x) > 0)) ) {
                 face.screen.z = (v1.screen.z + v2.screen.z + v3.screen.z + v4.screen.z) * 0.25;
 
-                if(this.face4Pool[face4count] == null) {
+                if(!this.face4Pool[face4count]) {
                   this.face4Pool[face4count] = new RenderableFace4();
                 }
 
@@ -140,6 +155,45 @@ export default class Renderer {
 
         }
 
+      } else if(object instanceof Line) {
+        this.matrix.multiply(camera.matrix, object.matrix);
+        
+        verticesLength = object.geometry.vertices.length;
+        for(j = 0; j< verticesLength; j++) {
+          vertex = object.geometry.vertices[j];
+
+          vertex.screen.copy(vertex.position);
+          this.matrix.transform(vertex.screen);
+
+          vertex.screen.z = focuszoom / (camerafocus + vertex.screen.z);
+          vertex.visible = vertex.screen.z > 0;
+
+          vertex.screen.x *= vertex.screen.z;
+          vertex.screen.y *= vertex.screen.z;
+
+          if(j > 0) {
+            vertex2 = object.geometry.vertices[j - 1];
+
+            if(!vertex.visible || !vertex2.visible) {
+              continue;
+            }
+
+            if(!this.linePool[lineCount]) {
+              this.linePool[lineCount] = new RenderableLine();
+            }
+
+            this.linePool[lineCount].v1.x = vertex.screen.x;
+            this.linePool[lineCount].v1.y = vertex.screen.y;
+            this.linePool[lineCount].v2.x = vertex2.screen.x;
+            this.linePool[lineCount].v2.x = vertex2.screen.x;
+            this.linePool[lineCount].screenZ = (vertex.screen.z + vertex2.screen.z) * 0.5;
+            this.linePool[lineCount].material = object.material;
+
+            this.renderList.push(this.linePool[lineCount]);
+            lineCount++;
+          }
+        }
+
       } else if(object instanceof Particle) {
         object.screen.copy(object.position);
 
@@ -154,7 +208,7 @@ export default class Renderer {
         object.screen.x *= object.screen.z;
         object.screen.y *= object.screen.z;
         
-        if (this.particlePool[particleCount] == null) {
+        if (!this.particlePool[particleCount]) {
           this.particlePool[particleCount] = new RenderableParticle();
         }
           

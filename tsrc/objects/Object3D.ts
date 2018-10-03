@@ -11,6 +11,8 @@ export default class Object3D {
   matrix: Matrix4;
   screen: Vector3;
 
+  autoUpdateMatrix: boolean;
+
   constructor(material: Array<tMaterial>) {
     this.position = new Vector3(0, 0, 0);
     this.rotation = new Vector3(0, 0, 0);
@@ -19,7 +21,9 @@ export default class Object3D {
     this.matrix = new Matrix4();            // 模型矩阵
     this.screen = new Vector3(0, 0, 0);
 
-	  this.material = material instanceof Array ? material : [material];
+    this.material = material instanceof Array ? material : [material];
+    
+    this.autoUpdateMatrix = true;
   }
 
   updateMatrix() {

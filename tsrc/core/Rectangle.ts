@@ -29,6 +29,8 @@ export default class Rectangle {
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
+
+        this.resize();
     }
 
     resize() {
@@ -118,6 +120,25 @@ export default class Rectangle {
         this.y1 = 0;
         this.x2 = 0;
         this.y2 = 0;
+    }
+
+    inflate(v: number) {
+        this.x1 -= v;
+        this.y1 -= v;
+
+        this.x2 += v;
+        this.y2 += v;
+
+        this.resize();
+    }
+
+    minSelf(r: Rectangle) {
+        this.x1 = Math.max(this.x1, r.getX1());
+        this.y1 = Math.max(this.y1, r.getY1());
+        this.x2 = Math.min(this.x2, r.getX2());
+        this.x1 = Math.min(this.y2, r.getY2());
+
+        this.resize();
     }
 
     toString() {

@@ -7,5 +7,7 @@ export default class Particle extends Object3D {
     super(material);
 
     this.size = 1;
+
+    this.autoUpdateMatrix = false;
   }
 }

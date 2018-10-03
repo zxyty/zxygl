@@ -18,6 +18,8 @@ export default class Camera {
   zoom: number;
   focus: number;
 
+  autoUpdateMatrix: boolean;
+
   constructor(x?: number, y?: number, z?: number) {
     this.position = new Vector3(x, y, z);     // 相机位置
     this.target = {
@@ -32,6 +34,8 @@ export default class Camera {
     // need to remove this
     this.zoom = 3;
     this.focus = 500;
+
+    this.autoUpdateMatrix = true;
 
     this.updateMatrix();
   }

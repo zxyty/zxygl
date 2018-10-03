@@ -12,6 +12,7 @@ import FaceColorFillMaterial from "../materials/FaceColorFillMaterial";
 import ColorStrokeMaterial from "../materials/ColorStrokeMaterial";
 import FaceColorStrokeMaterial from "../materials/FaceColorStrokeMaterial";
 import Rectangle from "../core/Rectangle";
+import RenderableLine from "./renderables/RenderableLine";
 
 export default class CanvasRenderer extends Renderer {
   domElement: HTMLCanvasElement;
@@ -54,12 +55,10 @@ export default class CanvasRenderer extends Renderer {
     let v1x, v1y, v2x, v2y, v3x, v3y, v4x, v4y;
     let size;
 
-    this.context.clearRect(
-      this.clearRect.getX() - 1,
-      this.clearRect.getY() - 1,
-      this.clearRect.getWidth() + 2,
-      this.clearRect.getHeight() + 2
-    );
+    this.clearRect.inflate(1);
+    this.clearRect.minSelf(this.clipRect);
+    
+    this.context.clearRect(this.clearRect.getX(), this.clearRect.getY(), this.clearRect.getWidth(), this.clearRect.getHeight());
 
     this.clearRect.empty();
 
@@ -126,6 +125,20 @@ export default class CanvasRenderer extends Renderer {
 					this.context.lineTo(v4x, v4y);
           this.context.lineTo(v1x, v1y);
           
+        } else if(element instanceof RenderableLine) {
+          v1x = element.v1.x; v1y = element.v1.y;
+          v2x = element.v2.x; v2y = element.v2.y;
+          
+          this.bboxRect.addPoint(v1x, v1y);
+          this.bboxRect.addPoint(v2x, v2y);
+
+          if(!this.clipRect.instersects(this.bboxRect)) {
+            continue;
+          }
+
+          this.context.moveTo(v1x, v1y);
+          this.context.lineTo(v2x, v2y);
+
         } else if(element instanceof RenderableParticle) {
           size = element.size * element.screenZ;
 
@@ -144,9 +157,15 @@ export default class CanvasRenderer extends Renderer {
         if (material instanceof ColorFillMaterial) {
           this.context.fillStyle = material.color.styleString;
           this.context.fill();
+
+          this.clearRect.addRectangle(this.bboxRect);
+
         } else if(material instanceof FaceColorFillMaterial) {
           this.context.fillStyle = element.color.styleString;
-					this.context.fill();
+          this.context.fill();
+          
+          this.clearRect.addRectangle(this.bboxRect);
+
         } else if(material instanceof ColorStrokeMaterial) {
           this.context.lineWidth = material.lineWidth;
           this.context.lineJoin = "round";
@@ -154,6 +173,10 @@ export default class CanvasRenderer extends Renderer {
 
           this.context.strokeStyle = material.color.styleString;
           this.context.stroke();
+
+          this.bboxRect.inflate(material.lineWidth);
+          this.clearRect.addRectangle(this.bboxRect);
+
         } else if(material instanceof FaceColorStrokeMaterial) {
           this.context.lineWidth = material.lineWidth;
           this.context.lineJoin = "round";
@@ -161,9 +184,14 @@ export default class CanvasRenderer extends Renderer {
 
           this.context.strokeStyle = element.color.styleString;
           this.context.stroke();
+
+          this.bboxRect.inflate(material.lineWidth);
+          this.clearRect.addRectangle(this.bboxRect);
         }
+
+        this.context.closePath();
       }
     }
-    
+
   }
 }

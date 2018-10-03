@@ -21,6 +21,7 @@ import CanvasRenderer from "./renderers/CanvasRenderer";
 // renderer able
 import RenderableFace3 from "./renderers/renderables/RenderableFace3";
 import RenderableFace4 from "./renderers/renderables/RenderableFace4";
+import RenderableLine from "./renderers/renderables/RenderableLine";
 import RenderableParticle from "./renderers/renderables/RenderableParticle";
 
 // cameras
@@ -68,6 +69,7 @@ const ZXYGL = {
   RenderableFace3: RenderableFace3,
   RenderableFace4: RenderableFace4,
   RenderableParticle: RenderableParticle,
+  RenderableLine: RenderableLine,
 
   // cameras
   Camera: Camera,
