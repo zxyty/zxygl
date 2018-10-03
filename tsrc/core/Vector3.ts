@@ -13,7 +13,7 @@ export default class Vector3 {
 
   ool: any;
 
-  constructor(x: number, y: number, z: number) {
+  constructor(x?: number, y?: number, z?: number) {
     this.x = x ? x : 0;
     this.y = y ? y : 0;
     this.z = z ? z : 0;

@@ -18,7 +18,7 @@ export default class Camera {
   zoom: number;
   focus: number;
 
-  constructor(x, y, z) {
+  constructor(x?: number, y?: number, z?: number) {
     this.position = new Vector3(x, y, z);     // 相机位置
     this.target = {
       position: new Vector3(0, 0, 0)

@@ -16,7 +16,7 @@ export default class Geometry {
   }
   f4(a: number, b: number, c: number, d: number) {
     
-    this.faces.push(new Face4(this.vertices[a], this.vertices[b], this.vertices[c], this.vertices[d], null, null, null))
+    this.faces.push(new Face4(a, b, c, d, null, null, null))
   }
   computeNormals() {
     let v, f, vA, vB, vC, cb, ab, normal;

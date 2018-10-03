@@ -6,7 +6,7 @@ export default class Color {
   hex: number;
   styleString: string;
 
-  constructor(hex: number) {  // 0xff000000
+  constructor(hex?: number) {  // 0xff000000
     this.r = null;
     this.g = null;
     this.b = null;

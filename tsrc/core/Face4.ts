@@ -1,19 +1,18 @@
 import Vector3 from "./Vector3";
 import Color from "./Color";
-import Vertex from "./Vertex";
 
 export default class Face4 {
-  a: Vertex;
-  b: Vertex;
-  c: Vertex;
-  d: Vertex;
+  a: number;
+  b: number;
+  c: number;
+  d: number;
 
   screen: Vector3;
   normal: Vector3;
   color: Color;
   uv: Array<Array<number>>
 
-  constructor(a: Vertex, b: Vertex, c: Vertex, d: Vertex, uv: Array<Array<number>>, normal: Vector3, color: Color) {
+  constructor(a: number, b: number, c: number, d: number, uv?: Array<Array<number>>, normal?: Vector3, color?: Color) {
     // super(
     //   (a.x + b.x + c.x + d.x) / 4,
     //   (a.y + b.y + c.y + d.y) / 4,
