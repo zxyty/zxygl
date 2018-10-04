@@ -7,15 +7,16 @@ class Geometry {
     constructor() {
         this.vertices = new Array();
         this.faces = new Array();
+        this.uvs = new Array();
     }
     v(x, y, z) {
-        this.vertices.push(new Vertex_1.default(new Vector3_1.default(x, y, z)));
+        this.vertices.push(new Vertex_1.default(new Vector3_1.default(x, y, z), null));
     }
     f4(a, b, c, d) {
-        this.faces.push(new Face4_1.default(a, b, c, d));
+        this.faces.push(new Face4_1.default(a, b, c, d, null, null));
     }
     computeNormals() {
-        let v, f, vA, vB, vC, cb, ca, normal;
+        let v, f, vA, vB, vC, cb, ab, normal;
         for (v = 0; v < this.vertices.length; v++) {
             this.vertices[v].normal.set(0, 0, 0);
         }
@@ -28,7 +29,7 @@ class Geometry {
             normal = new Vector3_1.default();
             cb.sub(vC.position, vB.position);
             ab.sub(vA.position, vB.position);
-            cb.cross(ab);
+            cb.crossSelf(ab);
             if (!cb.isZero()) {
                 cb.normalize();
             }
@@ -37,7 +38,8 @@ class Geometry {
             vB.normal.addSelf(normal);
             vC.normal.addSelf(normal);
             if (this.faces[f] instanceof Face4_1.default) {
-                this.vertices[this.faces[f].d].normal.addSelf(normal);
+                let face = this.faces[f];
+                this.vertices[face.d].normal.addSelf(normal);
             }
         }
     }

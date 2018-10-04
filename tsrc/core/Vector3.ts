@@ -118,11 +118,7 @@ export default class Vector3 {
   }
 
   distanceTo(v: Vector3) {
-    this.dx = this.x - v.x;
-    this.dy = this.y - v.y;
-    this.dz = this.z - v.z;
-
-    return Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
+    return Math.sqrt(this.distanceToSquared(v));
   }
 
   distanceToSquared(v: Vector3) {

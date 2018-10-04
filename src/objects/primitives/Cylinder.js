@@ -30,7 +30,7 @@ class Cylinder extends Geometry_1.default {
         // Top circle
         if (topRad != 0) {
             this.v(0, 0, height + topOffset);
-            for (i = numSegs + numSegs / 2; i < 2 * numSegs; i++) {
+            for (let i = numSegs + numSegs / 2; i < 2 * numSegs; i++) {
                 this.f4(((2 * i - 2 * numSegs + 2) % numSegs) + numSegs, ((2 * i - 2 * numSegs + 1) % numSegs) + numSegs, ((2 * i - 2 * numSegs) % numSegs) + numSegs, 2 * numSegs + 1);
             }
         }

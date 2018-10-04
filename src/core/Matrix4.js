@@ -82,14 +82,13 @@ class Matrix4 {
         this.y = new Vector3_1.default(0, 0, 0);
         this.z = new Vector3_1.default(0, 0, 0);
     }
-    // lookAt(eye: Vector3, center: Vector3, up: Vector3) {
     lookAt(eye, center, up) {
         this.z.sub(center, eye);
         this.z.normalize();
-        this.x.copy(this.z);
+        this.x.copy(this.z); // right轴
         this.x.crossSelf(up);
         this.x.normalize();
-        this.y.copy(this.x);
+        this.y.copy(this.x); // up轴
         this.y.crossSelf(this.z);
         this.y.normalize();
         this.y.negate(); //
@@ -122,7 +121,7 @@ class Matrix4 {
         }
     }
     corssVector(a) {
-        let v = new Vector4_1.default();
+        let v = new Vector4_1.default(0, 0, 0, 0);
         v.x = this.n11 * a.x + this.n12 * a.y + this.n13 * a.z + this.n14 * a.w;
         v.y = this.n21 * a.x + this.n22 * a.y + this.n23 * a.z + this.n24 * a.w;
         v.z = this.n31 * a.x + this.n32 * a.y + this.n33 * a.z + this.n34 * a.w;

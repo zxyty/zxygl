@@ -45,11 +45,6 @@ class Vector2 {
     unit() {
         this.multiplyScalar(1 / this.length());
     }
-    expand(v1, v2) {
-        // 暂时有问题
-        this.unit(this.sub(v1, v2));
-        v2.addSelf(this);
-    }
     length() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }

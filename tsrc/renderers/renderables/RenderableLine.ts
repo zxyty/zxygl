@@ -9,7 +9,7 @@ export default class RenderableLine {
     screenZ: number;
 
     color: Color;
-    material: tMaterial;
+    material: Array<tMaterial>;
 
     constructor() {
         this.v1;

@@ -8,25 +8,33 @@ const Face4_1 = require("../core/Face4");
 const RenderableFace3_1 = require("./renderables/RenderableFace3");
 const RenderableFace4_1 = require("./renderables/RenderableFace4");
 const RenderableParticle_1 = require("./renderables/RenderableParticle");
+const RenderableLine_1 = require("./renderables/RenderableLine");
+const Line_1 = require("../objects/Line");
 class Renderer {
     constructor() {
         this.matrix = new Matrix4_1.default();
         this.renderList = null;
         this.face3Pool = new Array();
         this.face4Pool = new Array();
+        this.linePool = new Array();
     }
     sort(a, b) {
-        return a.screen.z - b.screen.z;
+        return a.screenZ - b.screenZ;
     }
-    // project(scene: Scene, camera: Camera) {
     project(scene, camera) {
-        let i, j, vertex, face, object, v1, v2, v3, v4;
-        let face3count = 0, face4count = 0, particleCount = 0;
+        let i, j, vertex, vertex2, face, object, v1, v2, v3, v4;
+        let face3count = 0, face4count = 0, lineCount = 0, particleCount = 0;
         let camerafocus = camera.focus, focuszoom = camera.focus * camera.zoom;
         let verticesLength = 0, faceLength = 0;
         this.renderList = [];
+        if (camera.autoUpdateMatrix) {
+            camera.updateMatrix();
+        }
         for (i = 0; i < scene.objects.length; i++) {
             object = scene.objects[i];
+            if (object.autoUpdateMatrix) {
+                object.updateMatrix();
+            }
             if (object instanceof Mesh_1.default) {
                 // gl_Position = uProjectionMatrix * uCameraViewMatrix * uModelViewMatrix * vec4(aVertexPosition, 1.0);
                 this.matrix.multiply(camera.matrix, object.matrix); // 得到 VM 视图模型矩阵（uCameraViewMatrix * uModelViewMatrix）
@@ -37,7 +45,7 @@ class Renderer {
                     vertex.screen.copy(vertex.position);
                     this.matrix.transform(vertex.screen); // 得到 uCameraViewMatrix * uModelViewMatrix * vec4(aVertexPosition, 1.0);
                     vertex.screen.z = focuszoom / (camerafocus + vertex.screen.z);
-                    vertex.screen.z = vertex.screen.z > 0;
+                    vertex.visible = vertex.screen.z > 0;
                     vertex.screen.x *= vertex.screen.z;
                     vertex.screen.y *= vertex.screen.z;
                 }
@@ -54,7 +62,7 @@ class Renderer {
                             (v3.screen.x - v1.screen.x) * (v2.screen.y - v1.screen.y) -
                                 (v3.screen.y - v1.screen.y) * (v2.screen.x - v1.screen.x) > 0)) {
                             face.screen.z = (v1.screen.z + v2.screen.z + v3.screen.z) * 0.3; // 这里*0.33 会更精确点
-                            if (this.face3Pool[face3count] == null) {
+                            if (!this.face3Pool[face3count]) {
                                 this.face3Pool[face3count] = new RenderableFace3_1.default();
                             }
                             this.face3Pool[face3count].v1.x = v1.screen.x;
@@ -66,6 +74,7 @@ class Renderer {
                             this.face3Pool[face3count].screenZ = face.screen.z;
                             this.face3Pool[face3count].color = face.color;
                             this.face3Pool[face3count].material = object.material;
+                            this.face3Pool[face3count].uvs = object.geometry.uvs[j];
                             this.renderList.push(this.face3Pool[face3count]);
                             face3count++;
                         }
@@ -81,23 +90,54 @@ class Renderer {
                                 (v2.screen.x - v3.screen.x) * (v4.screen.y - v3.screen.y) -
                                     (v2.screen.y - v3.screen.y) * (v4.screen.x - v3.screen.x) > 0))) {
                             face.screen.z = (v1.screen.z + v2.screen.z + v3.screen.z + v4.screen.z) * 0.25;
-                            if (this.face4Pool[face4count] == null) {
+                            if (!this.face4Pool[face4count]) {
                                 this.face4Pool[face4count] = new RenderableFace4_1.default();
                             }
-                            face4Pool[face4count].v1.x = v1.screen.x;
-                            face4Pool[face4count].v1.y = v1.screen.y;
-                            face4Pool[face4count].v2.x = v2.screen.x;
-                            face4Pool[face4count].v2.y = v2.screen.y;
-                            face4Pool[face4count].v3.x = v3.screen.x;
-                            face4Pool[face4count].v3.y = v3.screen.y;
-                            face4Pool[face4count].v4.x = v4.screen.x;
-                            face4Pool[face4count].v4.y = v4.screen.y;
-                            face4Pool[face4count].screenZ = face.screen.z;
-                            face4Pool[face4count].color = face.color;
-                            face4Pool[face4count].material = object.material;
-                            this.renderList.push(face4Pool[face4count]);
+                            this.face4Pool[face4count].v1.x = v1.screen.x;
+                            this.face4Pool[face4count].v1.y = v1.screen.y;
+                            this.face4Pool[face4count].v2.x = v2.screen.x;
+                            this.face4Pool[face4count].v2.y = v2.screen.y;
+                            this.face4Pool[face4count].v3.x = v3.screen.x;
+                            this.face4Pool[face4count].v3.y = v3.screen.y;
+                            this.face4Pool[face4count].v4.x = v4.screen.x;
+                            this.face4Pool[face4count].v4.y = v4.screen.y;
+                            this.face4Pool[face4count].screenZ = face.screen.z;
+                            this.face4Pool[face4count].color = face.color;
+                            this.face4Pool[face4count].material = object.material;
+                            this.face4Pool[face4count].uvs = object.geometry.uvs[j];
+                            this.renderList.push(this.face4Pool[face4count]);
                             face4count++;
                         }
+                    }
+                }
+            }
+            else if (object instanceof Line_1.default) {
+                this.matrix.multiply(camera.matrix, object.matrix);
+                verticesLength = object.geometry.vertices.length;
+                for (j = 0; j < verticesLength; j++) {
+                    vertex = object.geometry.vertices[j];
+                    vertex.screen.copy(vertex.position);
+                    this.matrix.transform(vertex.screen);
+                    vertex.screen.z = focuszoom / (camerafocus + vertex.screen.z);
+                    vertex.visible = vertex.screen.z > 0;
+                    vertex.screen.x *= vertex.screen.z;
+                    vertex.screen.y *= vertex.screen.z;
+                    if (j > 0) {
+                        vertex2 = object.geometry.vertices[j - 1];
+                        if (!vertex.visible || !vertex2.visible) {
+                            continue;
+                        }
+                        if (!this.linePool[lineCount]) {
+                            this.linePool[lineCount] = new RenderableLine_1.default();
+                        }
+                        this.linePool[lineCount].v1.x = vertex.screen.x;
+                        this.linePool[lineCount].v1.y = vertex.screen.y;
+                        this.linePool[lineCount].v2.x = vertex2.screen.x;
+                        this.linePool[lineCount].v2.x = vertex2.screen.x;
+                        this.linePool[lineCount].screenZ = (vertex.screen.z + vertex2.screen.z) * 0.5;
+                        this.linePool[lineCount].material = object.material;
+                        this.renderList.push(this.linePool[lineCount]);
+                        lineCount++;
                     }
                 }
             }
@@ -111,7 +151,7 @@ class Renderer {
                 }
                 object.screen.x *= object.screen.z;
                 object.screen.y *= object.screen.z;
-                if (this.particlePool[particleCount] == null) {
+                if (!this.particlePool[particleCount]) {
                     this.particlePool[particleCount] = new RenderableParticle_1.default();
                 }
                 this.particlePool[particleCount].x = object.screen.x;
@@ -119,12 +159,12 @@ class Renderer {
                 this.particlePool[particleCount].screenZ = object.screen.z;
                 this.particlePool[particleCount].size = object.size;
                 this.particlePool[particleCount].material = object.material;
-                this.particlePool[particleCount].color = object.color;
+                // this.particlePool[particleCount].color = object.color;
                 this.renderList.push(this.particlePool[particleCount]);
                 particleCount++;
             }
         }
-        this.renderList.sort(sort);
+        this.renderList.sort(this.sort);
     }
 }
 exports.default = Renderer;

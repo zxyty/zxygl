@@ -2,7 +2,7 @@ export default class Vector2 {
   x: number;
   y: number;
 
-  constructor(x: number, y: number) {
+  constructor(x?: number, y?: number) {
     this.x = x ? x : 0;
     this.y = y ? y : 0;
   }
@@ -56,13 +56,6 @@ export default class Vector2 {
 
   unit() {
     this.multiplyScalar(1 / this.length());
-  }
-
-  expand(v1: Vector2, v2: Vector2) {
-    // 暂时有问题
-    this.sub(v1, v2);
-    this.unit();
-    v2.addSelf(this);
   }
 
   length() {

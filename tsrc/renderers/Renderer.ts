@@ -111,6 +111,7 @@ export default class Renderer {
                 this.face3Pool[face3count].screenZ = face.screen.z;
                 this.face3Pool[face3count].color = face.color;
                 this.face3Pool[face3count].material = object.material;
+                this.face3Pool[face3count].uvs = object.geometry.uvs[j];
 
                 this.renderList.push(this.face3Pool[face3count]);
                 face3count++;
@@ -146,6 +147,7 @@ export default class Renderer {
                 this.face4Pool[face4count].screenZ = face.screen.z;
                 this.face4Pool[face4count].color = face.color;
                 this.face4Pool[face4count].material = object.material;
+                this.face4Pool[face4count].uvs = object.geometry.uvs[j];
 
                 this.renderList.push(this.face4Pool[face4count]);
                 face4count++;

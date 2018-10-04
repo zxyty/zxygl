@@ -10,13 +10,11 @@ class Object3D {
         this.matrix = new Matrix4_1.default(); // 模型矩阵
         this.screen = new Vector3_1.default(0, 0, 0);
         this.material = material instanceof Array ? material : [material];
+        this.autoUpdateMatrix = true;
     }
     updateMatrix() {
         this.matrix.identity();
         this.matrix.multiplySelf(Matrix4_1.default.translationMatrix(this.position.x, this.position.y, this.position.z));
-        // this.matrix.multiplySelf(
-        //   Matrix4.rotationMatrix(this.rotation.x, this.rotation.y, this.rotation.z)
-        // );
         this.matrix.multiplySelf(Matrix4_1.default.rotationXMatrix(this.rotation.x));
         this.matrix.multiplySelf(Matrix4_1.default.rotationYMatrix(this.rotation.y));
         this.matrix.multiplySelf(Matrix4_1.default.rotationZMatrix(this.rotation.z));

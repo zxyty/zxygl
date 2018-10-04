@@ -27,9 +27,9 @@ class Matrix3 {
         this.n33 = m.n33;
     }
     multiplySelf(m) {
-        let n11 = this.n11, n12 = this.n12, n13 = this.n13, n14 = this.n14;
-        let n21 = this.n21, n22 = this.n22, n23 = this.n23, n24 = this.n24;
-        let n31 = this.n31, n32 = this.n32, n33 = this.n33, n34 = this.n34;
+        let n11 = this.n11, n12 = this.n12, n13 = this.n13;
+        let n21 = this.n21, n22 = this.n22, n23 = this.n23;
+        let n31 = this.n31, n32 = this.n32, n33 = this.n33;
         this.n11 = n11 * m.n11 + n12 * m.n21 + n13 * m.n31;
         this.n12 = n11 * m.n12 + n12 * m.n22 + n13 * m.n32;
         this.n13 = n11 * m.n13 + n12 * m.n23 + n13 * m.n33;
@@ -41,9 +41,9 @@ class Matrix3 {
         this.n33 = n31 * m.n13 + n32 * m.n23 + n33 * m.n33;
     }
     inverse() {
-        let n11 = this.n11, n12 = this.n12, n13 = this.n13, n14 = this.n14;
-        let n21 = this.n21, n22 = this.n22, n23 = this.n23, n24 = this.n24;
-        let n31 = this.n31, n32 = this.n32, n33 = this.n33, n34 = this.n34;
+        let n11 = this.n11, n12 = this.n12, n13 = this.n13;
+        let n21 = this.n21, n22 = this.n22, n23 = this.n23;
+        let n31 = this.n31, n32 = this.n32, n33 = this.n33;
         this.n11 = n11;
         this.n12 = n21;
         this.n13 = n31;

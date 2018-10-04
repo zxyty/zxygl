@@ -12,6 +12,8 @@ export default class RenderableFace3 {
     material: Array<tMaterial>;
     screenZ: number;
 
+    uvs: any;
+
     constructor() {
         this.v1 = new Vector2(0, 0);
         this.v2 = new Vector2(0, 0);
@@ -21,5 +23,7 @@ export default class RenderableFace3 {
         
         this.color;
         this.material;
+
+        this.uvs;
     }
 }

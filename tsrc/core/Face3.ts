@@ -9,9 +9,8 @@ export default class Face3 {
   screen: Vector3;
   normal: Vector3;
   color: Color;
-  uv: Array<Array<number>>
 
-  constructor(a: number, b: number, c: number, uv?: Array<Array<number>>, normal?: Vector3, color?: Color) {
+  constructor(a: number, b: number, c: number, normal?: Vector3, color?: Color) {
     // super((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3, (a.z + b.z + c.z) / 3);
 
     this.a = a;
@@ -19,7 +18,6 @@ export default class Face3 {
     this.c = c;
 
     this.screen = new Vector3();
-    this.uv = uv || [[0,0],[0,0],[0,0]];
     this.normal = normal || new Vector3();
 
     this.color = color || new Color();

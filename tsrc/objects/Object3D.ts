@@ -13,7 +13,7 @@ export default class Object3D {
 
   autoUpdateMatrix: boolean;
 
-  constructor(material: Array<tMaterial>) {
+  constructor(material: tMaterial) {
     this.position = new Vector3(0, 0, 0);
     this.rotation = new Vector3(0, 0, 0);
     this.scale = new Vector3(1, 1, 1);

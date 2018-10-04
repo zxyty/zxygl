@@ -63,7 +63,6 @@ class Vector3 {
         this.y = v1.y - v2.y;
         this.z = v1.z - v2.z;
     }
-    // crossSelf(v: Vector3) {
     crossSelf(v) {
         let tx = this.x;
         let ty = this.y;
@@ -72,7 +71,6 @@ class Vector3 {
         this.y = tz * v.x - tx * v.z;
         this.z = tx * v.y - ty * v.x;
     }
-    // multiplySelf(v: Vector3) {
     multiplySelf(v) {
         this.x *= v.x;
         this.y *= v.y;
@@ -84,10 +82,7 @@ class Vector3 {
         this.z *= s;
     }
     distanceTo(v) {
-        this.dx = this.x - v.x;
-        this.dy = this.y - v.y;
-        this.dz = this.z - v.z;
-        return Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
+        return Math.sqrt(this.distanceToSquared(v));
     }
     distanceToSquared(v) {
         this.dx = this.x - v.x;

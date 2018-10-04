@@ -15,6 +15,7 @@ class Camera {
         // need to remove this
         this.zoom = 3;
         this.focus = 500;
+        this.autoUpdateMatrix = true;
         this.updateMatrix();
     }
     updateMatrix() {

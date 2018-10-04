@@ -2,11 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Vector3_1 = require("./Vector3");
 class Vertex {
-    // constructor(position: Vector3, normal: Vector3) {
     constructor(position, normal) {
-        this.position = position || new Vector3_1.default();
-        this.normal = normal || new Vector3_1.default();
-        this.screen = new Vector3_1.default();
+        this.position = position || new Vector3_1.default(0, 0, 0);
+        this.normal = normal || new Vector3_1.default(0, 0, 0);
+        this.screen = new Vector3_1.default(0, 0, 0);
         this.visible = true; // internal
     }
     toString() {

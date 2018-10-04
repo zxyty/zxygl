@@ -11,6 +11,7 @@ const Vector3_1 = require("./core/Vector3");
 const Vector4_1 = require("./core/Vector4");
 const Vertex_1 = require("./core/Vertex");
 const Color_1 = require("./core/Color");
+const Rectangle_1 = require("./core/Rectangle");
 // scenes
 const Scene_1 = require("./scenes/Scene");
 // renderers
@@ -19,6 +20,7 @@ const CanvasRenderer_1 = require("./renderers/CanvasRenderer");
 // renderer able
 const RenderableFace3_1 = require("./renderers/renderables/RenderableFace3");
 const RenderableFace4_1 = require("./renderers/renderables/RenderableFace4");
+const RenderableLine_1 = require("./renderers/renderables/RenderableLine");
 const RenderableParticle_1 = require("./renderers/renderables/RenderableParticle");
 // cameras
 const Camera_1 = require("./cameras/Camera");
@@ -26,6 +28,7 @@ const Camera_1 = require("./cameras/Camera");
 const ColorFillMaterial_1 = require("./materials/ColorFillMaterial");
 const ColorStrokeMaterial_1 = require("./materials/ColorStrokeMaterial");
 const FaceColorFillMaterial_1 = require("./materials/FaceColorFillMaterial");
+const BitmapUVMappingMaterial_1 = require("./materials/BitmapUVMappingMaterial");
 const FaceColorStrokeMaterial_1 = require("./materials/FaceColorStrokeMaterial");
 // objects
 const Object3D_1 = require("./objects/Object3D");
@@ -48,6 +51,7 @@ const ZXYGL = {
     Vector3: Vector3_1.default,
     Vector4: Vector4_1.default,
     Vertex: Vertex_1.default,
+    Rectangle: Rectangle_1.default,
     // scenes
     Scene: Scene_1.default,
     // renderer
@@ -57,6 +61,7 @@ const ZXYGL = {
     RenderableFace3: RenderableFace3_1.default,
     RenderableFace4: RenderableFace4_1.default,
     RenderableParticle: RenderableParticle_1.default,
+    RenderableLine: RenderableLine_1.default,
     // cameras
     Camera: Camera_1.default,
     // materials
@@ -64,6 +69,7 @@ const ZXYGL = {
     ColorStrokeMaterial: ColorStrokeMaterial_1.default,
     FaceColorFillMaterial: FaceColorFillMaterial_1.default,
     FaceColorStrokeMaterial: FaceColorStrokeMaterial_1.default,
+    BitmapUVMappingMaterial: BitmapUVMappingMaterial_1.default,
     // objects
     Object3D: Object3D_1.default,
     Mesh: Mesh_1.default,
@@ -74,7 +80,9 @@ const ZXYGL = {
     Cube: Cube_1.default,
     Cylinder: Cylinder_1.default
 };
+// @ts-ignore
 if (__ENV__ == 'dist') {
+    // @ts-ignore
     window.ZXYGL = ZXYGL;
 }
 // else if(__ENV__ == 'production') {

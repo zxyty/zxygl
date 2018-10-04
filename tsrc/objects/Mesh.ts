@@ -6,7 +6,7 @@ export default class Mesh extends Object3D {
   doubleSided: Boolean;
   geometry: Geometry;
 
-  constructor(geometry: Geometry, material: Array<tMaterial>) {
+  constructor(geometry: Geometry, material: tMaterial) {
     super(material);
 
     this.geometry = geometry;

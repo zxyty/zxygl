@@ -11,6 +11,8 @@ export default class RenderableFace4 {
     v3: Vector2;
     v4: Vector2;
 
+    uvs: any;
+
     constructor() {
         this.v1 = new Vector2(0, 0);
         this.v2 = new Vector2(0, 0);
@@ -21,5 +23,7 @@ export default class RenderableFace4 {
         
         this.color;
         this.material;
+        
+        this.uvs;
     }
 }
