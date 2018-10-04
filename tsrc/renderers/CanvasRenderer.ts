@@ -67,6 +67,7 @@ export default class CanvasRenderer extends Renderer {
     this.clearRect.minSelf(this.clipRect);
     
     this.context.clearRect(this.clearRect.getX(), this.clearRect.getY(), this.clearRect.getWidth(), this.clearRect.getHeight());
+    // this.context.clearRect(-this.viewport.width, -this.viewport.height, this.viewport.width * 2, this.viewport.height * 2);
 
     this.clearRect.empty();
 

@@ -8,7 +8,6 @@ const Vector2_1 = require("../../core/Vector2");
 class Plane extends Geometry_1.default {
     constructor(width, height, segments_width, segments_height) {
         super();
-        debugger;
         this.width_half = width / 2,
             this.height_half = height / 2,
             this.gridX = segments_width || 1,

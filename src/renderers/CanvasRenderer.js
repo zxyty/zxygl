@@ -42,6 +42,7 @@ class CanvasRenderer extends Renderer_1.default {
         this.clearRect.inflate(1);
         this.clearRect.minSelf(this.clipRect);
         this.context.clearRect(this.clearRect.getX(), this.clearRect.getY(), this.clearRect.getWidth(), this.clearRect.getHeight());
+        // this.context.clearRect(-this.viewport.width, -this.viewport.height, this.viewport.width * 2, this.viewport.height * 2);
         this.clearRect.empty();
         this.project(scene, camera);
         elementsLength = this.renderList.length;

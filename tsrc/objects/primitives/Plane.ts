@@ -21,7 +21,6 @@ export default class Plane extends Geometry {
   constructor(width: number, height: number, segments_width: number, segments_height: number) {
     super();
 
-    debugger;
     this.width_half = width / 2,
     this.height_half = height / 2,
     this.gridX = segments_width || 1,
@@ -71,7 +70,7 @@ export default class Plane extends Geometry {
             ] );
   
       }
-  
+      
     }
   }
 

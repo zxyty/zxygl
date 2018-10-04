@@ -6,7 +6,7 @@ import Face3 from "./Face3";
 export default class Geometry {
   vertices: Vertex[];
   faces: Array<Face3 | Face4>;
-  uvs: any;
+  uvs: Array<any>;
 
   constructor() {
     this.vertices = new Array();

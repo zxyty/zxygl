@@ -4,6 +4,7 @@ import Mesh from "../objects/Mesh";
 import Plane from "../objects/primitives/Plane";
 import CanvasRenderer from "../renderers/CanvasRenderer";
 import BitmapUVMappingMaterial from "../materials/BitmapUVMappingMaterial";
+import ColorFillMaterial from "../materials/ColorFillMaterial";
 
 var SCREEN_WIDTH = window.innerWidth,
   SCREEN_HEIGHT = window.innerHeight;
@@ -34,6 +35,9 @@ function init() {
 
   camera = new Camera();
   camera.focus = 300;
+  camera.position.x = 0;
+  camera.position.y = 0;
+//   camera.position.z = 2000;
 
   scene = new Scene();
 
@@ -44,10 +48,11 @@ function init() {
   var context = texture_placeholder.getContext("2d");
   context.fillStyle = "rgba( 200, 200, 200, 1 )";
   context.fillRect(0, 0, texture_placeholder.width, texture_placeholder.height);
-    
+
   mesh = new Mesh(
     new Plane(1000, 1000, 5, 5),
     loadTexture("textures/skymap_front1024.jpg")
+    // new ColorFillMaterial(0xe0e0e0, 1)
   );
   mesh.position.z = -500;
   scene.add(mesh);
@@ -62,6 +67,7 @@ function init() {
 
   mesh = new Mesh(
     new Plane(1000, 1000, 5, 5),
+    // new ColorFillMaterial(0x00ff0000, 1)
     loadTexture("textures/skymap_left1024.jpg")
   );
   mesh.position.x = -500;
@@ -182,5 +188,10 @@ function render() {
 
   renderer.render(scene, camera);
 }
+
+// setInterval(() => {
+//     render();
+//     camera.position.z -= 4;
+// }, 30);
 
 // alert(1);
