@@ -6,7 +6,7 @@ export default class RenderableLine {
     v1: Vector2;
     v2: Vector2;
 
-    screenZ: number;
+    z: number;
 
     color: Color;
     material: Array<tMaterial>;
@@ -15,7 +15,7 @@ export default class RenderableLine {
         this.v1;
         this.v2;
 
-        this.screenZ = null;
+        this.z = null;
 
         this.color = null;
         this.material = null;

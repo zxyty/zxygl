@@ -20,7 +20,7 @@ export default class Face3 {
     this.screen = new Vector3();
     this.normal = normal || new Vector3();
 
-    this.color = color || new Color();
+    this.color = color || new Color(0x000000);
     
   }
 

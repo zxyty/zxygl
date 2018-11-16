@@ -1,7 +1,4 @@
 import Renderer from "./Renderer";
-import Particle from "../objects/Particle";
-import Face3 from "../core/Face3";
-import Face4 from "../core/Face4";
 import Scene from "../scenes/Scene";
 import Camera from "../cameras/Camera";
 import RenderableFace3 from "./renderables/RenderableFace3";
@@ -30,6 +27,11 @@ export default class CanvasRenderer extends Renderer {
 
   autoClear: boolean;
 
+  width: number;
+  height: number;
+  widthHalf: number;
+  heightHalf: number;
+
 
   constructor() {
     super();
@@ -50,12 +52,17 @@ export default class CanvasRenderer extends Renderer {
   setSize(width: number, height: number) {
     // super.setSize(width, height);
 
+    this.width = width;
+    this.height = height;
+    this.widthHalf = width / 2;
+    this.heightHalf = height / 2;
+
     this.viewport.width = width;
     this.viewport.height = height;
 
-    this.context.setTransform(1, 0, 0, 1, width / 2, height / 2);
+    this.context.setTransform(1, 0, 0, 1, this.widthHalf, this.heightHalf);
 
-    this.clipRect.set(-width / 2, -height / 2, width / 2, height / 2);
+    this.clipRect.set(-this.widthHalf, -this.heightHalf, this.widthHalf, this.heightHalf);
   }
 
   clear() {
@@ -70,11 +77,13 @@ export default class CanvasRenderer extends Renderer {
     let i, j, element, pi2 = 2 * Math.PI;
     let elementsLength, material, materialsLength;
     let v1x, v1y, v2x, v2y, v3x, v3y, v4x, v4y;
+
     let uv1 = new Vector2(), uv2 = new Vector2(), uv3 = new Vector2();
     let suv1 = new Vector2(), suv2 = new Vector2(), suv3 = new Vector2();
     let suv1x, suv1y, suv2x, suv2y, suv3x, suv3y, denom, m11, m12, m21, m22, dx, dy;
-    let bitmap, bitmap_width: number, bitmap_height: number;
-    let size, overdraw;
+
+    let bitmap, bitmap_width, bitmap_height;
+    let size;
 
     if (this.autoClear) {
       this.clear();
@@ -89,105 +98,115 @@ export default class CanvasRenderer extends Renderer {
       element = this.renderList[i];
       materialsLength = element.material.length;
 
-      for(j = 0; j < materialsLength; j++) {
+      this.bboxRect.empty();
+
+      this.context.beginPath();
+
+      // 绘制路径
+      if (element instanceof RenderableParticle) {
         
-        material = element.material[j];
-        overdraw = material instanceof ColorFillMaterial || material instanceof FaceColorFillMaterial ||  material instanceof BitmapUVMappingMaterial;
+        v1x = element.x * this.widthHalf;
+        v1y = element.y * this.heightHalf;
+        size = element.size * this.widthHalf;
+
+        this.bboxRect.set(v1x - size, v1y - size, v1x + size, v1y + size);
         
-        this.bboxRect.empty();
+        // 判断是否在绘制剪裁区域
+        if (!this.clipRect.instersects(this.bboxRect)) {
+          continue;  
+        }
 
-        this.context.beginPath();
+        this.context.arc(element.x, element.y, size, 0, pi2, true);
 
-        // 绘制路径
-        if (element instanceof RenderableParticle) {
+      } else if (element instanceof RenderableLine) {
+
+        v1x = element.v1.x * this.widthHalf; v1y = element.v1.y * this.heightHalf;
+        v2x = element.v2.x * this.widthHalf; v2y = element.v2.y * this.heightHalf;
+
+        this.bboxRect.addPoint(v1x, v1y);
+        this.bboxRect.addPoint(v2x, v2y);
+
+        if (!this.clipRect.instersects(this.bboxRect)) {
+          continue;
+        }
+
+        this.context.moveTo(v1x, v1y);
+        this.context.lineTo(v2x, v2y);
+
+      } else if (element instanceof RenderableFace3) {
+
+        element.v1.x *= this.widthHalf; element.v1.y *= this.heightHalf;
+        element.v2.x *= this.widthHalf; element.v2.y *= this.heightHalf;
+        element.v3.x *= this.widthHalf; element.v3.y *= this.heightHalf;
+
+        if(element.overdraw) {
           
-          size = element.size * element.screenZ;
-
-          this.bboxRect.set(element.x - size, element.y - size, element.x + size, element.y + size);
-          
-          // 判断是否在绘制剪裁区域
-          if (!this.clipRect.instersects(this.bboxRect)) {
-            continue;  
-          }
-
-          this.context.arc(element.x, element.y, size, 0, pi2, true);
-
-        } else if (element instanceof RenderableLine) {
-
-          v1x = element.v1.x; v1y = element.v1.y;
-          v2x = element.v2.x; v2y = element.v2.y;
-
-          this.bboxRect.addPoint(v1x, v1y);
-          this.bboxRect.addPoint(v2x, v2y);
-
-          if (!this.clipRect.instersects(this.bboxRect)) {
-            continue;
-          }
-
-          this.context.moveTo(v1x, v1y);
-          this.context.lineTo(v2x, v2y);
-
-        } else if (element instanceof RenderableFace3) {
-
-          if(overdraw) {
-            
-            this.expand(element.v1, element.v2);
-            this.expand(element.v2, element.v3);
-            this.expand(element.v3, element.v1);
-
-          }
-
-          v1x = element.v1.x; v1y = element.v1.y;
-          v2x = element.v2.x; v2y = element.v2.y;
-          v3x = element.v3.x; v3y = element.v3.y;
-
-          this.bboxRect.addPoint(v1x, v1y);
-          this.bboxRect.addPoint(v2x, v2y);
-          this.bboxRect.addPoint(v3x, v3y);
-
-          if(!this.clipRect.instersects(this.bboxRect)) {
-            continue;
-          }
-
-          this.context.moveTo(v1x, v1y);
-          this.context.lineTo(v2x, v2y);
-          this.context.lineTo(v3x, v3y);
-          this.context.lineTo(v1x, v1y);
-
-        } else if (element instanceof RenderableFace4) {
-
-          if(overdraw) {
-            
-            this.expand(element.v1, element.v2);
-            this.expand(element.v2, element.v3);
-            this.expand(element.v3, element.v4);
-            this.expand(element.v4, element.v1);
-
-          }
-
-          v1x = element.v1.x; v1y = element.v1.y;
-          v2x = element.v2.x; v2y = element.v2.y;
-          v3x = element.v3.x; v3y = element.v3.y;
-          v4x = element.v4.x; v4y = element.v4.y;
-
-          this.bboxRect.addPoint(v1x, v1y);
-          this.bboxRect.addPoint(v2x, v2y);
-          this.bboxRect.addPoint(v3x, v3y);
-          this.bboxRect.addPoint(v4x, v4y);
-
-          if(!this.clipRect.instersects(this.bboxRect)) {
-            continue;
-          }
-
-          this.context.moveTo(v1x, v1y);
-          this.context.lineTo(v2x, v2y);
-          this.context.lineTo(v3x, v3y);
-          this.context.lineTo(v4x, v4y);
-          this.context.lineTo(v1x, v1y);
+          this.expand(element.v1, element.v2);
+          this.expand(element.v2, element.v3);
+          this.expand(element.v3, element.v1);
 
         }
 
-        this.context.closePath();
+        v1x = element.v1.x; v1y = element.v1.y;
+        v2x = element.v2.x; v2y = element.v2.y;
+        v3x = element.v3.x; v3y = element.v3.y;
+
+        this.bboxRect.addPoint(v1x, v1y);
+        this.bboxRect.addPoint(v2x, v2y);
+        this.bboxRect.addPoint(v3x, v3y);
+
+        if(!this.clipRect.instersects(this.bboxRect)) {
+          continue;
+        }
+
+        this.context.moveTo(v1x, v1y);
+        this.context.lineTo(v2x, v2y);
+        this.context.lineTo(v3x, v3y);
+        this.context.lineTo(v1x, v1y);
+
+      } else if (element instanceof RenderableFace4) {
+
+        element.v1.x *= this.widthHalf; element.v1.y *= this.heightHalf;
+        element.v2.x *= this.widthHalf; element.v2.y *= this.heightHalf;
+        element.v3.x *= this.widthHalf; element.v3.y *= this.heightHalf;
+        element.v4.x *= this.widthHalf; element.v4.y *= this.heightHalf;
+
+        if(element.overdraw) {
+          
+          this.expand(element.v1, element.v2);
+          this.expand(element.v2, element.v3);
+          this.expand(element.v3, element.v4);
+          this.expand(element.v4, element.v1);
+
+        }
+
+        v1x = element.v1.x; v1y = element.v1.y;
+        v2x = element.v2.x; v2y = element.v2.y;
+        v3x = element.v3.x; v3y = element.v3.y;
+        v4x = element.v4.x; v4y = element.v4.y;
+
+        this.bboxRect.addPoint(v1x, v1y);
+        this.bboxRect.addPoint(v2x, v2y);
+        this.bboxRect.addPoint(v3x, v3y);
+        this.bboxRect.addPoint(v4x, v4y);
+
+        if(!this.clipRect.instersects(this.bboxRect)) {
+          continue;
+        }
+
+        this.context.moveTo(v1x, v1y);
+        this.context.lineTo(v2x, v2y);
+        this.context.lineTo(v3x, v3y);
+        this.context.lineTo(v4x, v4y);
+        this.context.lineTo(v1x, v1y);
+
+      }
+
+      this.context.closePath();
+
+      for(j = 0; j < materialsLength; j++) {
+        
+        material = element.material[j];
 
         // 绘制材质
         if (material instanceof ColorFillMaterial) {
@@ -225,9 +244,8 @@ export default class CanvasRenderer extends Renderer {
         } else if (material instanceof BitmapUVMappingMaterial && (element instanceof RenderableFace3 || element instanceof RenderableFace4)) {
 
           bitmap = material.bitmap;
-
-          bitmap_width = bitmap.width as number;
-          bitmap_height = bitmap.height as number;
+          bitmap_width = bitmap.width;
+          bitmap_height = bitmap.height;
 
           uv1.copy(element.uvs[0]);
           uv2.copy(element.uvs[1]);

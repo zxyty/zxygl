@@ -59,10 +59,6 @@ export default class Vector4 {
         return new Vector4(this.x, this.y, this.z, this.w);
     }
 
-    toVector3() {
-        return new Vector3(this.x / this.w, this.y / this.w, this.z / this.w);
-    }
-
     toString() {
         return 'Vector4 (' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ')';
     }

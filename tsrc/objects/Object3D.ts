@@ -12,6 +12,8 @@ export default class Object3D {
   screen: Vector3;
 
   autoUpdateMatrix: boolean;
+  
+  overdraw: boolean;
 
   constructor(material: tMaterial) {
     this.position = new Vector3(0, 0, 0);
@@ -24,6 +26,8 @@ export default class Object3D {
     this.material = material instanceof Array ? material : [material];
     
     this.autoUpdateMatrix = true;
+
+    this.overdraw = false;
   }
 
   updateMatrix() {

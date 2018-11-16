@@ -5,7 +5,7 @@ import { tMaterial } from "../../type";
 export default class RenderableFace4 {
     color: Color;
     material: Array<tMaterial>;
-    screenZ: number;
+    z: number;
     v1: Vector2;
     v2: Vector2;
     v3: Vector2;
@@ -13,17 +13,21 @@ export default class RenderableFace4 {
 
     uvs: Array<any>;
 
+    overdraw: boolean;
+
     constructor() {
         this.v1 = new Vector2(0, 0);
         this.v2 = new Vector2(0, 0);
         this.v3 = new Vector2(0, 0);
         this.v4 = new Vector2(0, 0);
         
-        this.screenZ = null;
+        this.z = null;
         
         this.color = null;
         this.material = null;
 
         this.uvs;
+
+        this.overdraw;
     }
 }

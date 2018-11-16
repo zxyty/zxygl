@@ -68,12 +68,14 @@ export default class Matrix4 {
 
   static makeFrustum(left: number, right: number, bottom: number, top: number, near: number, far: number) {
 
-    let m = new Matrix4(),
-    x = 2 * near / (right - left),
-    y = 2 * near / (top - bottom),
-    a = (right + left) / (right - left),
-    b = (top + bottom) / (top - bottom),
-    c = -(far + near) / (far - near),
+    let m, x, y, a, b, c, d;
+
+    m = new Matrix4();
+    x = 2 * near / (right - left);
+    y = 2 * near / (top - bottom);
+    a = (right + left) / (right - left);
+    b = (top + bottom) / (top - bottom);
+    c = -(far + near) / (far - near);
     d = -2 * far * near / (far - near);
 
     m.n11 = x; m.n13 = a;
@@ -107,15 +109,13 @@ export default class Matrix4 {
   }
 
   lookAt(eye: Vector3, center: Vector3, up: Vector3) {
-    this.z.sub(center, eye);
+    this.z.sub(eye, center);
     this.z.normalize();
 
-    this.x.copy(this.z);      // right轴
-    this.x.crossSelf(up);
+    this.x.cross(up, this.z);
     this.x.normalize();
 
-    this.y.copy(this.x);      // up轴
-    this.y.crossSelf(this.z);
+    this.y.cross(this.z, this.x);
     this.y.normalize();
     this.y.negate(); //
 
@@ -233,7 +233,6 @@ export default class Matrix4 {
   toString() {
     return "| " + this.n11 + " " + this.n12 + " " + this.n13 + " " + this.n14 + " |\n" +
              "| " + this.n21 + " " + this.n22 + " " + this.n23 + " " + this.n24 + " |\n" +
-             "| " + this.n31 + " " + this.n32 + " " + this.n33 + " " + this.n34 + " |";
              "| " + this.n31 + " " + this.n32 + " " + this.n33 + " " + this.n34 + " |\n" +
              "| " + this.n41 + " " + this.n42 + " " + this.n43 + " " + this.n44 + " |";
   }

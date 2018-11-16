@@ -11,12 +11,12 @@ export default class RenderableParticle {
     size: number;   
     color: Color;
     material: Array<tMaterial>;
-    screenZ: number;
+    z: number;
 
     constructor() {
         this.x = null;
         this.y = null;
-        this.screenZ = null;
+        this.z = null;
         
         this.size;
         this.color = null;

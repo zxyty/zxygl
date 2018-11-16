@@ -105,6 +105,12 @@ export default class Vector3 {
     this.z = tx * v.y - ty * v.x;
   }
 
+  cross(v1: Vector3, v2: Vector3) {
+    this.x = v1.y * v2.z - v1.z * v2.y;
+		this.y = v1.z * v2.x - v1.x * v2.z;
+		this.z = v1.x * v2.y - v1.y * v2.x;
+  }
+
   multiplySelf(v: Vector3) {
     this.x *= v.x;
     this.y *= v.y;

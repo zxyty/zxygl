@@ -42,7 +42,7 @@ export default class Color {
   }
 
   updateHex() {
-    this.hex = this.a * 255 << 24 | this.r << 16 | this.g << 8 | this.b;
+    this.hex = Math.floor(this.a * 255) << 24 | this.r << 16 | this.g << 8 | this.b;
   }
 
   updateStyleString() {

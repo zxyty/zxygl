@@ -11,7 +11,8 @@ export default class Mesh extends Object3D {
 
     this.geometry = geometry;
 	
-	  this.doubleSided = false;
+    this.doubleSided = false;
+  
   }
   
 }
