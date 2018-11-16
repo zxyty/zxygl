@@ -138,46 +138,46 @@ module.exports = {
 
   devtool: "source-map", // development ==> eval-source-map,  production ==> source-map
 
-  devServer: {
-    compress: true,       // Enable gzip compression for everything served:
+  // devServer: {
+  //   compress: true,       // Enable gzip compression for everything served:
 
-    contentBase: path.join(__dirname, 'static'),
-    /**
-     * 想象一下，服务器正在运行http://localhost:8080并被output.filename设置为bundle.js。
-     * 默认情况下publicPath为"/"，所以您的捆绑包可用http://localhost:8080/bundle.js
-     * 捆绑包现在可用http://localhost:8080/assets/bundle.js
-     */
-    // publicPath: 'assets',      //
+  //   contentBase: path.join(__dirname, 'static'),
+  //   /**
+  //    * 想象一下，服务器正在运行http://localhost:8080并被output.filename设置为bundle.js。
+  //    * 默认情况下publicPath为"/"，所以您的捆绑包可用http://localhost:8080/bundle.js
+  //    * 捆绑包现在可用http://localhost:8080/assets/bundle.js
+  //    */
+  //   // publicPath: 'assets',      //
 
-    lazy: false,
+  //   lazy: false,
 
-    historyApiFallback: {
-      rewrites: [
-        // { from: /^\/$/, to: '/src/views/landing.html' },
-        // { from: /^\/subpage/, to: '/src/views/subpage.html' },
-        { from: /./, to: '/views/404.html' }
-      ],
-      disableDotRule: true,       // 禁用路径上匹配点"."的规则
-    },
+  //   historyApiFallback: {
+  //     rewrites: [
+  //       // { from: /^\/$/, to: '/src/views/landing.html' },
+  //       // { from: /^\/subpage/, to: '/src/views/subpage.html' },
+  //       { from: /./, to: '/views/404.html' }
+  //     ],
+  //     disableDotRule: true,       // 禁用路径上匹配点"."的规则
+  //   },
 
-    host: '127.0.0.1',
-    port: 30001,
-    hot: true,
+  //   host: '127.0.0.1',
+  //   port: 30001,
+  //   hot: true,
 
 
-    https: false,                // 这个使用webpack自签名证书
-    // 也可以使用自己的签名
-    // https: {
-    //   key: fs.readFileSync('/path/to/server.key'),
-    //   cert: fs.readFileSync('/path/to/server.crt'),
-    //   ca: fs.readFileSync('/path/to/ca.pem'),
-    // }
+  //   https: false,                // 这个使用webpack自签名证书
+  //   // 也可以使用自己的签名
+  //   // https: {
+  //   //   key: fs.readFileSync('/path/to/server.key'),
+  //   //   cert: fs.readFileSync('/path/to/server.crt'),
+  //   //   ca: fs.readFileSync('/path/to/ca.pem'),
+  //   // }
 
-    open: true,                 // 自动打开dev浏览器
-    inline: false,              // 使用iframe打开
-    // 建议使用内联模式进行热模块更换，因为它包含来自websocket的HMR触发器。轮询模式可以作为替代，但需要额外的入口点，'webpack/hot/poll?1000'
+  //   open: true,                 // 自动打开dev浏览器
+  //   inline: false,              // 使用iframe打开
+  //   // 建议使用内联模式进行热模块更换，因为它包含来自websocket的HMR触发器。轮询模式可以作为替代，但需要额外的入口点，'webpack/hot/poll?1000'
     
     
-  },
+  // },
   mode: "production", //"development"
 }

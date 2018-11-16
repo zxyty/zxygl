@@ -13,8 +13,6 @@ export default class Camera {
   matrix: Matrix4;
   projectionMatrix: Matrix4;
 
-  roll: number;
-
   zoom: number;
   focus: number;
 
@@ -29,7 +27,6 @@ export default class Camera {
     this.matrix = new Matrix4();              // 经过lookAt得到的 模型视图矩阵
     this.projectionMatrix = Matrix4.makePerspective(45, 1 /*SCREEN_WIDTH/SCREEN_HEIGHT*/, 0.001, 1000); // 投影矩阵
     this.up = new Vector3(0, 1, 0);
-    this.roll = 0;
 
     // need to remove this
     this.zoom = 3;

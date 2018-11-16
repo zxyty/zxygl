@@ -6,7 +6,7 @@ export default class ColorStrokeMaterial {
 
     constructor(hex: number, opacity: number, lineWidth: number) {
         this.lineWidth = lineWidth || 1;
-        this.color = new Color((opacity ? (opacity * 0xff) << 24 : 0xff000000) | hex);
+        this.color = new Color((opacity >= 0 ? (opacity * 0xff) << 24 : 0xff000000) | hex);
     }
 
     toString() {

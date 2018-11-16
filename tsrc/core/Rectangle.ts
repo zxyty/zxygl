@@ -122,6 +122,10 @@ export default class Rectangle {
         this.y2 = 0;
     }
 
+    /**
+     * 扩张大小
+     * @param v 
+     */
     inflate(v: number) {
         this.x1 -= v;
         this.y1 -= v;

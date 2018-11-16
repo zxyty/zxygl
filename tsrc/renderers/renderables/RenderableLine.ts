@@ -15,9 +15,9 @@ export default class RenderableLine {
         this.v1;
         this.v2;
 
-        this.screenZ;
+        this.screenZ = null;
 
-        this.color;
-        this.material;
+        this.color = null;
+        this.material = null;
     }
 }

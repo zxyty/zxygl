@@ -7,7 +7,7 @@ class Color {
         this.b = null;
         this.a = null;
         this.hex = null;
-        this.styleString = null;
+        this.styleString = 'rgba(0, 0, 0, 1)';
         // this.setHex(hex ? hex : 0xff000000);
         this.setHex(hex);
     }
@@ -28,14 +28,14 @@ class Color {
         this.r = this.hex >> 16 & 0xff;
         this.g = this.hex >> 8 & 0xff;
         this.b = this.hex & 0xff;
-        this.a = this.hex >> 24 & 0xff;
+        this.a = (this.hex >> 24 & 0xff) / 255;
     }
     updateHex() {
-        this.hex = this.a << 24 | this.r << 16 | this.g << 8 | this.b;
+        this.hex = this.a * 255 << 24 | this.r << 16 | this.g << 8 | this.b;
     }
     updateStyleString() {
         this.styleString =
-            "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
+            "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
     }
     toString() {
         return ("Color ( r: " +

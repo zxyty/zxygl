@@ -21,6 +21,7 @@ class Cylinder extends Geometry_1.default {
         // Face
         // body
         for (let i = 0; i < numSegs; i++) {
+            // @ts-ignore
             this.f4(i, i + numSegs, numSegs + ((i + 1) % numSegs), (i + 1) % numSegs, "#ff0000");
         }
         // Bottom circle

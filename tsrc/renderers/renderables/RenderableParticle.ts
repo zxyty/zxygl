@@ -5,18 +5,21 @@ import { tMaterial } from "../../type";
 export default class RenderableParticle {
     x: number;
     y: number;
-    size: number;
+    /**
+     * 粒子大小
+     */
+    size: number;   
     color: Color;
     material: Array<tMaterial>;
     screenZ: number;
 
     constructor() {
-        this.x;
-        this.y;
-        this.screenZ;
+        this.x = null;
+        this.y = null;
+        this.screenZ = null;
         
         this.size;
-        this.color;
-        this.material;
+        this.color = null;
+        this.material = null;
     }
 }

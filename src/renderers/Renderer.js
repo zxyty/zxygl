@@ -18,7 +18,7 @@ class Renderer {
         this.face4Pool = new Array();
         this.linePool = new Array();
     }
-    sort(a, b) {
+    painterSort(a, b) {
         return a.screenZ - b.screenZ;
     }
     project(scene, camera) {
@@ -164,7 +164,7 @@ class Renderer {
                 particleCount++;
             }
         }
-        this.renderList.sort(this.sort);
+        this.renderList.sort(this.painterSort);
     }
 }
 exports.default = Renderer;

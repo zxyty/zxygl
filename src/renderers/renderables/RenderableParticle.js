@@ -2,12 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class RenderableParticle {
     constructor() {
-        this.x;
-        this.y;
-        this.screenZ;
+        this.x = null;
+        this.y = null;
+        this.screenZ = null;
         this.size;
-        this.color;
-        this.material;
+        this.color = null;
+        this.material = null;
     }
 }
 exports.default = RenderableParticle;

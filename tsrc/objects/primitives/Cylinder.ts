@@ -38,6 +38,7 @@ export default class Cylinder extends Geometry {
     // Face
     // body
     for (let i = 0; i < numSegs; i++) {
+      // @ts-ignore
       this.f4(
         i,
         i + numSegs,

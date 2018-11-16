@@ -1,7 +1,7 @@
 export default class BitmapUVMappingMaterial{
-    bitmap: HTMLElement;
+    bitmap: CanvasImageSource;
     
-    constructor(bitmap?: HTMLElement) {
+    constructor(bitmap?: CanvasImageSource) {
         this.bitmap = bitmap;
     }
 

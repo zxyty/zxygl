@@ -19,10 +19,10 @@ export default class RenderableFace3 {
         this.v2 = new Vector2(0, 0);
         this.v3 = new Vector2(0, 0);
         
-        this.screenZ;
+        this.screenZ = null;
         
-        this.color;
-        this.material;
+        this.color = null;
+        this.material = null;
 
         this.uvs;
     }

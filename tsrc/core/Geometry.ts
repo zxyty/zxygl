@@ -13,7 +13,7 @@ export default class Geometry {
     this.faces = new Array();
     this.uvs = new Array();
   }
-  v(x: number, y: number, z: number) {
+  v(x: number, y: number, z?: number) {
     this.vertices.push(new Vertex(new Vector3(x, y, z), null));
   }
   f4(a: number, b: number, c: number, d: number) {

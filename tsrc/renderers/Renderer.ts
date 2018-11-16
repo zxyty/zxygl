@@ -33,7 +33,7 @@ export default class Renderer {
 
   }
 
-  sort(a: tRenderable, b: tRenderable) {
+  painterSort(a: tRenderable, b: tRenderable) {
     return a.screenZ - b.screenZ;
   }
 
@@ -227,6 +227,6 @@ export default class Renderer {
 
     }
 
-    this.renderList.sort(this.sort); 
+    this.renderList.sort(this.painterSort); 
   }
 }
