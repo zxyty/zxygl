@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Vector3_1 = require("./Vector3");
 class Vector4 {
     constructor(x, y, z, w) {
         this.x = x || 0;
@@ -46,9 +45,6 @@ class Vector4 {
     }
     clone() {
         return new Vector4(this.x, this.y, this.z, this.w);
-    }
-    toVector3() {
-        return new Vector3_1.default(this.x / this.w, this.y / this.w, this.z / this.w);
     }
     toString() {
         return 'Vector4 (' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ')';

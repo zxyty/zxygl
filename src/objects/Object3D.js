@@ -11,6 +11,7 @@ class Object3D {
         this.screen = new Vector3_1.default(0, 0, 0);
         this.material = material instanceof Array ? material : [material];
         this.autoUpdateMatrix = true;
+        this.overdraw = false;
     }
     updateMatrix() {
         this.matrix.identity();

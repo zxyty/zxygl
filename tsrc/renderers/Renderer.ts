@@ -110,7 +110,7 @@ export default class Renderer {
                 
                 this.face3Pool[face3count].z = face.screen.z;
                 this.face3Pool[face3count].color = face.color;
-                this.face4Pool[face4count].overdraw = object.overdraw;
+                this.face3Pool[face3count].overdraw = object.overdraw;
                 this.face3Pool[face3count].material = object.material;
                 this.face3Pool[face3count].uvs = object.geometry.uvs[j];
 

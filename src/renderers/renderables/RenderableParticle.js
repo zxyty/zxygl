@@ -4,7 +4,7 @@ class RenderableParticle {
     constructor() {
         this.x = null;
         this.y = null;
-        this.screenZ = null;
+        this.z = null;
         this.size;
         this.color = null;
         this.material = null;

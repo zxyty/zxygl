@@ -26,10 +26,14 @@ class CanvasRenderer extends Renderer_1.default {
     }
     setSize(width, height) {
         // super.setSize(width, height);
+        this.width = width;
+        this.height = height;
+        this.widthHalf = width / 2;
+        this.heightHalf = height / 2;
         this.viewport.width = width;
         this.viewport.height = height;
-        this.context.setTransform(1, 0, 0, 1, width / 2, height / 2);
-        this.clipRect.set(-width / 2, -height / 2, width / 2, height / 2);
+        this.context.setTransform(1, 0, 0, 1, this.widthHalf, this.heightHalf);
+        this.clipRect.set(-this.widthHalf, -this.heightHalf, this.widthHalf, this.heightHalf);
     }
     clear() {
         this.clearRect.inflate(1);
@@ -46,7 +50,7 @@ class CanvasRenderer extends Renderer_1.default {
         let suv1 = new Vector2_1.default(), suv2 = new Vector2_1.default(), suv3 = new Vector2_1.default();
         let suv1x, suv1y, suv2x, suv2y, suv3x, suv3y, denom, m11, m12, m21, m22, dx, dy;
         let bitmap, bitmap_width, bitmap_height;
-        let size, overdraw;
+        let size;
         if (this.autoClear) {
             this.clear();
         }
@@ -55,86 +59,101 @@ class CanvasRenderer extends Renderer_1.default {
         for (i = 0; i < elementsLength; i++) {
             element = this.renderList[i];
             materialsLength = element.material.length;
+            this.bboxRect.empty();
+            this.context.beginPath();
+            // 绘制路径
+            if (element instanceof RenderableParticle_1.default) {
+                v1x = element.x * this.widthHalf;
+                v1y = element.y * this.heightHalf;
+                size = element.size * this.widthHalf;
+                this.bboxRect.set(v1x - size, v1y - size, v1x + size, v1y + size);
+                // 判断是否在绘制剪裁区域
+                if (!this.clipRect.instersects(this.bboxRect)) {
+                    continue;
+                }
+                this.context.arc(element.x, element.y, size, 0, pi2, true);
+            }
+            else if (element instanceof RenderableLine_1.default) {
+                v1x = element.v1.x * this.widthHalf;
+                v1y = element.v1.y * this.heightHalf;
+                v2x = element.v2.x * this.widthHalf;
+                v2y = element.v2.y * this.heightHalf;
+                this.bboxRect.addPoint(v1x, v1y);
+                this.bboxRect.addPoint(v2x, v2y);
+                if (!this.clipRect.instersects(this.bboxRect)) {
+                    continue;
+                }
+                this.context.moveTo(v1x, v1y);
+                this.context.lineTo(v2x, v2y);
+            }
+            else if (element instanceof RenderableFace3_1.default) {
+                element.v1.x *= this.widthHalf;
+                element.v1.y *= this.heightHalf;
+                element.v2.x *= this.widthHalf;
+                element.v2.y *= this.heightHalf;
+                element.v3.x *= this.widthHalf;
+                element.v3.y *= this.heightHalf;
+                if (element.overdraw) {
+                    this.expand(element.v1, element.v2);
+                    this.expand(element.v2, element.v3);
+                    this.expand(element.v3, element.v1);
+                }
+                v1x = element.v1.x;
+                v1y = element.v1.y;
+                v2x = element.v2.x;
+                v2y = element.v2.y;
+                v3x = element.v3.x;
+                v3y = element.v3.y;
+                this.bboxRect.addPoint(v1x, v1y);
+                this.bboxRect.addPoint(v2x, v2y);
+                this.bboxRect.addPoint(v3x, v3y);
+                if (!this.clipRect.instersects(this.bboxRect)) {
+                    continue;
+                }
+                this.context.moveTo(v1x, v1y);
+                this.context.lineTo(v2x, v2y);
+                this.context.lineTo(v3x, v3y);
+                this.context.lineTo(v1x, v1y);
+            }
+            else if (element instanceof RenderableFace4_1.default) {
+                element.v1.x *= this.widthHalf;
+                element.v1.y *= this.heightHalf;
+                element.v2.x *= this.widthHalf;
+                element.v2.y *= this.heightHalf;
+                element.v3.x *= this.widthHalf;
+                element.v3.y *= this.heightHalf;
+                element.v4.x *= this.widthHalf;
+                element.v4.y *= this.heightHalf;
+                if (element.overdraw) {
+                    this.expand(element.v1, element.v2);
+                    this.expand(element.v2, element.v3);
+                    this.expand(element.v3, element.v4);
+                    this.expand(element.v4, element.v1);
+                }
+                v1x = element.v1.x;
+                v1y = element.v1.y;
+                v2x = element.v2.x;
+                v2y = element.v2.y;
+                v3x = element.v3.x;
+                v3y = element.v3.y;
+                v4x = element.v4.x;
+                v4y = element.v4.y;
+                this.bboxRect.addPoint(v1x, v1y);
+                this.bboxRect.addPoint(v2x, v2y);
+                this.bboxRect.addPoint(v3x, v3y);
+                this.bboxRect.addPoint(v4x, v4y);
+                if (!this.clipRect.instersects(this.bboxRect)) {
+                    continue;
+                }
+                this.context.moveTo(v1x, v1y);
+                this.context.lineTo(v2x, v2y);
+                this.context.lineTo(v3x, v3y);
+                this.context.lineTo(v4x, v4y);
+                this.context.lineTo(v1x, v1y);
+            }
+            this.context.closePath();
             for (j = 0; j < materialsLength; j++) {
                 material = element.material[j];
-                overdraw = material instanceof ColorFillMaterial_1.default || material instanceof FaceColorFillMaterial_1.default || material instanceof BitmapUVMappingMaterial_1.default;
-                this.bboxRect.empty();
-                this.context.beginPath();
-                // 绘制路径
-                if (element instanceof RenderableParticle_1.default) {
-                    size = element.size * element.screenZ;
-                    this.bboxRect.set(element.x - size, element.y - size, element.x + size, element.y + size);
-                    // 判断是否在绘制剪裁区域
-                    if (!this.clipRect.instersects(this.bboxRect)) {
-                        continue;
-                    }
-                    this.context.arc(element.x, element.y, size, 0, pi2, true);
-                }
-                else if (element instanceof RenderableLine_1.default) {
-                    v1x = element.v1.x;
-                    v1y = element.v1.y;
-                    v2x = element.v2.x;
-                    v2y = element.v2.y;
-                    this.bboxRect.addPoint(v1x, v1y);
-                    this.bboxRect.addPoint(v2x, v2y);
-                    if (!this.clipRect.instersects(this.bboxRect)) {
-                        continue;
-                    }
-                    this.context.moveTo(v1x, v1y);
-                    this.context.lineTo(v2x, v2y);
-                }
-                else if (element instanceof RenderableFace3_1.default) {
-                    if (overdraw) {
-                        this.expand(element.v1, element.v2);
-                        this.expand(element.v2, element.v3);
-                        this.expand(element.v3, element.v1);
-                    }
-                    v1x = element.v1.x;
-                    v1y = element.v1.y;
-                    v2x = element.v2.x;
-                    v2y = element.v2.y;
-                    v3x = element.v3.x;
-                    v3y = element.v3.y;
-                    this.bboxRect.addPoint(v1x, v1y);
-                    this.bboxRect.addPoint(v2x, v2y);
-                    this.bboxRect.addPoint(v3x, v3y);
-                    if (!this.clipRect.instersects(this.bboxRect)) {
-                        continue;
-                    }
-                    this.context.moveTo(v1x, v1y);
-                    this.context.lineTo(v2x, v2y);
-                    this.context.lineTo(v3x, v3y);
-                    this.context.lineTo(v1x, v1y);
-                }
-                else if (element instanceof RenderableFace4_1.default) {
-                    if (overdraw) {
-                        this.expand(element.v1, element.v2);
-                        this.expand(element.v2, element.v3);
-                        this.expand(element.v3, element.v4);
-                        this.expand(element.v4, element.v1);
-                    }
-                    v1x = element.v1.x;
-                    v1y = element.v1.y;
-                    v2x = element.v2.x;
-                    v2y = element.v2.y;
-                    v3x = element.v3.x;
-                    v3y = element.v3.y;
-                    v4x = element.v4.x;
-                    v4y = element.v4.y;
-                    this.bboxRect.addPoint(v1x, v1y);
-                    this.bboxRect.addPoint(v2x, v2y);
-                    this.bboxRect.addPoint(v3x, v3y);
-                    this.bboxRect.addPoint(v4x, v4y);
-                    if (!this.clipRect.instersects(this.bboxRect)) {
-                        continue;
-                    }
-                    this.context.moveTo(v1x, v1y);
-                    this.context.lineTo(v2x, v2y);
-                    this.context.lineTo(v3x, v3y);
-                    this.context.lineTo(v4x, v4y);
-                    this.context.lineTo(v1x, v1y);
-                }
-                this.context.closePath();
                 // 绘制材质
                 if (material instanceof ColorFillMaterial_1.default) {
                     this.context.fillStyle = material.color.styleString;

@@ -10,7 +10,7 @@ class Face3 {
         this.c = c;
         this.screen = new Vector3_1.default();
         this.normal = normal || new Vector3_1.default();
-        this.color = color || new Color_1.default();
+        this.color = color || new Color_1.default(0x000000);
     }
     toString() {
         return 'Face3 ( ' + this.a + ', ' + this.b + ', ' + this.c + ' )';

@@ -15,7 +15,7 @@ class Face4 {
         this.d = d;
         this.screen = new Vector3_1.default();
         this.normal = normal || new Vector3_1.default();
-        this.color = color || new Color_1.default();
+        this.color = color || new Color_1.default(0x000000);
     }
     toString() {
         return 'Face4 ( ' + this.a + ', ' + this.b + ', ' + this.c + ' )';

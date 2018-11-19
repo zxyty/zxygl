@@ -7,10 +7,11 @@ class RenderableFace4 {
         this.v2 = new Vector2_1.default(0, 0);
         this.v3 = new Vector2_1.default(0, 0);
         this.v4 = new Vector2_1.default(0, 0);
-        this.screenZ = null;
+        this.z = null;
         this.color = null;
         this.material = null;
         this.uvs;
+        this.overdraw;
     }
 }
 exports.default = RenderableFace4;

@@ -5,13 +5,14 @@ import Plane from "../objects/primitives/Plane";
 import CanvasRenderer from "../renderers/CanvasRenderer";
 import BitmapUVMappingMaterial from "../materials/BitmapUVMappingMaterial";
 import ColorFillMaterial from "../materials/ColorFillMaterial";
+import ColorStrokeMaterial from "../materials/ColorStrokeMaterial";
 
 var SCREEN_WIDTH = window.innerWidth,
   SCREEN_HEIGHT = window.innerHeight;
 
-var camera, scene, renderer;
+var camera: Camera, scene: Scene, renderer;
 
-var texture_placeholder,
+var texture_placeholder, wireframe: ColorStrokeMaterial,
 onPointerDownPointerX,
 onPointerDownPointerY,
 onPointerDownLon,
@@ -33,69 +34,53 @@ function init() {
 
   container = document.getElementById("container");
 
-  camera = new Camera();
-  camera.focus = 300;
-  camera.position.x = 0;
-  camera.position.y = 0;
-//   camera.position.z = 2000;
+  camera = new Camera(75, SCREEN_WIDTH / SCREEN_HEIGHT, 0.0001, 1000);
 
   scene = new Scene();
 
-  texture_placeholder = document.createElement("canvas");
+  texture_placeholder = document.createElement('canvas');
   texture_placeholder.width = 128;
   texture_placeholder.height = 128;
 
-  var context = texture_placeholder.getContext("2d");
-  context.fillStyle = "rgba( 200, 200, 200, 1 )";
+  wireframe = new ColorStrokeMaterial(1, 0xffffff, 0);
+
+  var context = texture_placeholder.getContext('2d');
+  context.fillStyle = 'rgba(200, 200, 200, 1)';
   context.fillRect(0, 0, texture_placeholder.width, texture_placeholder.height);
 
-  mesh = new Mesh(
-    new Plane(1000, 1000, 5, 5),
-    loadTexture("textures/skymap_front1024.jpg")
-    // new ColorFillMaterial(0xe0e0e0, 1)
-  );
+  mesh = new Mesh(new Plane(1000, 1000, 5, 5), loadTexture('textures/skymap_front1024.jpg'));
   mesh.position.z = -500;
+  mesh.overdraw = true;
   scene.add(mesh);
 
-  mesh = new Mesh(
-    new Plane(1000, 1000, 5, 5),
-    loadTexture("textures/skymap_back1024.jpg")
-  );
+  mesh = new Mesh(new Plane(1000, 1000, 5, 5), loadTexture('textures/skymap_back1024.jpg'));
   mesh.position.z = 500;
-  mesh.rotation.y = (180 * Math.PI) / 180;
+  mesh.rotation.y = 180 * Math.PI / 180;
+  mesh.overdraw = true;
   scene.add(mesh);
 
-  mesh = new Mesh(
-    new Plane(1000, 1000, 5, 5),
-    // new ColorFillMaterial(0x00ff0000, 1)
-    loadTexture("textures/skymap_left1024.jpg")
-  );
+  mesh = new Mesh(new Plane(1000, 1000, 5, 5), loadTexture('textures/skymap_left1024.jpg'));
   mesh.position.x = -500;
-  mesh.rotation.y = (90 * Math.PI) / 180;
+  mesh.rotation.y = 90 * Math.PI / 180;
+  mesh.overdraw = true;
   scene.add(mesh);
 
-  mesh = new Mesh(
-    new Plane(1000, 1000, 5, 5),
-    loadTexture("textures/skymap_right1024.jpg")
-  );
+  mesh = new Mesh(new Plane(1000, 1000, 5, 5), loadTexture('textures/skymap_right1024.jpg'));
   mesh.position.x = 500;
-  mesh.rotation.y = (-90 * Math.PI) / 180;
+  mesh.rotation.y = -90 * Math.PI / 180;
+  mesh.overdraw = true;
   scene.add(mesh);
 
-  mesh = new Mesh(
-    new Plane(1000, 1000, 5, 5),
-    loadTexture("textures/skymap_top1024.jpg")
-  );
+  mesh = new Mesh(new Plane(1000, 1000, 5, 5), loadTexture('textures/skymap_top1024.jpg'));
   mesh.position.y = 500;
-  mesh.rotation.x = (90 * Math.PI) / 180;
+  mesh.rotation.x = 90 * Math.PI / 180;
+  mesh.overdraw = true;
   scene.add(mesh);
 
-  mesh = new Mesh(
-    new Plane(1000, 1000, 5, 5),
-    loadTexture("textures/skymap_bottom1024.jpg")
-  );
+  mesh = new Mesh(new Plane(1000, 1000, 5, 5), loadTexture('textures/skymap_bottom1024.jpg'));
   mesh.position.y = -500;
-  mesh.rotation.x = (-90 * Math.PI) / 180;
+  mesh.rotation.x = -90 * Math.PI / 180;
+  mesh.overdraw = true;
   scene.add(mesh);
 
   renderer = new CanvasRenderer();
@@ -124,13 +109,15 @@ function loadTexture(path: string) {
   texture.src = path;
 
   // return [ material, new THREE.ColorStrokeMaterial(1, Math.random() * 0xffffff, 0.2) ];
-  return material;
+  return [material, wireframe];
 }
 
 function onDocumentMouseDown(event) {
   event.preventDefault();
 
   isUserInteracting = true;
+
+  wireframe.color.setRGBA(255,255,255,0.2);
 
   onPointerDownPointerX = event.clientX;
   onPointerDownPointerY = event.clientY;
@@ -150,6 +137,11 @@ function onDocumentMouseMove(event) {
 
 function onDocumentMouseUp(event) {
   isUserInteracting = false;
+
+  wireframe.color.setRGBA(255,255,255,0);
+
+  render();
+
 }
 
 function onDocumentTouchStart(event) {
@@ -192,6 +184,6 @@ function render() {
 // setInterval(() => {
 //     render();
 //     camera.position.z -= 4;
-// }, 30);
+// }, 100);
 
 // alert(1);
