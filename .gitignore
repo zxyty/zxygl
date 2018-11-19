@@ -1,7 +1,9 @@
 node_modules/
 package-lock.lock
 out.diff
-static/
+static/*.html
+static/*.js
+static/*.map
 dist/
 src/
 src-bak/
