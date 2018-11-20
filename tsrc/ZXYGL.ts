@@ -17,6 +17,7 @@ import Scene from "./scenes/Scene";
 // renderers
 import Renderer from "./renderers/Renderer";
 import CanvasRenderer from "./renderers/CanvasRenderer";
+import WebGLRenderer from "./renderers/WebGLRenderer";
 
 // renderer able
 import RenderableFace3 from "./renderers/renderables/RenderableFace3";
@@ -65,6 +66,7 @@ const ZXYGL = {
   // renderer
   Renderer: Renderer,
   CanvasRenderer: CanvasRenderer,
+  WebGLRenderer,
 
   // renderer able
   RenderableFace3: RenderableFace3,
