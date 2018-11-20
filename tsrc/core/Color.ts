@@ -35,19 +35,18 @@ export default class Color {
   }
 
   updateRGBA() {
-    this.r = this.hex >> 16 & 0xff;
-    this.g = this.hex >> 8 & 0xff;
-    this.b = this.hex & 0xff;
-    this.a = (this.hex >> 24 & 0xff) / 255;	
+    this.r = (this.hex >> 16 & 0xff) / 0xff;
+    this.g = (this.hex >> 8 & 0xff) / 0xff;
+    this.b = (this.hex & 0xff) / 0xff;
+    this.a = (this.hex >> 24 & 0xff) / 0xff;	
   }
 
   updateHex() {
-    this.hex = Math.floor(this.a * 255) << 24 | this.r << 16 | this.g << 8 | this.b;
+    this.hex = Math.floor(this.a * 255) << 24 | Math.floor(this.r * 255) << 16 | Math.floor(this.g * 255) << 8 | Math.floor(this.b * 255);
   }
 
   updateStyleString() {
-    this.styleString =
-      "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
+    this.styleString = 'rgba(' + Math.floor( this.r * 255 ) + ',' + Math.floor( this.g * 255 ) + ',' + Math.floor( this.b * 255 ) + ',' + this.a + ')';
   }
 
   toString() {

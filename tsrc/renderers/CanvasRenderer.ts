@@ -16,7 +16,7 @@ import BitmapUVMappingMaterial from "../materials/BitmapUVMappingMaterial";
 
 export default class CanvasRenderer extends Renderer {
   domElement: HTMLCanvasElement;
-  viewport: HTMLCanvasElement;
+  canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   
   clipRect: Rectangle;
@@ -37,8 +37,8 @@ export default class CanvasRenderer extends Renderer {
     super();
 
     this.domElement = document.createElement("canvas");
-    this.viewport = this.domElement;
-    this.context = this.viewport.getContext("2d");
+    this.canvas = this.domElement;
+    this.context = this.canvas.getContext("2d");
 
     this.clearRect = new Rectangle(0, 0, 0, 0);
     this.clipRect = new Rectangle();
@@ -57,10 +57,10 @@ export default class CanvasRenderer extends Renderer {
     this.widthHalf = width / 2;
     this.heightHalf = height / 2;
 
-    this.viewport.width = width;
-    this.viewport.height = height;
+    this.canvas.width = width;
+    this.canvas.height = height;
 
-    this.context.setTransform(1, 0, 0, 1, this.widthHalf, this.heightHalf);
+    this.context.setTransform(1, 0, 0, -1, this.widthHalf, this.heightHalf);
 
     this.clipRect.set(-this.widthHalf, -this.heightHalf, this.widthHalf, this.heightHalf);
   }
@@ -74,8 +74,7 @@ export default class CanvasRenderer extends Renderer {
 
   render(scene: Scene, camera: Camera) {
     // super.render(scene, camera);
-    let i, j, element, pi2 = 2 * Math.PI;
-    let elementsLength, material, materialsLength;
+    let e, el, m, ml, element, material, pi2 = Math.PI * 2;
     let v1x, v1y, v2x, v2y, v3x, v3y, v4x, v4y;
 
     let uv1 = new Vector2(), uv2 = new Vector2(), uv3 = new Vector2();
@@ -91,12 +90,9 @@ export default class CanvasRenderer extends Renderer {
 
     this.project(scene, camera);
 
-    elementsLength = this.renderList.length;
-
-    for(i = 0; i < elementsLength; i++) {
+    for(e = 0, el = this.renderList.length; e < el; e++) {
       
-      element = this.renderList[i];
-      materialsLength = element.material.length;
+      element = this.renderList[e];
 
       this.bboxRect.empty();
 
@@ -204,9 +200,9 @@ export default class CanvasRenderer extends Renderer {
 
       this.context.closePath();
 
-      for(j = 0; j < materialsLength; j++) {
+      for(m = 0, ml = element.material.length; m < ml; m++) {
         
-        material = element.material[j];
+        material = element.material[m];
 
         // 绘制材质
         if (material instanceof ColorFillMaterial) {

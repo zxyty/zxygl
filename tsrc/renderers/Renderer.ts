@@ -3,8 +3,6 @@ import Mesh from "../objects/Mesh";
 import Particle from "../objects/Particle";
 import Face3 from "../core/Face3";
 import Face4 from "../core/Face4";
-import Vertex from "../core/Vertex";
-import Object3D from "../objects/Object3D";
 import Camera from "../cameras/Camera";
 import Scene from "../scenes/Scene";
 import RenderableFace3 from "./renderables/RenderableFace3";
@@ -21,11 +19,11 @@ export default class Renderer {
   face4Pool: RenderableFace4[];
   particlePool: RenderableParticle[];
   linePool: RenderableLine[]
-  matrix: Matrix4;
+  viewMatrix: Matrix4;
   vector4: Vector4;
 
   constructor() {
-    this.matrix = new Matrix4();
+    this.viewMatrix = new Matrix4();
     this.vector4 = new Vector4();
 
     this.renderList = null;
@@ -41,9 +39,8 @@ export default class Renderer {
   }
 
   project(scene: Scene, camera: Camera) {
-    let i, j, vertex, vertex2, face, object, v1, v2, v3, v4;
-    let face3count = 0, face4count = 0, lineCount = 0, particleCount = 0;
-    let verticesLength = 0, faceLength = 0;
+    let o, ol, v, vl, f, fl, vertex, vertex2, face, object, v1, v2, v3, v4,
+    face3count = 0, face4count = 0, lineCount = 0, particleCount = 0;
 
     this.renderList = [];
 
@@ -53,8 +50,8 @@ export default class Renderer {
 
     }
 
-    for(i = 0; i < scene.objects.length; i++) {
-      object = scene.objects[i];
+    for(o = 0, ol = scene.objects.length; o < ol; o++) {
+      object = scene.objects[o];
 
       if(object.autoUpdateMatrix) {
         object.updateMatrix();
@@ -64,24 +61,22 @@ export default class Renderer {
 
         // gl_Position = uProjectionMatrix * uCameraViewMatrix * uModelViewMatrix * vec4(aVertexPosition, 1.0);
 
-        this.matrix.multiply(camera.matrix, object.matrix); // 得到 VM 视图模型矩阵（uCameraViewMatrix * uModelViewMatrix）
+        this.viewMatrix.multiply(camera.matrix, object.matrix); // 得到 VM 视图模型矩阵（uCameraViewMatrix * uModelViewMatrix）
 
         // vertices
-        verticesLength = object.geometry.vertices.length;
-        for(j = 0; j < verticesLength; j++) {
-          vertex = object.geometry.vertices[j];
+        for(v = 0, vl = object.geometry.vertices.length; v < vl; v++) {
+          vertex = object.geometry.vertices[v];
 
           vertex.screen.copy(vertex.position);
-          this.matrix.transform(vertex.screen);            // 得到 uCameraViewMatrix * uModelViewMatrix * vec4(aVertexPosition, 1.0);
+          this.viewMatrix.transform(vertex.screen);            // 得到 uCameraViewMatrix * uModelViewMatrix * vec4(aVertexPosition, 1.0);
 
           camera.projectionMatrix.transform(vertex.screen);
           vertex.visible = vertex.screen.z > 0 && vertex.screen.z < 1;
         }
 
         // faces
-        faceLength = object.geometry.faces.length;
-        for(j = 0; j < faceLength; j++) {
-          face = object.geometry.faces[j];
+        for(f = 0, fl = object.geometry.faces.length; f < fl; F++) {
+          face = object.geometry.faces[F];
 
           // TODO: Use normals for culling
           if(face instanceof Face3) {
@@ -91,7 +86,7 @@ export default class Renderer {
             
             if(v1.visible && v2.visible && v3.visible && (object.doubleSided || 
               (v3.screen.x - v1.screen.x) * (v2.screen.y - v1.screen.y) -
-              (v3.screen.y - v1.screen.y) * (v2.screen.x - v1.screen.x) > 0)) {
+              (v3.screen.y - v1.screen.y) * (v2.screen.x - v1.screen.x) < 0)) {
 
                 face.screen.z = Math.max(v1.screen.z, Math.max(v2.screen.z, v3.screen.z));
                 // face.screen.z = (v1.screen.z + v2.screen.z + v3.screen.z) * 0.3;  // 这里*0.33 会更精确点
@@ -112,7 +107,7 @@ export default class Renderer {
                 this.face3Pool[face3count].color = face.color;
                 this.face3Pool[face3count].overdraw = object.overdraw;
                 this.face3Pool[face3count].material = object.material;
-                this.face3Pool[face3count].uvs = object.geometry.uvs[j];
+                this.face3Pool[face3count].uvs = object.geometry.uvs[F];
 
                 this.renderList.push(this.face3Pool[face3count]);
                 face3count++;
@@ -127,9 +122,9 @@ export default class Renderer {
 
             if (v1.visible && v2.visible && v3.visible && v4.visible && (object.doubleSided ||
               ((v4.screen.x - v1.screen.x) * (v2.screen.y - v1.screen.y) -
-              (v4.screen.y - v1.screen.y) * (v2.screen.x - v1.screen.x) > 0 ||
+              (v4.screen.y - v1.screen.y) * (v2.screen.x - v1.screen.x) < 0 ||
               (v2.screen.x - v3.screen.x) * (v4.screen.y - v3.screen.y) -
-              (v2.screen.y - v3.screen.y) * (v4.screen.x - v3.screen.x) > 0)) ) {
+              (v2.screen.y - v3.screen.y) * (v4.screen.x - v3.screen.x) < 0)) ) {
 
                 face.screen.z = Math.max(v1.screen.z, Math.max(v2.screen.z, Math.max(v3.screen.z, v4.screen.z)));
                 // face.screen.z = (v1.screen.z + v2.screen.z + v3.screen.z + v4.screen.z) * 0.25;
@@ -151,7 +146,7 @@ export default class Renderer {
                 this.face4Pool[face4count].color = face.color;
                 this.face4Pool[face4count].overdraw = object.overdraw;
                 this.face4Pool[face4count].material = object.material;
-                this.face4Pool[face4count].uvs = object.geometry.uvs[j];
+                this.face4Pool[face4count].uvs = object.geometry.uvs[f];
 
                 this.renderList.push(this.face4Pool[face4count]);
                 face4count++;
@@ -162,21 +157,20 @@ export default class Renderer {
         }
 
       } else if(object instanceof Line) {
-        this.matrix.multiply(camera.matrix, object.matrix);
+        this.viewMatrix.multiply(camera.matrix, object.matrix);
         
-        verticesLength = object.geometry.vertices.length;
-        for(j = 0; j< verticesLength; j++) {
-          vertex = object.geometry.vertices[j];
+        for(v = 0, vl = object.geometry.vertices.length; v < vl; v++) {
+          vertex = object.geometry.vertices[v];
 
           vertex.screen.copy(vertex.position);
-          this.matrix.transform(vertex.screen);
+          this.viewMatrix.transform(vertex.screen);
 
           camera.projectionMatrix.transform(vertex.screen);
 
           vertex.visible = vertex.screen.z > 0 && vertex.screen.z < 1;
 
-          if(j > 0) {
-            vertex2 = object.geometry.vertices[j - 1];
+          if(v > 0) {
+            vertex2 = object.geometry.vertices[v - 1];
 
             if(!vertex.visible || !vertex2.visible) {
               continue;

@@ -78,10 +78,10 @@ export default class Matrix4 {
     c = -(far + near) / (far - near);
     d = -2 * far * near / (far - near);
 
-    m.n11 = x; m.n13 = a;
-    m.n22 = y; m.n23 = b;
-    m.n33 = c; m.n34 = d;
-    m.n43 = -1; m.n44 = 0;
+    m.n11 = x; m.n12 = 0; m.n13 = a; m.n14 = 0;
+    m.n21 = 0; m.n22 = y; m.n23 = b; m.n24 = 0;
+    m.n31 = 0; m.n32 = 0; m.n33 = c; m.n34 = d;
+    m.n41 = 0; m.n42 = 0; m.n43 = -1; m.n44 = 0;
 
     return m;
   }
@@ -117,7 +117,7 @@ export default class Matrix4 {
 
     this.y.cross(this.z, this.x);
     this.y.normalize();
-    this.y.negate(); //
+    // this.y.negate(); // 启动webglRender的时候 因为是右手坐标系所以需要negate
 
     this.n11 = this.x.x;      
     this.n12 = this.x.y;
@@ -228,6 +228,15 @@ export default class Matrix4 {
     m.n41 = this.n41; m.n42 = this.n42; m.n43 = this.n43; m.n44 = this.n44;
     return m;
 
+  }
+
+  toArray(): Array<number> {
+    return [
+      this.n11, this.n12, this.n13, this.n14,
+      this.n21, this.n22, this.n23, this.n24,
+      this.n31, this.n32, this.n33, this.n34,
+      this.n41, this.n42, this.n43, this.n44,
+    ];
   }
 
   toString() {

@@ -15,6 +15,12 @@ export default class Object3D {
   
   overdraw: boolean;
 
+  __webGLVertexBuffer: WebGLBuffer; // array
+  __webGLColorBuffer: WebGLBuffer;  // array
+  __webGLFaceBuffer: WebGLBuffer;   // index
+  __webGLFaceCount: number;
+
+
   constructor(material: tMaterial) {
     this.position = new Vector3(0, 0, 0);
     this.rotation = new Vector3(0, 0, 0);
@@ -28,6 +34,11 @@ export default class Object3D {
     this.autoUpdateMatrix = true;
 
     this.overdraw = false;
+
+    this.__webGLVertexBuffer = null;
+    this.__webGLColorBuffer = null;
+    this.__webGLFaceBuffer = null;
+    this.__webGLFaceCount = 0;
   }
 
   updateMatrix() {
