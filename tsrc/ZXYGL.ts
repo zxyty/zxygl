@@ -34,6 +34,8 @@ import ColorStrokeMaterial from "./materials/ColorStrokeMaterial";
 import FaceColorFillMaterial from "./materials/FaceColorFillMaterial";
 import BitmapUVMappingMaterial from "./materials/BitmapUVMappingMaterial";
 import FaceColorStrokeMaterial from "./materials/FaceColorStrokeMaterial";
+import ParticleBitmapMaterial from "./materials/ParticleBitmapMaterial";
+import ParticleCircleMaterial from "./materials/ParticleCircleMaterial";
 
 // objects
 import Object3D from "./objects/Object3D";
@@ -83,6 +85,8 @@ const ZXYGL = {
   FaceColorFillMaterial: FaceColorFillMaterial,
   FaceColorStrokeMaterial: FaceColorStrokeMaterial,
   BitmapUVMappingMaterial: BitmapUVMappingMaterial,
+  ParticleBitmapMaterial: ParticleBitmapMaterial,
+  ParticleCircleMaterial: ParticleCircleMaterial,
 
   // objects
   Object3D: Object3D,

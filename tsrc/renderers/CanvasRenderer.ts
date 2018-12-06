@@ -13,6 +13,8 @@ import RenderableLine from "./renderables/RenderableLine";
 import Vector2 from "../core/Vector2";
 import Vertex from "../core/Vertex";
 import BitmapUVMappingMaterial from "../materials/BitmapUVMappingMaterial";
+import ParticleCircleMaterial from "../materials/ParticleCircleMaterial";
+import ParticleBitmapMaterial from "../materials/ParticleBitmapMaterial";
 
 export default class CanvasRenderer extends Renderer {
   domElement: HTMLCanvasElement;
@@ -75,14 +77,13 @@ export default class CanvasRenderer extends Renderer {
   render(scene: Scene, camera: Camera) {
     // super.render(scene, camera);
     let e, el, m, ml, element, material, pi2 = Math.PI * 2;
-    let v1x, v1y, v2x, v2y, v3x, v3y, v4x, v4y;
+    let v1x, v1y, v2x, v2y, v3x, v3y, v4x, v4y, width, height;
 
     let uv1 = new Vector2(), uv2 = new Vector2(), uv3 = new Vector2();
     let suv1 = new Vector2(), suv2 = new Vector2(), suv3 = new Vector2();
     let suv1x, suv1y, suv2x, suv2y, suv3x, suv3y, denom, m11, m12, m21, m22, dx, dy;
 
     let bitmap, bitmap_width, bitmap_height;
-    let size;
 
     if (this.autoClear) {
       this.clear();
@@ -103,16 +104,6 @@ export default class CanvasRenderer extends Renderer {
         
         v1x = element.x * this.widthHalf;
         v1y = element.y * this.heightHalf;
-        size = element.size * this.widthHalf;
-
-        this.bboxRect.set(v1x - size, v1y - size, v1x + size, v1y + size);
-        
-        // 判断是否在绘制剪裁区域
-        if (!this.clipRect.instersects(this.bboxRect)) {
-          continue;  
-        }
-
-        this.context.arc(element.x, element.y, size, 0, pi2, true);
 
       } else if (element instanceof RenderableLine) {
 
@@ -203,9 +194,51 @@ export default class CanvasRenderer extends Renderer {
       for(m = 0, ml = element.material.length; m < ml; m++) {
         
         material = element.material[m];
-
+        
         // 绘制材质
-        if (material instanceof ColorFillMaterial) {
+        if (material instanceof ParticleCircleMaterial && element instanceof RenderableParticle) {
+          width = element.scale.x * this.widthHalf;
+          height = element.scale.y * this.heightHalf;
+
+          this.bboxRect.set(v1x - width, v1y - height, v1x + width, v1y + height);
+
+          if (!this.clipRect.instersects(this.bboxRect)) {
+            continue;
+          }
+
+          this.context.save();
+          this.context.translate(v1x, v1y);
+          this.context.rotate(-element.rotation);
+          this.context.scale(width, height);
+          this.context.arc(0, 0, 1, 0, pi2, true);
+          this.context.restore();
+
+          this.context.fillStyle = material.color.styleString;
+          this.context.fill();
+
+        } else if (material instanceof ParticleBitmapMaterial && element instanceof RenderableParticle) {
+          bitmap = material.bitmap;
+
+          bitmap_width = bitmap.width;
+          bitmap_height = bitmap.height;
+
+          width = element.scale.x * this.widthHalf * bitmap_width;
+          height = element.scale.y * this.heightHalf * bitmap_height;
+
+          this.bboxRect.set(v1x - width, v1y - height, v1x + width, v1y + height);
+
+          if(!this.clipRect.instersects(this.bboxRect)) {
+            continue;
+          }
+
+          this.context.save();
+          this.context.translate(v1x - width, v1y + height);
+          this.context.rotate(-element.rotation);
+          this.context.scale(element.scale.x * this.widthHalf, -(element.scale.y * this.heightHalf));
+          this.context.drawImage(bitmap, 0, 0);
+          this.context.restore();
+          
+        } else if (material instanceof ColorFillMaterial) {
 
           this.context.fillStyle = material.color.styleString;
           this.context.fill();

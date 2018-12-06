@@ -8,18 +8,22 @@ export default class RenderableParticle {
     /**
      * 粒子大小
      */
-    size: number;   
+    scale: Vector2;   
     color: Color;
     material: Array<tMaterial>;
     z: number;
+
+    rotation: number;
 
     constructor() {
         this.x = null;
         this.y = null;
         this.z = null;
         
-        this.size;
+        this.scale = new Vector2();
         this.color = null;
         this.material = null;
+
+        this.rotation = null;
     }
 }
